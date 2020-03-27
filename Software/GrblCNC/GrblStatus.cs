@@ -34,6 +34,7 @@ namespace GrblCNC
         public int planBuffer;
         public int uartBuffer;
         public int lineNumber;
+        public int alarmCode;
         // Note: whenever adding a new member, add it to clone function
 
         public GrblStatus Clone()
@@ -49,13 +50,20 @@ namespace GrblCNC
             clone.planBuffer = planBuffer;
             clone.uartBuffer = uartBuffer;
             clone.lineNumber = lineNumber;
+            clone.alarmCode = alarmCode;
             return clone;
         }
 
         void ParseMachineState(string statestr)
         {
-            if (!Enum.TryParse<MachineState>(statestr, out state))
+            string[] vars = statestr.Split(':');
+            if (!Enum.TryParse<MachineState>(vars[0], out state))
                 state = MachineState.Unknown;
+            if (vars.Length > 1)
+            {
+                try { alarmCode = int.Parse(vars[1]); }
+                catch { }
+            }
         }
 
         void ParseAxisPosition(string apos)

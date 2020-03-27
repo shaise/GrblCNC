@@ -107,5 +107,10 @@ namespace GrblCNC.Controls
             }
             gcodeViewMDI.AddLine(line);
         }
+
+        //private void gcodeViewMDI_Enter(object sender, EventArgs e)
+        //{
+        //    textGcodeLine.Select();
+        //}
     }
 }

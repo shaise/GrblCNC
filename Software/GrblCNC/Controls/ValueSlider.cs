@@ -13,7 +13,7 @@ namespace GrblCNC.Controls
     public partial class ValueSlider : UserControl
     {
         string dataFormat = "{0:0.0}";
-        string textFormat = "0.0";
+        //string textFormat = "0.0";
         float value = 0;
         float minValue = 0;
         float maxValue = 100;

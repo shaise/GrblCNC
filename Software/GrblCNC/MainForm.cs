@@ -22,9 +22,11 @@ namespace GrblCNC
         bool keyboardJogActive = true;
         private VisualizerWin visualizerWinMain;
         int presscount = 0;
+        string lastGcodeFile = null;
 
         public MainForm()
         {
+            KeyPreview = true;
             InitializeComponent();
             InitializeGlControl();
             Global.mdiControl = mdiCtrl;
@@ -57,7 +59,6 @@ namespace GrblCNC
 
             // we want all key events to pass first on main window, so we can jog
             // regardless of selected sub control
-            KeyPreview = true;
         }
 
         void grblComm_ErrorDetected(object sender, string err)
@@ -129,6 +130,7 @@ namespace GrblCNC
             visualizerWinMain.SetMillheadPos(headpos);
             if (status.lineNumber > 0)
                 gcodeMainViewer.SetSelectedLine(status.lineNumber - 1, true);
+            toolStripEstop.Checked = status.state == GrblStatus.MachineState.Alarm;
             statusView.SetAxisValues(status.axisPos);
             statusView.SetAlarms(status.alarms);
             statusView.SetHomeState(status.homeStatus);
@@ -151,8 +153,6 @@ namespace GrblCNC
         {
             grblComm.CommPoll();
         }
-
-
 
         void grblComm_StatusChanged(object sender, GrblComm.CommStatus status)
         {
@@ -190,12 +190,26 @@ namespace GrblCNC
             gcodeMainViewer.SetLines(lines);
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        public void Error(string errmsg)
+        {
+            MessageBox.Show("Error", errmsg, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        void OpenNewGcodeFile()
         {
             if (openGcodeFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-
+                string res = visualizerWinMain.LoadGcodeFile(openGcodeFile.FileName);
+                if (res != "OK")
+                    Error(res);
+                else
+                    lastGcodeFile = openGcodeFile.FileName;
             }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenNewGcodeFile();
         }
 
 
@@ -209,7 +223,7 @@ namespace GrblCNC
             gcodeMainViewer.SetSelectedLine(gcodeLine, true);
         }
 
-        #region Run Buttons
+        #region Tool Buttons
         private void toolStripStart_Click(object sender, EventArgs e)
         {
             //ginterp.InitSimulation();
@@ -237,6 +251,25 @@ namespace GrblCNC
         {
         }
 
+        private void toolStripEstop_Click(object sender, EventArgs e)
+        {
+            if (toolStripEstop.Checked)
+                grblComm.AlarmRelease();
+            else
+                grblComm.EmergencyStop();
+        }
+
+        private void toolStripOpen_Click(object sender, EventArgs e)
+        {
+            OpenNewGcodeFile();
+        }
+
+        private void toolStripReload_Click(object sender, EventArgs e)
+        {
+            string res = visualizerWinMain.LoadGcodeFile(openGcodeFile.FileName);
+            if (res != "OK")
+                Error(res);
+        }
         #endregion
 
         void StepJog(int axis, float dir = 1)
@@ -250,13 +283,14 @@ namespace GrblCNC
         }
 
         #region Class overrides
-        protected override void OnKeyDown(KeyEventArgs e)
+        // using this instead of keyDown because it seems sometime keyDown not sent even if KeyPreview is set
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyboardJogActive)
             {
                 presscount++;
                 keyHandled = false;
-                switch (e.KeyCode)
+                switch (keyData)
                 {
                     case Keys.Right: StepJog(GrblComm.X_AXIS); break;
                     case Keys.Left: StepJog(GrblComm.X_AXIS, -1); break;
@@ -265,9 +299,10 @@ namespace GrblCNC
                     case Keys.PageUp: StepJog(GrblComm.Z_AXIS); break;
                     case Keys.PageDown: StepJog(GrblComm.Z_AXIS, -1); break;
                 }
-                e.Handled = keyHandled;
+                if (keyHandled)
+                    return true;
             }
-            base.OnKeyDown(e);
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -291,6 +326,12 @@ namespace GrblCNC
         private void tabControlSystem_Selected(object sender, TabControlEventArgs e)
         {
             keyboardJogActive = e.TabPage == tabControlPanel;
+//            if (e.TabPage == tabMdi)
+        }
+
+        private void tabMdi_Enter(object sender, EventArgs e)
+        {
+            mdiCtrl.Select(); ;
         }
 
 

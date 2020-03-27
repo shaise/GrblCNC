@@ -27,6 +27,7 @@ namespace GrblCNC
         }
 
 
+
  /*       protected override void OnPaint(PaintEventArgs e)
         {
             if (Checked)

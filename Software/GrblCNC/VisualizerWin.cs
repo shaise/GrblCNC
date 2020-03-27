@@ -199,13 +199,16 @@ namespace GrblCNC
             Invalidate();
         }
 
-        public void LoadGcodeFile(string fileName)
+        public string LoadGcodeFile(string fileName)
         {
-            ginterp.LoadGcode(fileName);
+            string res = ginterp.LoadGcode(fileName);
+            if (res != "OK")
+                return res;
             floor.SetFloorZ(ginterp.minCoords[GcodeInterp.pZ] - 0.5f);
             if (NewGcodeLoaded != null)
                 NewGcodeLoaded(this, ginterp.lines);
             Invalidate();
+            return "OK";
         }
 
         public void SetMillheadPos(Vector3 pos)

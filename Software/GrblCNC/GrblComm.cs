@@ -61,7 +61,7 @@ namespace GrblCNC
         int scanPortIx;
         SerialPort port;
         bool portOpened;
-        static int PORT_BUFF_LEN = 256;
+        //static int PORT_BUFF_LEN = 256;
         static int SCAN_INTERVAL = 10;  // in 100ms units = 1 second
         GrblStatus grblStatus;
         GrblConfig grblConfig;
@@ -268,7 +268,7 @@ namespace GrblCNC
                 return;
             byte[] msg = new byte[1];
             msg[0] = b;
-            if (b != CMD_STATUS_REQUEST)
+            if (ConnectionStatus == CommStatus.Connected && b != CMD_STATUS_REQUEST)
                 Global.mdiControl.AddLine(string.Format("<0x{0:X}>", (int)b));
             lock (lockSerialSendObj)
             {
@@ -482,6 +482,16 @@ namespace GrblCNC
             curJogCommand = string.Format("$J=G91 {0}{1:0.000} F{2:0.0}", axisLetter, s, feedrate);
             SendLine(curJogCommand);
             machineState = MachineState.Jog;
+        }
+
+        public void EmergencyStop()
+        {
+            SendByte(CMD_SAFETY_DOOR);
+        }
+
+        public void AlarmRelease()
+        {
+            PostLine("$X");
         }
         #endregion
 

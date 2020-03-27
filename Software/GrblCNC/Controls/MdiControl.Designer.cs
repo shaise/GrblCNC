@@ -38,9 +38,11 @@
             this.gcodeViewMDI.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.gcodeViewMDI.Location = new System.Drawing.Point(6, 6);
             this.gcodeViewMDI.Name = "gcodeViewMDI";
+            this.gcodeViewMDI.ShowLineNumbers = false;
             this.gcodeViewMDI.Size = new System.Drawing.Size(234, 307);
             this.gcodeViewMDI.TabIndex = 1;
-            // 
+            this.gcodeViewMDI.TabStop = false;
+             // 
             // textGcodeLine
             // 
             this.textGcodeLine.Location = new System.Drawing.Point(6, 319);
