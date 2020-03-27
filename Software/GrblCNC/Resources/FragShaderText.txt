@@ -1,0 +1,19 @@
+// Texture Color shader 
+#version 330
+#extension GL_ARB_texture_query_lod : enable
+
+out vec4 outputColor;
+in vec2 texCoord;
+uniform sampler2D texture0;
+uniform vec4 tintColor;
+
+void main()
+{
+    //float mipmapLevel = textureQueryLod(texture0, texCoord).x;
+#ifdef GL_ARB_texture_query_lod
+    float mipmapLevel = textureQueryLOD(texture0, texCoord).x; // NOTE CAPITALIZATION
+    outputColor = tintColor * textureLod(texture0, texCoord, mipmapLevel * 0.7);
+#else
+    outputColor = tintColor * texture(texture0, texCoord);
+#endif
+}

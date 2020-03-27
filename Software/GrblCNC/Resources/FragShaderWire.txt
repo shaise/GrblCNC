@@ -1,0 +1,24 @@
+#version 330 core
+out vec4 FragColor;  
+flat in vec2 texCoord; // using the texture coord to pass color info
+
+uniform float changeIndex; // before this index add transparency
+uniform float hltIndex;    // highligt this segment
+  
+void main()
+{
+    uint wc = uint(texCoord[1] + 0.1);
+    float b = 0.0039215 * float(wc & 0xFFu);
+    float g = 0.0039215 * float((wc >> 8) & 0xFFu);
+    float r = 0.0039215 * float((wc >> 16) & 0xFFu);
+    float a = 1.0;
+	if (hltIndex == texCoord[0]) // && hltIndex <= (texCoord[0] +  1.0))
+		FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+	else
+	{
+		if (changeIndex > texCoord[0])
+			a = 0.25;
+		FragColor = vec4(r, g, b, a);
+	}
+    //FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
