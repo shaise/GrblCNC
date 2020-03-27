@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name GrblCnc3040)(type KiCad)(uri ${KIPRJMOD}/GrblCnc3040.pretty)(options "")(descr "Local library"))
+)

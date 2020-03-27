@@ -10,6 +10,7 @@ A C# Clone to LinuxCNC that works with GRBL CNC driver
 ![GrblCNC interface](Media/grblcnc1.png?raw=true)
 
 ## Hardware
+* [Click here for firmware project page](https://github.com/shaise/grblHAL_CNC3040)
 * [Click here for project progress](PROGRESS.md)
 * [Click here for list of added capabilities](EXTENTIONS.md)
 ### GRBL for Chinese CNC3040-like machines. WIP. 
@@ -22,16 +23,14 @@ A C# Clone to LinuxCNC that works with GRBL CNC driver
 * Support other features that LinuxCNC have
 
 ## Development Environment
-|                      |                           |
-|----------------------|---------------------------|
-| **IDE**              | TrueSTUDIO for STM32 v9.0 |
-| **Controller board** | STM32F103C8T6 (Bluepill)  |
+|                      |                          |
+|----------------------|--------------------------|
+| **IDE**              | STM32CubeIDE v1.2.0      |
+| **Controller board** | STM32F103C8T6 (Bluepill) |
 
 ## Reference
-- GRBL CNC controller ported to TrueSTUDIO for STM32
-```https://github.com/helimp/grbl_stm32```
-- GRBL CNC controller ported to STM32 controller
-```https://github.com/usbcnc/grbl```
+- GRBL CNC controller ported to STM32 controller (and others)
+```https://github.com/terjeio/grblHAL```
 - GRBL CNC controller
 ```https://github.com/gnea/grbl```
 
