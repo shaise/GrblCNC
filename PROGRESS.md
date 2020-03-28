@@ -1,8 +1,9 @@
 ## GRBL for Chinese CNC3040-like machines. WIP.
 ### Project progress:
 
-* 18 Mar 2020:  Migration to STM32CubeIDE
- 
+* 28 Mar 2020:  Basic Sender program available
+  * move to grblHal as the grbl driver for its more comprehensive gcode support
+* 18 Mar 2020:  Migration to STM32CubeIDE 
 * 05 Mar 2020:  A and B axis basic functionality added
   * Add option to manualy home each axis (similar to LinuxCNC) 
 * 04 Mar 2020:  Complete PCB editing of dongle. 
