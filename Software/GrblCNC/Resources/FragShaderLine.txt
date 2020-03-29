@@ -1,0 +1,13 @@
+#version 330 core
+out vec4 FragColor;  
+flat in float vColor; 
+  
+void main()
+{
+    uint wc = uint(vColor + 0.1);
+    float b = 0.0039215 * float(wc & 0xFFu);
+    float g = 0.0039215 * float((wc >> 8) & 0xFFu);
+    float r = 0.0039215 * float((wc >> 16) & 0xFFu);
+    float a = 1.0;
+	FragColor = vec4(r, g, b, a);
+}

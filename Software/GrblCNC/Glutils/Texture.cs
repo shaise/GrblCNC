@@ -28,7 +28,7 @@ namespace GrblCNC.Glutils
         }
 
         // Create texture from path.
-        Texture(Bitmap image)
+        public Texture(Bitmap image)
         {
             // Generate handle
             Handle = GL.GenTexture();

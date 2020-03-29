@@ -25,7 +25,8 @@ namespace GrblCNC.Glutils
         string tintVar = null;
         Vector4 tintColor;
 
-        public void Init(Shader.ShadingType type, float [] verts, uint [] indices = null, string textureName = "")
+
+        public void Init(Shader.ShadingType type, float [] verts, uint [] indices, Texture texture)
         {
             CleanObject();
             shader = Shader.GetShader(type);
@@ -74,12 +75,22 @@ namespace GrblCNC.Glutils
                 GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
             }
 
-            // texture
             if (usetexture)
-            {
-                texture = Texture.From(textureName);
-                //texture.Use();
-            }
+                this.texture = texture;
+        }
+
+        public void Init(Shader.ShadingType type, float[] verts, uint[] indices = null, string textureName = "")
+        {
+            Texture tex = null;
+            // texture
+            if (textureName != null && textureName.Length > 0)
+                tex = Texture.From(textureName);
+            Init(type, verts, indices, tex);
+        }
+
+        public void SetColor(string color)
+        {
+            tintColor = Glutils.ColorToVector(color);
         }
 
         public virtual void Render()

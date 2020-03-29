@@ -23,10 +23,14 @@ namespace GrblCNC
         private VisualizerWin visualizerWinMain;
         int presscount = 0;
         string lastGcodeFile = null;
+        Bitmap bmpFont;
 
         public MainForm()
         {
+            // we want all key events to pass first on main window, so we can jog
+            // regardless of selected sub control
             KeyPreview = true;
+
             InitializeComponent();
             InitializeGlControl();
             Global.mdiControl = mdiCtrl;
@@ -57,8 +61,7 @@ namespace GrblCNC
             manualControl.AxisContinuesJogPressed += manualControl_AxisContinuesJogPressed;
             manualControl.AxisHomePressed += manualControl_AxisHomePressed;
 
-            // we want all key events to pass first on main window, so we can jog
-            // regardless of selected sub control
+            bmpFont = FontManager.BitmapFont;
         }
 
         void grblComm_ErrorDetected(object sender, string err)

@@ -94,6 +94,7 @@
       <DependentUpon>ValueSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="FontManager.cs" />
+    <Compile Include="GCodeDimensions.cs" />
     <Compile Include="GcodeInterp.cs" />
     <Compile Include="Controls\GcodeViewer.cs">
       <SubType>UserControl</SubType>
@@ -104,6 +105,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="Glutils\ColoredQuad.cs" />
     <Compile Include="Glutils\Glutils.cs" />
+    <Compile Include="Glutils\Line3D.cs" />
     <Compile Include="Glutils\Object3D.cs" />
     <Compile Include="Glutils\Wire3D.cs" />
     <Compile Include="GrblComm.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="Controls\ParameterViewer.Designer.cs">
       <DependentUpon>ParameterViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Glutils\Obj3DText.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -139,6 +142,7 @@
     <Compile Include="Controls\StatusViewer.Designer.cs">
       <DependentUpon>StatusViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Glutils\Text3D.cs" />
     <Compile Include="ToolButton.cs" />
     <Compile Include="VisualizerWin.cs">
       <SubType>UserControl</SubType>
@@ -196,6 +200,8 @@
     <None Include="Resources\FragShaderText.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\VertShader3DLine.txt" />
+    <None Include="Resources\FragShaderLine.txt" />
     <Content Include="Resources\GrblLogo_ngc.txt" />
     <None Include="Resources\JetBrainsMono-Medium.ttf" />
     <None Include="Resources\VertShader3DText.txt" />

@@ -19,7 +19,8 @@ namespace GrblCNC.Glutils
             Flat3D,
             FlatNorm3D,
             Textured3D,
-            Wire3D
+            Wire3D,
+            Line3D
         }
 
         public readonly int Handle;
@@ -39,6 +40,7 @@ namespace GrblCNC.Glutils
                 //ShaderDict[ShadingType.Wire3D] = new Shader(Resources.VertShader3DWire, Resources.FragShaderWire);
                 ShaderDict[ShadingType.Wire3D] = new Shader(Resources.VertShader3DWire, Resources.FragShaderWire);
                 ShaderDict[ShadingType.FlatNorm3D] = new Shader(Resources.VertShader3DNorm, Resources.FragShaderNorm);
+                ShaderDict[ShadingType.Line3D] = new Shader(Resources.VertShader3DLine, Resources.FragShaderLine);
             }
             return ShaderDict[stype];
         }

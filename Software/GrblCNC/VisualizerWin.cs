@@ -21,7 +21,7 @@ namespace GrblCNC
         Obj3DFloor floor;
         //Wire3D gcodepath;
         Matrix4 cam;
-        Shader texShade, flatShade, normShade;
+        Shader texShade, flatShade, normShade, lineShade;
         bool mousedown = false;
         int mouseX, mouseY;
         float xshift = 0;
@@ -30,6 +30,7 @@ namespace GrblCNC
         public GcodeInterp ginterp;
         MillHead3D millHead;
         float screenAspect = 1;
+        GCodeDimensions gcodeDim;
 
         public delegate void NewGcodeLoadedDelegate(object sender, string[] lines);
         public event NewGcodeLoadedDelegate NewGcodeLoaded;
@@ -67,6 +68,7 @@ namespace GrblCNC
             texShade.SetMatrix4("view", cam);
             flatShade.SetMatrix4("view", cam);
             normShade.SetMatrix4("view", cam);
+            lineShade.SetMatrix4("view", cam);
             UpdateProjection();
         }
         
@@ -76,6 +78,7 @@ namespace GrblCNC
             texShade.SetMatrix4("projection", projection);
             flatShade.SetMatrix4("projection", projection);
             normShade.SetMatrix4("projection", projection);
+            lineShade.SetMatrix4("projection", projection);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -93,12 +96,14 @@ namespace GrblCNC
                 (int)TextureMagFilter.Nearest); 
             coloredQuad = new ColoredQuad("d495f8", "ca7ff5", "bf67f2", "b54fef");
             floor = new Obj3DFloor(20);
+            gcodeDim = new GCodeDimensions();
             millHead = new MillHead3D();
             //gcodepath = new Wire3D();
             //gcodepath.Init(new float[] { 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 20 });
             texShade = Shader.GetShader(Shader.ShadingType.Textured3D);
             flatShade = Shader.GetShader(Shader.ShadingType.Wire3D);
             normShade = Shader.GetShader(Shader.ShadingType.FlatNorm3D);
+            lineShade = Shader.GetShader(Shader.ShadingType.Line3D);
             GL.Viewport(0, 0, Width, Height);
             camTarget = new Vector3(0.0f, 0.0f, 10.0f);
             camDist = 50;
@@ -125,6 +130,7 @@ namespace GrblCNC
             //gcodepath.Render();
             millHead.Render();
             ginterp.Render();
+            gcodeDim.Render();
             Context.SwapBuffers();
             //e.Graphics.DrawLine(Pens.Black, 0, 0, 100, 100);
             base.OnPaint(e);
@@ -204,6 +210,8 @@ namespace GrblCNC
             string res = ginterp.LoadGcode(fileName);
             if (res != "OK")
                 return res;
+            gcodeDim.Init(ginterp.minCoords[GcodeInterp.pX], ginterp.minCoords[GcodeInterp.pY], ginterp.minCoords[GcodeInterp.pZ],
+                          ginterp.maxCoords[GcodeInterp.pX], ginterp.maxCoords[GcodeInterp.pY], ginterp.maxCoords[GcodeInterp.pZ]);
             floor.SetFloorZ(ginterp.minCoords[GcodeInterp.pZ] - 0.5f);
             if (NewGcodeLoaded != null)
                 NewGcodeLoaded(this, ginterp.lines);

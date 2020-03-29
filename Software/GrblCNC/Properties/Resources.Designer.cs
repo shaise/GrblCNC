@@ -127,6 +127,28 @@ namespace GrblCNC.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to #version 330 core
+        ///out vec4 FragColor;  
+        ///flat in float vColor; 
+        ///  
+        ///void main()
+        ///{
+        ///    uint wc = uint(vColor + 0.1);
+        ///    float b = 0.0039215 * float(wc &amp; 0xFFu);
+        ///    float g = 0.0039215 * float((wc &gt;&gt; 8) &amp; 0xFFu);
+        ///    float r = 0.0039215 * float((wc &gt;&gt; 16) &amp; 0xFFu);
+        ///    float a = 1.0;
+        ///	FragColor = vec4(r, g, b, a);
+        ///}
+        ///.
+        /// </summary>
+        internal static string FragShaderLine {
+            get {
+                return ResourceManager.GetString("FragShaderLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to // Normals Color shader 
         ///#version 330
         ///
@@ -580,6 +602,32 @@ namespace GrblCNC.Properties {
         internal static string VertShader3DFlat {
             get {
                 return ResourceManager.GetString("VertShader3DFlat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // this is a 3D line shader: 3 float vert, 1 float color
+        ///#version 330 core
+        ///
+        ///layout(location = 0) in vec3 aPosition;
+        ///layout(location = 1) in float aVertColor;
+        ///
+        ///flat out float vColor;
+        ///
+        ///uniform mat4 model;
+        ///uniform mat4 view;
+        ///uniform mat4 projection;
+        ///
+        ///void main(void)
+        ///{
+        ///    vColor = aVertColor;
+        ///    gl_Position = vec4(aPosition, 1.0) * model * view * projection;
+        ///}
+        ///.
+        /// </summary>
+        internal static string VertShader3DLine {
+            get {
+                return ResourceManager.GetString("VertShader3DLine", resourceCulture);
             }
         }
         

@@ -1,0 +1,17 @@
+// this is a 3D line shader: 3 float vert, 1 float color
+#version 330 core
+
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in float aVertColor;
+
+flat out float vColor;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main(void)
+{
+    vColor = aVertColor;
+    gl_Position = vec4(aPosition, 1.0) * model * view * projection;
+}
