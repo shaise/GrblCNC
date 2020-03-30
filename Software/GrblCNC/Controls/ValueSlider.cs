@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace GrblCNC.Controls
 {
@@ -123,7 +124,7 @@ namespace GrblCNC.Controls
             string txt;
             try
             {
-                txt = string.Format(dataFormat, value);
+                txt = string.Format(CultureInfo.InvariantCulture, dataFormat, value);
             }
             catch
             {

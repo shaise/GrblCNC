@@ -168,7 +168,7 @@ namespace GrblCNC
             if (tintedImage != null)
                 g.DrawImage(tintedImage, Height + 2, 2, Height / 2, Height / 2);
 
-            string stval = value.ToString(valueFormat);
+            string stval = Utils.ToInvariantString(value, valueFormat);
             SizeF stsize = g.MeasureString(stval, Font);
             Brush txtBrush = new SolidBrush(ForeColor);
             float gap = rad / 2;
