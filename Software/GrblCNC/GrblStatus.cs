@@ -132,6 +132,7 @@ namespace GrblCNC
                     continue;  // not valid part
                 switch (nameData[0])
                 {
+                    case "WPos":
                     case "MPos": ParseAxisPosition(nameData[1]); break;
                     case "FS": ParseFeedSpindle(nameData[1]); break;
                     case "Pn": alarms = nameData[1]; break;

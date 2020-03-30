@@ -109,14 +109,15 @@ namespace GrblCNC
                 grblComm.StepJog(axis, amount, 600);
         }
 
-        void grblComm_ParameterUpdate(object sender, GrblConfig config)
+        void grblComm_ParameterUpdate(object sender, GrblConfig grblConf, GCodeConfig gcodeConf)
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => { grblComm_ParameterUpdate(sender, config); }));
+                Invoke(new MethodInvoker(() => { grblComm_ParameterUpdate(sender, grblConf, gcodeConf); }));
                 return;
             }
-            paramView.FillParameters(config);
+            paramView.FillParameters(grblConf);
+            gcodeParamView.FillParameters(gcodeConf);
             toolStripProgressBuff.Maximum1 = 10;
             toolStripProgressBuff.Maximum2 = 10;
         }

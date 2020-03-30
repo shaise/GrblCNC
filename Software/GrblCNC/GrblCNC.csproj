@@ -87,6 +87,12 @@
     <Compile Include="Controls\MdiControl.Designer.cs">
       <DependentUpon>MdiControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GcodeParamViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GcodeParamViewer.Designer.cs">
+      <DependentUpon>GcodeParamViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ValueSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -109,6 +115,7 @@
     <Compile Include="Glutils\Object3D.cs" />
     <Compile Include="Glutils\Wire3D.cs" />
     <Compile Include="GrblComm.cs" />
+    <Compile Include="GCodeConfig.cs" />
     <Compile Include="GrblConfig.cs" />
     <Compile Include="GrblStatus.cs" />
     <Compile Include="MainForm.cs">
@@ -164,6 +171,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MdiControl.resx">
       <DependentUpon>MdiControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GcodeParamViewer.resx">
+      <DependentUpon>GcodeParamViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ValueSlider.resx">
       <DependentUpon>ValueSlider.cs</DependentUpon>

@@ -18,6 +18,8 @@ namespace GrblCNC
         public static MdiControl mdiControl;
         public static GcodeInterp ginterp;
 
+        public const int NUM_AXIS = 5;
+
         public static bool GrblConnected
         {
             get { return grblConnected; }

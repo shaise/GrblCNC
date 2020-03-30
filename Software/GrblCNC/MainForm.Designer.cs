@@ -34,6 +34,7 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBuff = new GrblCNC.Controls.DualProgressTool();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripEstop = new System.Windows.Forms.ToolStripButton();
@@ -48,9 +49,6 @@
             this.toolStripPause = new System.Windows.Forms.ToolStripButton();
             this.toolStripStop = new System.Windows.Forms.ToolStripButton();
             this.splitMain = new System.Windows.Forms.SplitContainer();
-            this.splitBottom = new System.Windows.Forms.SplitContainer();
-            this.openGcodeFile = new System.Windows.Forms.OpenFileDialog();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.splitTop = new System.Windows.Forms.SplitContainer();
             this.tabControlSystem = new System.Windows.Forms.TabControl();
             this.tabControlPanel = new System.Windows.Forms.TabPage();
@@ -59,10 +57,14 @@
             this.mdiCtrl = new GrblCNC.Controls.MdiControl();
             this.tabGrbl = new System.Windows.Forms.TabPage();
             this.paramView = new GrblCNC.ParameterViewer();
+            this.tabGcodeConf = new System.Windows.Forms.TabPage();
+            this.gcodeParamView = new GrblCNC.GcodeParamViewer();
             this.splitTopRight = new System.Windows.Forms.SplitContainer();
+            this.splitBottom = new System.Windows.Forms.SplitContainer();
             this.gcodeMainViewer = new GrblCNC.GcodeViewer();
             this.statusView = new GrblCNC.StatusViewer();
-            this.toolStripProgressBuff = new GrblCNC.Controls.DualProgressTool();
+            this.openGcodeFile = new System.Windows.Forms.OpenFileDialog();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -70,10 +72,6 @@
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
             this.splitMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitBottom)).BeginInit();
-            this.splitBottom.Panel1.SuspendLayout();
-            this.splitBottom.Panel2.SuspendLayout();
-            this.splitBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitTop)).BeginInit();
             this.splitTop.Panel1.SuspendLayout();
             this.splitTop.Panel2.SuspendLayout();
@@ -82,8 +80,13 @@
             this.tabControlPanel.SuspendLayout();
             this.tabMdi.SuspendLayout();
             this.tabGrbl.SuspendLayout();
+            this.tabGcodeConf.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitTopRight)).BeginInit();
             this.splitTopRight.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitBottom)).BeginInit();
+            this.splitBottom.Panel1.SuspendLayout();
+            this.splitBottom.Panel2.SuspendLayout();
+            this.splitBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuMain
@@ -128,6 +131,18 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(32, 17);
             this.toolStripStatusLabel1.Text = "Buff:";
+            // 
+            // toolStripProgressBuff
+            // 
+            this.toolStripProgressBuff.AutoSize = false;
+            this.toolStripProgressBuff.Color1 = System.Drawing.Color.Blue;
+            this.toolStripProgressBuff.Color2 = System.Drawing.Color.Blue;
+            this.toolStripProgressBuff.Maximum1 = 100;
+            this.toolStripProgressBuff.Maximum2 = 100;
+            this.toolStripProgressBuff.Name = "toolStripProgressBuff";
+            this.toolStripProgressBuff.Size = new System.Drawing.Size(60, 20);
+            this.toolStripProgressBuff.Value1 = 0;
+            this.toolStripProgressBuff.Value2 = 0;
             // 
             // toolStripStatus
             // 
@@ -289,27 +304,6 @@
             this.splitMain.SplitterDistance = 455;
             this.splitMain.TabIndex = 4;
             // 
-            // splitBottom
-            // 
-            this.splitBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitBottom.Location = new System.Drawing.Point(0, 0);
-            this.splitBottom.Name = "splitBottom";
-            // 
-            // splitBottom.Panel1
-            // 
-            this.splitBottom.Panel1.Controls.Add(this.gcodeMainViewer);
-            // 
-            // splitBottom.Panel2
-            // 
-            this.splitBottom.Panel2.Controls.Add(this.statusView);
-            this.splitBottom.Size = new System.Drawing.Size(1264, 129);
-            this.splitBottom.SplitterDistance = 642;
-            this.splitBottom.TabIndex = 0;
-            // 
-            // openGcodeFile
-            // 
-            this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
-            // 
             // splitTop
             // 
             this.splitTop.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -334,6 +328,7 @@
             this.tabControlSystem.Controls.Add(this.tabControlPanel);
             this.tabControlSystem.Controls.Add(this.tabMdi);
             this.tabControlSystem.Controls.Add(this.tabGrbl);
+            this.tabControlSystem.Controls.Add(this.tabGcodeConf);
             this.tabControlSystem.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlSystem.Location = new System.Drawing.Point(0, 0);
             this.tabControlSystem.Name = "tabControlSystem";
@@ -392,7 +387,7 @@
             this.tabGrbl.Padding = new System.Windows.Forms.Padding(1);
             this.tabGrbl.Size = new System.Drawing.Size(377, 429);
             this.tabGrbl.TabIndex = 2;
-            this.tabGrbl.Text = "Grbl";
+            this.tabGrbl.Text = "Grbl config";
             this.tabGrbl.UseVisualStyleBackColor = true;
             // 
             // paramView
@@ -402,6 +397,25 @@
             this.paramView.Name = "paramView";
             this.paramView.Size = new System.Drawing.Size(375, 427);
             this.paramView.TabIndex = 0;
+            // 
+            // tabGcodeConf
+            // 
+            this.tabGcodeConf.Controls.Add(this.gcodeParamView);
+            this.tabGcodeConf.Location = new System.Drawing.Point(4, 22);
+            this.tabGcodeConf.Name = "tabGcodeConf";
+            this.tabGcodeConf.Padding = new System.Windows.Forms.Padding(3);
+            this.tabGcodeConf.Size = new System.Drawing.Size(377, 429);
+            this.tabGcodeConf.TabIndex = 3;
+            this.tabGcodeConf.Text = "GCode config";
+            this.tabGcodeConf.UseVisualStyleBackColor = true;
+            // 
+            // gcodeParamView
+            // 
+            this.gcodeParamView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gcodeParamView.Location = new System.Drawing.Point(3, 3);
+            this.gcodeParamView.Name = "gcodeParamView";
+            this.gcodeParamView.Size = new System.Drawing.Size(371, 423);
+            this.gcodeParamView.TabIndex = 0;
             // 
             // splitTopRight
             // 
@@ -416,6 +430,23 @@
             this.splitTopRight.Size = new System.Drawing.Size(875, 455);
             this.splitTopRight.SplitterDistance = 241;
             this.splitTopRight.TabIndex = 0;
+            // 
+            // splitBottom
+            // 
+            this.splitBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitBottom.Location = new System.Drawing.Point(0, 0);
+            this.splitBottom.Name = "splitBottom";
+            // 
+            // splitBottom.Panel1
+            // 
+            this.splitBottom.Panel1.Controls.Add(this.gcodeMainViewer);
+            // 
+            // splitBottom.Panel2
+            // 
+            this.splitBottom.Panel2.Controls.Add(this.statusView);
+            this.splitBottom.Size = new System.Drawing.Size(1264, 129);
+            this.splitBottom.SplitterDistance = 642;
+            this.splitBottom.TabIndex = 0;
             // 
             // gcodeMainViewer
             // 
@@ -437,17 +468,9 @@
             this.statusView.Size = new System.Drawing.Size(618, 129);
             this.statusView.TabIndex = 0;
             // 
-            // toolStripProgressBuff
+            // openGcodeFile
             // 
-            this.toolStripProgressBuff.AutoSize = false;
-            this.toolStripProgressBuff.Color1 = System.Drawing.Color.Blue;
-            this.toolStripProgressBuff.Color2 = System.Drawing.Color.Blue;
-            this.toolStripProgressBuff.Maximum1 = 100;
-            this.toolStripProgressBuff.Maximum2 = 100;
-            this.toolStripProgressBuff.Name = "toolStripProgressBuff";
-            this.toolStripProgressBuff.Size = new System.Drawing.Size(60, 20);
-            this.toolStripProgressBuff.Value1 = 0;
-            this.toolStripProgressBuff.Value2 = 0;
+            this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
             // 
             // MainForm
             // 
@@ -471,10 +494,6 @@
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
             this.splitMain.ResumeLayout(false);
-            this.splitBottom.Panel1.ResumeLayout(false);
-            this.splitBottom.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitBottom)).EndInit();
-            this.splitBottom.ResumeLayout(false);
             this.splitTop.Panel1.ResumeLayout(false);
             this.splitTop.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitTop)).EndInit();
@@ -483,8 +502,13 @@
             this.tabControlPanel.ResumeLayout(false);
             this.tabMdi.ResumeLayout(false);
             this.tabGrbl.ResumeLayout(false);
+            this.tabGcodeConf.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitTopRight)).EndInit();
             this.splitTopRight.ResumeLayout(false);
+            this.splitBottom.Panel1.ResumeLayout(false);
+            this.splitBottom.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitBottom)).EndInit();
+            this.splitBottom.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -526,6 +550,8 @@
         private Controls.DualProgressTool toolStripProgressBuff;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
         private System.Windows.Forms.ToolStripButton toolStripStep;
+        private System.Windows.Forms.TabPage tabGcodeConf;
+        private GcodeParamViewer gcodeParamView;
     }
 }
 
