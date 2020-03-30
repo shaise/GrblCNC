@@ -31,7 +31,7 @@ namespace GrblCNC.Glutils
             CleanObject();
             shader = Shader.GetShader(type);
             objPos = Matrix4.Identity;
-            tintColor = Glutils.ColorToVector("ffffffff");
+            tintColor = Utils.ColorToVector("ffffffff");
             vertexBufferObject = GL.GenBuffer();
             if (indices != null)
             {
@@ -90,7 +90,7 @@ namespace GrblCNC.Glutils
 
         public void SetColor(string color)
         {
-            tintColor = Glutils.ColorToVector(color);
+            tintColor = Utils.ColorToVector(color);
         }
 
         public virtual void Render()

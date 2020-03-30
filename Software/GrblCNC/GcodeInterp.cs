@@ -122,7 +122,7 @@ namespace GrblCNC
                 float val;
                 try
                 {
-                    val = float.Parse(line.Substring(datapos, datalen));
+                    val = Utils.ParseFloatInvariant(line.Substring(datapos, datalen));
                 }
                 catch
                 {

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GrblCNC.Properties;
+using GrblCNC.Glutils;
 
 namespace GrblCNC
 {
@@ -41,7 +42,7 @@ namespace GrblCNC
 
         void UpdateColorImage()
         {
-            coloredBitmap = Glutils.Glutils.ColorizeBitmap(Resources.AlarmIcon, titleColor);
+            coloredBitmap = Utils.ColorizeBitmap(Resources.AlarmIcon, titleColor);
         }
 
         public Color TitleBackColor
@@ -91,7 +92,7 @@ namespace GrblCNC
             if (!loaded)
                 return;
             Font = new Font(FontManager.FamilyFixed, (float)Height * 0.4f);
-            float ascentPixel = Glutils.Glutils.GetFontAccent(Font);
+            float ascentPixel = Utils.GetFontAccent(Font);
             fontCentH = (Height - ascentPixel) / 2;
             darkp = new Pen(Color.FromArgb(64, 0, 0, 0), shadowThickness);
             lightp = new Pen(Color.FromArgb(64, 255, 255, 255), shadowThickness);

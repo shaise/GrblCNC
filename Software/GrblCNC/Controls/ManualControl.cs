@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GrblCNC.Glutils;
 
 namespace GrblCNC.Controls
 {
@@ -37,7 +38,7 @@ namespace GrblCNC.Controls
                 return 0;
             // parse the distance value from the distance string in the combo box
             string[] vars = comboJogStep.SelectedItem.ToString().Split(' ');
-            return float.Parse(vars[0]);
+            return Utils.ParseFloatInvariant(vars[0]);
         }
 
         private void AxisPos_click(object sender, EventArgs e)

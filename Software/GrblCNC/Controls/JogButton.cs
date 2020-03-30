@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GrblCNC.Glutils;
 
 namespace GrblCNC.Controls
 {
@@ -81,7 +82,7 @@ namespace GrblCNC.Controls
             float minlen = Width < Height ? Width : Height;
             FontFamily ff = buttonType == ArrowDir.StrechX ? Font.FontFamily : FontManager.FamilyFixed;
             activeFont = new Font(ff, minlen * fontScale, FontStyle.Regular, GraphicsUnit.Pixel);
-            textHeight = Glutils.Glutils.GetFontAccent(activeFont);
+            textHeight = Utils.GetFontAccent(activeFont);
             Invalidate();
         }
 
@@ -89,7 +90,7 @@ namespace GrblCNC.Controls
         {
             if (image == null)
                 return;
-            disabledImage = Glutils.Glutils.ColorizeBitmap(image, Color.FromArgb(64,255,255,255));
+            disabledImage = Utils.ColorizeBitmap(image, Color.FromArgb(64,255,255,255));
         }  
 
         public int Id

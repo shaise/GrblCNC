@@ -30,11 +30,11 @@ namespace GrblCNC
         public void SetColors(string lampcol, string objcol, string ambcolor)
         {
             if (lampcol != null)
-                lightColor = Glutils.Glutils.ColorToVector3(lampcol);
+                lightColor = Utils.ColorToVector3(lampcol);
             if (objcol != null)
-                objectColor = Glutils.Glutils.ColorToVector3(objcol);
+                objectColor = Utils.ColorToVector3(objcol);
             if (ambcolor != null)
-                ambientColor = Glutils.Glutils.ColorToVector3(ambcolor);
+                ambientColor = Utils.ColorToVector3(ambcolor);
         }
 
         void GenerateHead()

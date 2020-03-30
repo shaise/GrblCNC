@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GrblCNC.Properties;
+using GrblCNC.Glutils;
 
 namespace GrblCNC
 {
@@ -50,8 +51,8 @@ namespace GrblCNC
                             result = val == "1" || val == "0" ? val : null;
                             break;
                         case ParamType.Float:
-                            tfloat = float.Parse(val);
-                            result = tfloat >= 0 ? tfloat.ToString("0.000") : null;
+                            tfloat = Utils.ParseFloatInvariant(val);
+                            result = tfloat >= 0 ? Utils.ToInvariantString(tfloat, "0.000") : null;
                             break;
                         case ParamType.Int:
                         case ParamType.Mask:
@@ -156,7 +157,7 @@ namespace GrblCNC
                     case "deg/sec^2":
                     case "percent":
                         par.type = ParamType.Float;
-                        try { par.floatVal = float.Parse(par.strVal); }
+                        try { par.floatVal = Utils.ParseFloatInvariant(par.strVal); }
                         catch { }
                         break;
                     case "us":

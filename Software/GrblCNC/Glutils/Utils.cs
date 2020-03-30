@@ -8,10 +8,11 @@ using System.Drawing.Text;
 using System.IO;
 using GrblCNC.Properties;
 using OpenTK;
-using System.Drawing.Imaging; 
+using System.Drawing.Imaging;
+using System.Globalization; 
 namespace GrblCNC.Glutils
 {
-    class Glutils
+    class Utils
     {
         static string[] axisLetter = new string[] { "X", "Y", "Z", "A", "B", "C" };
         public static void SetColor(string webColor, float [] buff, int offs = 0, bool isAlpha = true)
@@ -45,14 +46,14 @@ namespace GrblCNC.Glutils
         public static Vector4 ColorToVector(string webColor)
         {
             float[] fcol = new float[4];
-            Glutils.SetColor(webColor, fcol);
+            Utils.SetColor(webColor, fcol);
             return new Vector4(fcol[0], fcol[1], fcol[2], fcol[3]);
         }
 
         public static Vector3 ColorToVector3(string webColor)
         {
             float[] fcol = new float[4];
-            Glutils.SetColor(webColor, fcol);
+            Utils.SetColor(webColor, fcol);
             return new Vector3(fcol[0], fcol[1], fcol[2]);
         }
 
@@ -88,6 +89,16 @@ namespace GrblCNC.Glutils
                     0, 0, srcbmp.Width, srcbmp.Height, GraphicsUnit.Pixel, attributes);
             }
             return cbmp;
+        }
+
+        public static string ToInvariantString(double value, string format)
+        {
+            return value.ToString(format, CultureInfo.InvariantCulture);
+        }
+
+        public static float ParseFloatInvariant(string floatNum)
+        {
+            return float.Parse(floatNum, CultureInfo.InvariantCulture);
         }
     }
 }

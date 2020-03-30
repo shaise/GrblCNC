@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GrblCNC.Glutils;
 
 // holds and parses incomming Grbl status messages. 
 
@@ -71,7 +72,7 @@ namespace GrblCNC
             string[] posVals = apos.Split(',');
             for (int i = 0; i < posVals.Length && i < NUM_AXIS; i++)
             {
-                try { axisPos[i] = float.Parse(posVals[i]); }
+                try { axisPos[i] = Utils.ParseFloatInvariant(posVals[i]); }
                 catch { axisPos[i] = 0;  }
             }
         }
@@ -83,8 +84,8 @@ namespace GrblCNC
             {
                 try
                 {
-                    feedRate = float.Parse(rateVals[0]);
-                    spindleRpm = float.Parse(rateVals[1]);
+                    feedRate = Utils.ParseFloatInvariant(rateVals[0]);
+                    spindleRpm = Utils.ParseFloatInvariant(rateVals[1]);
                 }
                 catch { }
             }

@@ -104,7 +104,7 @@
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="Glutils\ColoredQuad.cs" />
-    <Compile Include="Glutils\Glutils.cs" />
+    <Compile Include="Glutils\Utils.cs" />
     <Compile Include="Glutils\Line3D.cs" />
     <Compile Include="Glutils\Object3D.cs" />
     <Compile Include="Glutils\Wire3D.cs" />

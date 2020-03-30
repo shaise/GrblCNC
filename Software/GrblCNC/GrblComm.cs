@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.IO.Ports;
+using System.Globalization;
 using GrblCNC.Properties;
+using GrblCNC.Glutils;
 
 namespace GrblCNC
 {
@@ -440,7 +442,7 @@ namespace GrblCNC
                 PostLine("$J=G91 X10 F600\n!");
                 return;
             }
-            string axisLetter = Glutils.Glutils.GetAxisLetter(axis);
+            string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             string cmd = string.Format("$H{0}", axisLetter);
@@ -449,7 +451,7 @@ namespace GrblCNC
 
         public void StepJog(int axis, float dist, float feedrate)
         {
-            string axisLetter = Glutils.Glutils.GetAxisLetter(axis);
+            string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             string cmd = string.Format("$J=G91 {0}{1:0.000} F{2:0.0}", axisLetter, dist, feedrate);
@@ -473,13 +475,13 @@ namespace GrblCNC
 
             tmpCnt++;
             // start jogging
-            string axisLetter = Glutils.Glutils.GetAxisLetter(axis);
+            string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             PurgeMessages();
             float s = dir * 0.025f * feedrate / 60;
             //s = 2 * dir;
-            curJogCommand = string.Format("$J=G91 {0}{1:0.000} F{2:0.0}", axisLetter, s, feedrate);
+            curJogCommand = string.Format(CultureInfo.InvariantCulture, "$J=G91 {0}{1:0.000} F{2:0.0}", axisLetter, s, feedrate);
             SendLine(curJogCommand);
             machineState = MachineState.Jog;
         }

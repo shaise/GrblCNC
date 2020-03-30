@@ -15,10 +15,10 @@ namespace GrblCNC.Glutils
                              -1, -1, 0, 0, 0, 0,
                               1, -1, 0, 0, 0, 0};
             uint [] inds = { 0, 1, 2, 2, 1, 3 };
-            Glutils.SetColor3(colTL, verts, 3);
-            Glutils.SetColor3(colTR, verts, 9);
-            Glutils.SetColor3(colBL, verts, 15);
-            Glutils.SetColor3(colBR, verts, 21);
+            Utils.SetColor3(colTL, verts, 3);
+            Utils.SetColor3(colTR, verts, 9);
+            Utils.SetColor3(colBL, verts, 15);
+            Utils.SetColor3(colBR, verts, 21);
             Init(Shader.ShadingType.MultiColor2D, verts, inds);                        
         }
     }

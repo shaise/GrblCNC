@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GrblCNC.Properties;
+using GrblCNC.Glutils;
 
 namespace GrblCNC
 {
@@ -49,7 +50,7 @@ namespace GrblCNC
             if (!this.loaded)
                 return;
             Color c = homed ? ForeColor : Color.FromArgb(64, ForeColor);
-            tintedImage = Glutils.Glutils.ColorizeBitmap(homeImage, c);
+            tintedImage = Utils.ColorizeBitmap(homeImage, c);
             Invalidate();
         }
 
@@ -128,7 +129,7 @@ namespace GrblCNC
             if (!loaded)
                 return;
             Font = new Font("Arial", Height * 3 / 5);
-            float ascentPixel = Glutils.Glutils.GetFontAccent(Font);
+            float ascentPixel = Utils.GetFontAccent(Font);
             fontCentH = (Height - ascentPixel) / 2;
             darkp = new Pen(Color.FromArgb(64, 0, 0, 0), shadowThickness);
             lightp = new Pen(Color.FromArgb(64, 255, 255, 255), shadowThickness);
