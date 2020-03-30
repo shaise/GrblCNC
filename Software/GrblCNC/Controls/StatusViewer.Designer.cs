@@ -36,6 +36,7 @@
             this.bigNumY = new GrblCNC.BigNumViewer();
             this.bigNumX = new GrblCNC.BigNumViewer();
             this.bigNumViewer1 = new GrblCNC.BigNumViewer();
+            this.bigNumS = new GrblCNC.BigNumViewer();
             this.SuspendLayout();
             // 
             // alarmView
@@ -45,7 +46,7 @@
             this.alarmView.Font = new System.Drawing.Font("JetBrains Mono Medium", 16.4F);
             this.alarmView.ForeColor = System.Drawing.Color.Green;
             this.alarmView.Letters = "XYZPDHRS";
-            this.alarmView.Location = new System.Drawing.Point(6, 97);
+            this.alarmView.Location = new System.Drawing.Point(408, 53);
             this.alarmView.Margin = new System.Windows.Forms.Padding(1083814680, 940533886, 1083814680, 940533886);
             this.alarmView.Name = "alarmView";
             this.alarmView.Size = new System.Drawing.Size(190, 41);
@@ -60,7 +61,7 @@
             this.bigNumF.ForeColor = System.Drawing.Color.Chartreuse;
             this.bigNumF.Homed = false;
             this.bigNumF.HomeImage = null;
-            this.bigNumF.Location = new System.Drawing.Point(408, 53);
+            this.bigNumF.Location = new System.Drawing.Point(6, 98);
             this.bigNumF.Margin = new System.Windows.Forms.Padding(21, 19, 21, 19);
             this.bigNumF.Name = "bigNumF";
             this.bigNumF.Size = new System.Drawing.Size(190, 36);
@@ -179,10 +180,29 @@
             this.bigNumViewer1.Value = 0D;
             this.bigNumViewer1.ValueFormat = "0.000";
             // 
+            // bigNumS
+            // 
+            this.bigNumS.BackColor = System.Drawing.Color.Black;
+            this.bigNumS.Font = new System.Drawing.Font("Arial", 21F);
+            this.bigNumS.ForeColor = System.Drawing.Color.Chartreuse;
+            this.bigNumS.Homed = false;
+            this.bigNumS.HomeImage = null;
+            this.bigNumS.Location = new System.Drawing.Point(207, 98);
+            this.bigNumS.Margin = new System.Windows.Forms.Padding(21, 19, 21, 19);
+            this.bigNumS.Name = "bigNumS";
+            this.bigNumS.Size = new System.Drawing.Size(190, 36);
+            this.bigNumS.TabIndex = 8;
+            this.bigNumS.TitleBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(120)))));
+            this.bigNumS.TitleForeColor = System.Drawing.Color.Chartreuse;
+            this.bigNumS.TitleLetter = "S";
+            this.bigNumS.Value = 0D;
+            this.bigNumS.ValueFormat = "0";
+            // 
             // StatusViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.bigNumS);
             this.Controls.Add(this.alarmView);
             this.Controls.Add(this.bigNumF);
             this.Controls.Add(this.bigNumB);
@@ -207,5 +227,6 @@
         private BigNumViewer bigNumB;
         private BigNumViewer bigNumF;
         private AlarmViewer alarmView;
+        private BigNumViewer bigNumS;
     }
 }

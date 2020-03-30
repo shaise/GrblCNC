@@ -28,8 +28,9 @@ namespace GrblCNC
             numViewers.Add(bigNumZ);
             numViewers.Add(bigNumA);
             numViewers.Add(bigNumB);
-            numViewers.Add(bigNumF);
             numViewers.Add(alarmView);
+            numViewers.Add(bigNumF);
+            numViewers.Add(bigNumS);
             ApplyColors();
         }
 
@@ -89,6 +90,12 @@ namespace GrblCNC
         public void SetAlarms(string alarms)
         {
             alarmView.Alarms = alarms;
+        }
+
+        public void SetFeedSpindle(float feed, float spindle)
+        {
+            bigNumF.Value = feed;
+            bigNumS.Value = spindle;
         }
 
         public void SetHomeState(int homeState)

@@ -43,6 +43,8 @@ namespace GrblCNC
         {
             float pos;
             string stlen;
+            Clear();
+
             // X lines
             lines.AddLine(minX, minY - 1, minZ, minX, minY - 5, minZ, XColor);
             lines.AddLine(maxX, minY - 1, minZ, maxX, minY - 5, minZ, XColor);

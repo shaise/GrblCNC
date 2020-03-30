@@ -136,6 +136,7 @@ namespace GrblCNC
             toolStripEstop.Checked = status.state == GrblStatus.MachineState.Alarm;
             statusView.SetAxisValues(status.axisPos);
             statusView.SetAlarms(status.alarms);
+            statusView.SetFeedSpindle(status.feedRate, status.spindleRpm);
             statusView.SetHomeState(status.homeStatus);
             toolStripProgressBuff.Value1 = status.uartBuffer;
             toolStripProgressBuff.Value2 = status.planBuffer;
