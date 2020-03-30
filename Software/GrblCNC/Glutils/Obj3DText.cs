@@ -58,7 +58,7 @@ namespace GrblCNC.Glutils
 
         public Obj3DText(string txt, TextPlane plane, float size, float posX, float posY, float posZ, float dirAngle, string color, Texture fontTex)
         {
-            Matrix2 rotMat = Matrix2.CreateRotation((float)(dirAngle * Math.PI / 180));
+            Matrix2 rotMat = Matrix2.CreateRotation(MathHelper.DegreesToRadians(dirAngle));
             float [] verts = new float[txt.Length * 4 * 5];
             uint [] inds = new uint[txt.Length * 6];
             int vp = 0;

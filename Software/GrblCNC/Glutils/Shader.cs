@@ -45,6 +45,15 @@ namespace GrblCNC.Glutils
             return ShaderDict[stype];
         }
 
+        public static void SetMatrix4All(string name, Matrix4 data)
+        {
+            foreach (var pair in ShaderDict)
+            {
+                Shader s = pair.Value;
+                s.SetMatrix4(name, data);
+            }
+        }
+
         // This is how you create a simple shader.
         // Shaders are written in GLSL, which is a language very similar to C in its semantics.
         // The GLSL source is compiled *at runtime*, so it can optimize itself for the graphics card it's currently being used on.
@@ -174,6 +183,12 @@ namespace GrblCNC.Glutils
             }
         }
 
+
+        public bool UniformExists(string name)
+        {
+            return (_uniformLocations.ContainsKey(name));
+        }
+
         // Uniform setters
         // Uniforms are variables that can be set by user code, instead of reading them from the VBO.
         // You use VBOs for vertex-related data, and uniforms for almost everything else.
@@ -190,6 +205,8 @@ namespace GrblCNC.Glutils
         /// <param name="data">The data to set</param>
         public void SetInt(string name, int data)
         {
+            if (!UniformExists(name))
+                return;
             GL.UseProgram(Handle);
             GL.Uniform1(_uniformLocations[name], data);
         }
@@ -201,6 +218,8 @@ namespace GrblCNC.Glutils
         /// <param name="data">The data to set</param>
         public void SetUint(string name, uint data)
         {
+            if (!UniformExists(name))
+                return;
             GL.UseProgram(Handle);
             GL.Uniform1(_uniformLocations[name], data);
         }
@@ -212,6 +231,8 @@ namespace GrblCNC.Glutils
         /// <param name="data">The data to set</param>
         public void SetFloat(string name, float data)
         {
+            if (!UniformExists(name))
+                return;
             GL.UseProgram(Handle);
             GL.Uniform1(_uniformLocations[name], data);
         }
@@ -228,6 +249,8 @@ namespace GrblCNC.Glutils
         /// </remarks>
         public void SetMatrix4(string name, Matrix4 data)
         {
+            if (!UniformExists(name))
+                return;
             GL.UseProgram(Handle);
             GL.UniformMatrix4(_uniformLocations[name], true, ref data);
         }
@@ -239,6 +262,8 @@ namespace GrblCNC.Glutils
         /// <param name="data">The data to set</param>
         public void SetVector3(string name, Vector3 data)
         {
+            if (!UniformExists(name))
+                return;
             GL.UseProgram(Handle);
             GL.Uniform3(_uniformLocations[name], data);
         }
@@ -250,6 +275,8 @@ namespace GrblCNC.Glutils
         /// <param name="data">The data to set</param>
         public void SetVector4(string name, Vector4 data)
         {
+            if (!UniformExists(name))
+                return;
             GL.UseProgram(Handle);
             GL.Uniform4(_uniformLocations[name], data);
         }

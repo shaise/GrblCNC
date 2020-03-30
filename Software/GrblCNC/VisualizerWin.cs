@@ -21,16 +21,14 @@ namespace GrblCNC
         Obj3DFloor floor;
         //Wire3D gcodepath;
         Matrix4 cam;
-        Shader texShade, flatShade, normShade, lineShade;
         bool mousedown = false;
         int mouseX, mouseY;
         float xshift = 0;
-        Vector3 camTarget;
-        float camDist, camAngleHor, camAngleVert;
         public GcodeInterp ginterp;
         MillHead3D millHead;
         float screenAspect = 1;
         GCodeDimensions gcodeDim;
+        Camera camera;
 
         public delegate void NewGcodeLoadedDelegate(object sender, string[] lines);
         public event NewGcodeLoadedDelegate NewGcodeLoaded;
@@ -41,46 +39,7 @@ namespace GrblCNC
         {
             InitializeComponent();
         }    
-
-        void UpdateCamera()
-        {
-            if (camAngleVert > 79)
-                camAngleVert = 79;
-            if (camAngleVert < -79)
-                camAngleVert = -79;
-            if (camAngleHor >= 360)
-                camAngleHor -= 360;
-            if (camAngleHor < 0)
-                camAngleHor += 360;
-            if (camDist < 5)
-                camDist = 5;
-            double angvertrad = camAngleVert * Math.PI / 180;
-            double anghorrad = camAngleHor * Math.PI / 180;
-            double distH = camDist * Math.Cos(angvertrad);
-            double z = camDist * Math.Sin(angvertrad);
-            double x = distH * Math.Sin(anghorrad);
-            double y = -distH * Math.Cos(anghorrad);
-            Vector3 eye = new Vector3((float)x, (float)y, (float)z);
-            eye = eye + camTarget;
-            cam = Matrix4.LookAt(eye, camTarget, new Vector3(0.0f, 0.0f, 1.0f));
-            Matrix4 trans = Matrix4.CreateTranslation(xshift, 0, 0);
-            cam = cam * trans;
-            texShade.SetMatrix4("view", cam);
-            flatShade.SetMatrix4("view", cam);
-            normShade.SetMatrix4("view", cam);
-            lineShade.SetMatrix4("view", cam);
-            UpdateProjection();
-        }
         
-        void UpdateProjection()
-        {
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), screenAspect, 0.1f, 1000.0f);
-            texShade.SetMatrix4("projection", projection);
-            flatShade.SetMatrix4("projection", projection);
-            normShade.SetMatrix4("projection", projection);
-            lineShade.SetMatrix4("projection", projection);
-        }
-
         protected override void OnLoad(EventArgs e)
         {
             if (Site != null && Site.DesignMode) return;
@@ -100,17 +59,9 @@ namespace GrblCNC
             millHead = new MillHead3D();
             //gcodepath = new Wire3D();
             //gcodepath.Init(new float[] { 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 20 });
-            texShade = Shader.GetShader(Shader.ShadingType.Textured3D);
-            flatShade = Shader.GetShader(Shader.ShadingType.Wire3D);
-            normShade = Shader.GetShader(Shader.ShadingType.FlatNorm3D);
-            lineShade = Shader.GetShader(Shader.ShadingType.Line3D);
             GL.Viewport(0, 0, Width, Height);
-            camTarget = new Vector3(0.0f, 0.0f, 10.0f);
-            camDist = 50;
-            camAngleHor = 0;
-            camAngleVert = 20;
             screenAspect = (float)Width / (float)Height;
-            UpdateCamera();
+            camera = new Camera(screenAspect);
             LoadGcodeFile(null);
             base.OnLoad(e);
             loaded = true;
@@ -144,7 +95,7 @@ namespace GrblCNC
             //MakeCurrent();
             GL.Viewport(0, 0, Width, Height);
             screenAspect = (float)Width / (float)Height;
-            UpdateProjection();
+            camera.UpdateProjection(screenAspect);
             base.OnResize(e);
         }
         
@@ -179,28 +130,21 @@ namespace GrblCNC
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            int diffx = (mouseX - e.X) / 2;
-            int diffy = (mouseY - e.Y) / 2;
+            float diffx = (float)(mouseX - e.X) / 2;
+            float diffy = (float)(mouseY - e.Y) / 2;
             mouseY = e.Y;
             mouseX = e.X;
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                camAngleHor += diffx;
-                camAngleVert -= diffy;
-            }
+                camera.Rotate(diffx, -diffy);
             if (e.Button == System.Windows.Forms.MouseButtons.Middle)
-            {
-               xshift -= diffx;
-            }
-            UpdateCamera();
+                camera.MoveTarget(diffx / 2, -diffy, 0);
             base.OnMouseMove(e);
             Invalidate();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            camDist += e.Delta > 0 ? 5 : -5;
-            UpdateCamera();
+            camera.Zoom(e.Delta > 0 ? 5 : -5);
             base.OnMouseWheel(e);
             Invalidate();
         }

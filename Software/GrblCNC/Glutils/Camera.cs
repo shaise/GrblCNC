@@ -3,116 +3,94 @@ using OpenTK;
 
 namespace GrblCNC.Glutils
 {
-    // This is the camera class as it could be set up after the tutorials on the website
-    // It is important to note there are a few ways you could have set up this camera, for example
-    // you could have also managed the player input inside the camera class, and a lot of the properties could have
-    // been made into functions.
-
-    // TL;DR: This is just one of many ways in which we could have set up the camera
-    // Check out the web version if you don't know why we are doing a specific thing or want to know more about the code
     public class Camera
     {
-        // Those vectors are directions pointing outwards from the camera to define how it rotated
-        private Vector3 _front = -Vector3.UnitZ;
+        Vector3 target, eye;
+        float distance, angleHoriz, angleVert;
+        Vector3 forward;
+        Vector3 right;
+        float screenAspect;
+        Matrix4 camera, projection;
 
-        private Vector3 _up = Vector3.UnitY;
-
-        private Vector3 _right = Vector3.UnitX;
-
-        // Rotation around the X axis (radians)
-        private float _pitch;
-
-        // Rotation around the Y axis (radians)
-        private float _yaw = -MathHelper.PiOver2; // Without this you would be started rotated 90 degrees right
-
-        // The field of view of the camera (radians)
-        private float _fov = MathHelper.PiOver2;
-
-        public Camera(Vector3 position, float aspectRatio)
+        public Camera(float aspectRatio)
         {
-            Position = position;
-            AspectRatio = aspectRatio;
+            screenAspect = aspectRatio;
+            SetCameraPosition(new Vector3(0.0f, 0.0f, 10.0f), 50, 270, 20);
         }
 
-        // The position of the camera
-        public Vector3 Position { get; set; }
-
-        // This is simply the aspect ratio of the viewport, used for the projection matrix
-        public float AspectRatio { private get; set; }
-
-        public Vector3 Front { get { return  _front;}}
-
-        public Vector3 Up { get { return  _up;}}
-
-        public Vector3 Right { get { return  _right;}}
-
-        // We convert from degrees to radians as soon as the property is set to improve performance
-        public float Pitch
+        void SetCameraPosition(Vector3 target, float distance, float horizAngle, float vertAngle)
         {
-            get { return MathHelper.RadiansToDegrees(_pitch);}
-            set
-            {
-                // We clamp the pitch value between -89 and 89 to prevent the camera from going upside down, and a bunch
-                // of weird "bugs" when you are using euler angles for rotation.
-                // If you want to read more about this you can try researching a topic called gimbal lock
-                var angle = MathHelper.Clamp(value, -89f, 89f);
-                _pitch = MathHelper.DegreesToRadians(angle);
-                UpdateVectors();
-            }
+            this.target = target;
+            this.distance = distance;
+            angleHoriz = horizAngle;
+            angleVert = vertAngle;
+            UpdateCamera();
         }
 
-        // We convert from degrees to radians as soon as the property is set to improve performance
-        public float Yaw
+        void UpdateCamera()
         {
-            get { return MathHelper.RadiansToDegrees(_yaw);}
-            set
-            {
-                _yaw = MathHelper.DegreesToRadians(value);
-                UpdateVectors();
-            }
+            if (angleVert > 90)
+                angleVert = 90;
+            if (angleVert < -90)
+                angleVert = -90;
+            if (angleHoriz >= 360)
+                angleHoriz -= 360;
+            if (angleHoriz < 0)
+                angleHoriz += 360;
+            if (distance < 5)
+                distance = 5;
+            double angvertrad = MathHelper.DegreesToRadians(angleVert);
+            double anghorrad = MathHelper.DegreesToRadians(angleHoriz);
+            float distH = (float)(distance * Math.Cos(angvertrad));
+            float sinAngHor = (float)Math.Sin(anghorrad);
+            float cosAngHor = (float)Math.Cos(anghorrad);
+            forward = new Vector3(-cosAngHor, -sinAngHor, 0);
+            right = new Vector3(-sinAngHor, cosAngHor, 0);
+            float z = (float)(distance * Math.Sin(angvertrad));
+            float x = (float)(distH * cosAngHor);
+            float y = (float)(distH * sinAngHor);
+            eye = new Vector3(x,y,z);
+            Vector3 camTop = Vector3.Cross(eye, right);
+            camTop.Normalize();
+            eye += target;
+            camera = Matrix4.LookAt(eye, target, camTop);
+            //Matrix4 trans = Matrix4.CreateTranslation(xshift, 0, 0);
+            //cam = cam * trans;
+            Shader.SetMatrix4All("view", camera);
+            UpdateProjection(screenAspect);
         }
 
-        // The field of view (FOV) is the vertical angle of the camera view, this has been discussed more in depth in a
-        // previous tutorial, but in this tutorial you have also learned how we can use this to simulate a zoom feature.
-        // We convert from degrees to radians as soon as the property is set to improve performance
-        public float Fov
+        public void UpdateProjection(float aspect)
         {
-            get { return MathHelper.RadiansToDegrees(_fov); }
-            set
-            {
-                var angle = MathHelper.Clamp(value, 1f, 45f);
-                _fov = MathHelper.DegreesToRadians(angle);
-            }
+            screenAspect = aspect;
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), aspect, 0.1f, 1000.0f);
+            Shader.SetMatrix4All("projection", projection);
         }
 
-        // Get the view matrix using the amazing LookAt function described more in depth on the web tutorials
-        public Matrix4 GetViewMatrix()
+        public void Rotate(float anglehor, float anglevert)
         {
-            return Matrix4.LookAt(Position, Position + _front, _up);
+            angleHoriz += anglehor;
+            angleVert += anglevert;
+            UpdateCamera();
         }
 
-        // Get the projection matrix using the same method we have used up until this point
-        public Matrix4 GetProjectionMatrix()
+        public void Zoom(float dist)
         {
-            return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
+            distance -= dist;
+            UpdateCamera();
         }
 
-        // This function is going to update the direction vertices using some of the math learned in the web tutorials
-        private void UpdateVectors()
+        public void MoveTarget(float moveright, float moveforward, float moveup)
         {
-            // First the front matrix is calculated using some basic trigonometry
-            _front.X = (float)Math.Cos(_pitch) * (float)Math.Cos(_yaw);
-            _front.Y = (float)Math.Sin(_pitch);
-            _front.Z = (float)Math.Cos(_pitch) * (float)Math.Sin(_yaw);
-
-            // We need to make sure the vectors are all normalized, as otherwise we would get some funky results
-            _front = Vector3.Normalize(_front);
-
-            // Calculate both the right and the up vector using cross product
-            // Note that we are calculating the right from the global up, this behaviour might
-            // not be what you need for all cameras so keep this in mind if you do not want a FPS camera
-            _right = Vector3.Normalize(Vector3.Cross(_front, Vector3.UnitY));
-            _up = Vector3.Normalize(Vector3.Cross(_right, _front));
+            if (moveright != 0)
+                target += moveright * right;
+            if (moveforward != 0)
+                target += moveforward * forward;
+            if (moveup != 0)
+                target.Z += moveup;
+            UpdateCamera();
         }
+
+
     }
 }
