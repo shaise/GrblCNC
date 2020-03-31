@@ -34,6 +34,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.jogButtSpindleCW = new GrblCNC.Controls.JogButton();
             this.label2 = new System.Windows.Forms.Label();
+            this.multiSelAxis = new GrblCNC.Controls.MultiSelect();
             this.jogButtAllHome = new GrblCNC.Controls.JogButton();
             this.valueSlideJogSpeedXYZ = new GrblCNC.Controls.ValueSlider();
             this.valueSlideSpinSpeed = new GrblCNC.Controls.ValueSlider();
@@ -120,6 +121,15 @@
             this.label2.TabIndex = 32;
             this.label2.Text = "Spindle:";
             // 
+            // multiSelAxis
+            // 
+            this.multiSelAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(241)))), ((int)(((byte)(245)))));
+            this.multiSelAxis.Location = new System.Drawing.Point(9, 129);
+            this.multiSelAxis.Name = "multiSelAxis";
+            this.multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
+            this.multiSelAxis.Size = new System.Drawing.Size(113, 27);
+            this.multiSelAxis.TabIndex = 34;
+            // 
             // jogButtAllHome
             // 
             this.jogButtAllHome.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
@@ -132,12 +142,13 @@
             this.jogButtAllHome.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtAllHome.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtAllHome.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtAllHome.Location = new System.Drawing.Point(9, 78);
+            this.jogButtAllHome.Location = new System.Drawing.Point(130, 126);
             this.jogButtAllHome.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
             this.jogButtAllHome.Name = "jogButtAllHome";
             this.jogButtAllHome.Size = new System.Drawing.Size(32, 32);
             this.jogButtAllHome.TabIndex = 33;
             this.jogButtAllHome.TextOffset = new System.Drawing.Point(0, 2);
+            this.toolTip1.SetToolTip(this.jogButtAllHome, "Home Axis");
             this.jogButtAllHome.Click += new System.EventHandler(this.AxisHome_click);
             // 
             // valueSlideJogSpeedXYZ
@@ -273,62 +284,65 @@
             // 
             // jogButtProbe
             // 
-            this.jogButtProbe.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.StrechX;
-            this.jogButtProbe.Caption = "Probe";
+            this.jogButtProbe.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.jogButtProbe.Caption = "";
             this.jogButtProbe.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.jogButtProbe.FontScale = 0.5F;
             this.jogButtProbe.ForeColor = System.Drawing.Color.DarkSlateBlue;
             this.jogButtProbe.Id = 0;
-            this.jogButtProbe.Image = null;
+            this.jogButtProbe.Image = global::GrblCNC.Properties.Resources.ProbeIcon;
             this.jogButtProbe.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtProbe.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtProbe.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtProbe.Location = new System.Drawing.Point(225, 127);
+            this.jogButtProbe.Location = new System.Drawing.Point(246, 126);
             this.jogButtProbe.Margin = new System.Windows.Forms.Padding(18, 16, 18, 16);
             this.jogButtProbe.Name = "jogButtProbe";
-            this.jogButtProbe.Size = new System.Drawing.Size(55, 32);
+            this.jogButtProbe.Size = new System.Drawing.Size(32, 32);
             this.jogButtProbe.TabIndex = 19;
             this.jogButtProbe.TextOffset = new System.Drawing.Point(0, 0);
+            this.toolTip1.SetToolTip(this.jogButtProbe, "Tool Probe");
             this.jogButtProbe.Click += new System.EventHandler(this.jogButtProbe_Click);
             // 
             // jogButtToolTouchOff
             // 
-            this.jogButtToolTouchOff.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.StrechX;
-            this.jogButtToolTouchOff.Caption = "Tool Touch Off";
+            this.jogButtToolTouchOff.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.jogButtToolTouchOff.Caption = "";
             this.jogButtToolTouchOff.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.jogButtToolTouchOff.FontScale = 0.5F;
             this.jogButtToolTouchOff.ForeColor = System.Drawing.Color.DarkSlateBlue;
             this.jogButtToolTouchOff.Id = 0;
-            this.jogButtToolTouchOff.Image = null;
+            this.jogButtToolTouchOff.Image = global::GrblCNC.Properties.Resources.TouchTIcon;
             this.jogButtToolTouchOff.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtToolTouchOff.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtToolTouchOff.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtToolTouchOff.Location = new System.Drawing.Point(98, 127);
+            this.jogButtToolTouchOff.Location = new System.Drawing.Point(206, 126);
             this.jogButtToolTouchOff.Margin = new System.Windows.Forms.Padding(18, 16, 18, 16);
             this.jogButtToolTouchOff.Name = "jogButtToolTouchOff";
-            this.jogButtToolTouchOff.Size = new System.Drawing.Size(122, 32);
+            this.jogButtToolTouchOff.Size = new System.Drawing.Size(32, 32);
             this.jogButtToolTouchOff.TabIndex = 18;
             this.jogButtToolTouchOff.TextOffset = new System.Drawing.Point(0, 0);
+            this.toolTip1.SetToolTip(this.jogButtToolTouchOff, "Tool touch off");
             this.jogButtToolTouchOff.Click += new System.EventHandler(this.jogButtToolTouchOff_Click);
             // 
             // jogButtTouchOff
             // 
-            this.jogButtTouchOff.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.StrechX;
-            this.jogButtTouchOff.Caption = "Touch Off";
+            this.jogButtTouchOff.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.jogButtTouchOff.Caption = "";
             this.jogButtTouchOff.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.jogButtTouchOff.FontScale = 0.5F;
             this.jogButtTouchOff.ForeColor = System.Drawing.Color.DarkSlateBlue;
             this.jogButtTouchOff.Id = 0;
-            this.jogButtTouchOff.Image = null;
+            this.jogButtTouchOff.Image = global::GrblCNC.Properties.Resources.TouchGIcon;
             this.jogButtTouchOff.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtTouchOff.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtTouchOff.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtTouchOff.Location = new System.Drawing.Point(8, 127);
+            this.jogButtTouchOff.Location = new System.Drawing.Point(167, 126);
             this.jogButtTouchOff.Margin = new System.Windows.Forms.Padding(18, 16, 18, 16);
             this.jogButtTouchOff.Name = "jogButtTouchOff";
-            this.jogButtTouchOff.Size = new System.Drawing.Size(86, 32);
+            this.jogButtTouchOff.Size = new System.Drawing.Size(32, 32);
             this.jogButtTouchOff.TabIndex = 17;
             this.jogButtTouchOff.TextOffset = new System.Drawing.Point(0, 0);
+            this.toolTip1.SetToolTip(this.jogButtTouchOff, "WCO Axis touch off");
             this.jogButtTouchOff.Click += new System.EventHandler(this.jogButtTouchOff_Click);
             // 
             // jogButtYhome
@@ -656,6 +670,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(220)))), ((int)(((byte)(232)))));
+            this.Controls.Add(this.multiSelAxis);
             this.Controls.Add(this.jogButtAllHome);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.valueSlideJogSpeedXYZ);
@@ -731,5 +746,6 @@
         private ValueSlider valueSlideJogSpeedXYZ;
         private System.Windows.Forms.Label label2;
         private JogButton jogButtAllHome;
+        private MultiSelect multiSelAxis;
     }
 }

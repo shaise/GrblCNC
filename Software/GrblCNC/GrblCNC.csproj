@@ -93,6 +93,12 @@
     <Compile Include="Controls\GcodeParamViewer.Designer.cs">
       <DependentUpon>GcodeParamViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MultiSelect.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MultiSelect.Designer.cs">
+      <DependentUpon>MultiSelect.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ValueSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -175,6 +181,9 @@
     <EmbeddedResource Include="Controls\GcodeParamViewer.resx">
       <DependentUpon>GcodeParamViewer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MultiSelect.resx">
+      <DependentUpon>MultiSelect.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ValueSlider.resx">
       <DependentUpon>ValueSlider.cs</DependentUpon>
     </EmbeddedResource>
@@ -210,6 +219,9 @@
     <None Include="Resources\FragShaderText.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\TouchTIcon.png" />
+    <None Include="Resources\TouchGIcon.png" />
+    <None Include="Resources\ProbeIcon.png" />
     <None Include="Resources\VertShader3DLine.txt" />
     <None Include="Resources\FragShaderLine.txt" />
     <Content Include="Resources\GrblLogo_ngc.txt" />

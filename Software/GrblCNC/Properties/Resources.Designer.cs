@@ -461,6 +461,16 @@ namespace GrblCNC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ProbeIcon {
+            get {
+                object obj = ResourceManager.GetObject("ProbeIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ReloaButt {
             get {
                 object obj = ResourceManager.GetObject("ReloaButt", resourceCulture);
@@ -524,6 +534,26 @@ namespace GrblCNC.Properties {
         internal static System.Drawing.Bitmap StopIcon {
             get {
                 object obj = ResourceManager.GetObject("StopIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TouchGIcon {
+            get {
+                object obj = ResourceManager.GetObject("TouchGIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TouchTIcon {
+            get {
+                object obj = ResourceManager.GetObject("TouchTIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

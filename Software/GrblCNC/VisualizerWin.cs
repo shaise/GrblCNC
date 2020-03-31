@@ -20,10 +20,8 @@ namespace GrblCNC
         ColoredQuad coloredQuad;
         Obj3DFloor floor;
         //Wire3D gcodepath;
-        Matrix4 cam;
         bool mousedown = false;
         int mouseX, mouseY;
-        float xshift = 0;
         public GcodeInterp ginterp;
         MillHead3D millHead;
         float screenAspect = 1;
@@ -83,6 +81,7 @@ namespace GrblCNC
             ginterp.Render();
             gcodeDim.Render();
             Context.SwapBuffers();
+            
             //e.Graphics.DrawLine(Pens.Black, 0, 0, 100, 100);
             base.OnPaint(e);
         }
