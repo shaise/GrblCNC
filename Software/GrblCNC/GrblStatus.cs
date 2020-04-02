@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GrblCNC.Glutils;
+using GrblCNC.Properties;
 
 // holds and parses incomming Grbl status messages. 
 
@@ -11,6 +12,22 @@ namespace GrblCNC
 {
     public class GrblStatus
     {
+
+        public class GcodeParserState
+        {
+            public string name;
+            public string [] states;
+            public GcodeParserState(string name, string[] states)
+            {
+                this.name = name;
+                this.states = states;
+            }
+            public bool HaveCode(string code)
+            {
+                return states.Contains(code);
+            }
+        }
+
         public enum MachineState
         {
             Idle = 0,
@@ -24,6 +41,31 @@ namespace GrblCNC
             Sleep,
             Unknown
         }
+
+        public enum GcodeParserStateNames
+        {
+            MotionMode,         // G0,G1,G2,G3,G38.2,G80
+            FeedMode,           // G93,G94
+            UnitsMode,          // G20,G21
+            DistanceMode,       // G90,G91
+            LatheDiameterMode,  // G7,G8
+            PlaneSelect,        // G17,G18,G19
+            ToolOfsetMode,      // G43,G43.1,G49
+            CoordinateSystem,   // G54,G55,G56,G57,G58,G59,G59.1,G59.2,G59.3
+            ProgramState,       // M0,M1,M2,M30
+            CoolantMode,        // M7,M8,M9
+            SpindleState,       // M3,M4,M5
+            GCodeOverrides,     // M48,M49,M50,M51,M53,M56
+            SpindleRPMMode,     // G96,G97
+            CannedRetractMode,  // G98,G99
+            ScalingMode,        // G50,G51
+            PathMode,           // G61
+            ArcDistanceMode,    // G91.1
+            CutterCompensation, // G40
+            FeedRate,            // F0
+            SpindleRPM           // S0
+        }
+
         public const int NUM_AXIS = 6;
         public float [] axisPos = new float[NUM_AXIS];
         public MachineState state;
@@ -36,7 +78,32 @@ namespace GrblCNC
         public int uartBuffer;
         public int lineNumber;
         public int alarmCode;
-        // Note: whenever adding a new member, add it to clone function
+        public string [] gState;
+        public bool gStateChange;
+        // Note: whenever adding a new public member, add it to clone function
+
+        static GcodeParserState[] gcodeStatesDict = new GcodeParserState[] {
+            new GcodeParserState ( "Motion Mode", new string [] { "G0", "G1", "G2", "G3", "G38.2", "G80" }),
+            new GcodeParserState ( "Feed Mode", new string [] { "G93", "G94" }),
+            new GcodeParserState ( "Units Mode", new string [] { "G20", "G21" }),
+            new GcodeParserState ( "Distance Mode", new string [] { "G90", "G91" }),
+            new GcodeParserState ( "Lathe Diameter Mode", new string [] { "G7", "G8" }),
+            new GcodeParserState ( "Plane Select", new string [] { "G17", "G18", "G19" }),
+            new GcodeParserState ( "Tool Ofset Mode", new string [] { "G43", "G43.1", "G49" }),
+            new GcodeParserState ( "Coordinate System", new string [] { "G54", "G55", "G56", "G57", "G58", "G59", "G59.1", "G59.2", "G59.3" }),
+            new GcodeParserState ( "Program State", new string [] { "M0", "M1", "M2", "M30" }),
+            new GcodeParserState ( "Coolant Mode", new string [] { "M7", "M8", "M9" }),
+            new GcodeParserState ( "Spindle State", new string [] { "M3", "M4", "M5" }),
+            new GcodeParserState ( "GCode Overrides", new string [] { "M48", "M49", "M50", "M51", "M53", "M56" }),
+            new GcodeParserState ( "Spindle RPM Mode", new string [] { "G96", "G97" }),
+            new GcodeParserState ( "Canned Retract Mode", new string [] { "G98", "G99" }),
+            new GcodeParserState ( "Scaling Mode", new string [] { "G50", "G51" }),
+            new GcodeParserState ( "Path Mode", new string [] { "G61" }),
+            new GcodeParserState ( "Arc Distance Mode", new string [] { "G91.1" }),
+            new GcodeParserState ( "Cutter Compensation", new string [] { "G40" }),
+            new GcodeParserState ( "Feed Rate", new string [] { "F0" }),
+            new GcodeParserState ( "Spindle RPM", new string [] { "S0" })
+        };
 
         public GrblStatus Clone()
         {
@@ -52,6 +119,8 @@ namespace GrblCNC
             clone.uartBuffer = uartBuffer;
             clone.lineNumber = lineNumber;
             clone.alarmCode = alarmCode;
+            clone.gState = gState;
+            clone.gStateChange = gStateChange;
             return clone;
         }
 
@@ -113,11 +182,45 @@ namespace GrblCNC
             return res;
         }
 
+        int GetParserStateGroup(string code)
+        {
+            for (int i = 0; i < gcodeStatesDict.Length; i++)
+                if (gcodeStatesDict[i].HaveCode(code))
+                    return i;
+            return -1;
+        }
+
+        public void ParseGState(string line)
+        {
+            gStateChange = true;
+
+            gState = new string[gcodeStatesDict.Length];
+            // fill with defaults
+            for (int i = 0; i < gState.Length; i++)
+                gState[i] = gcodeStatesDict[i].states[0];
+
+            string [] vars = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string var in vars)
+            {
+                if (var[0] == 'S')
+                    gState[(int)GcodeParserStateNames.SpindleRPM] = var;
+                else if (var[0] == 'F')
+                    gState[(int)GcodeParserStateNames.FeedRate] = var;
+                else
+                {
+                    int ix = GetParserStateGroup(var);
+                    if (ix >= 0)
+                        gState[ix] = var;
+                }
+            }
+        }
+
         public void Parse(string statLine)
         {
             // first split to parts
             string[] statParts = statLine.Split(new char[] { '<', '>', '|' }, StringSplitOptions.RemoveEmptyEntries);
             alarms = "";
+            gStateChange = false;
             homeStatus = 0x1F;
             for (int i = 0; i < statParts.Length; i++)
             {
@@ -139,8 +242,10 @@ namespace GrblCNC
                     case "Hs": homeStatus = ParseInt(nameData[1]); break;
                     case "Bf": ParseBuffers(nameData[1]); break;
                     case "Ln": lineNumber = ParseInt(nameData[1]); break;
+                    case "GC": ParseGState(nameData[1]); break;
                 }
             }
         }
+
     }
 }

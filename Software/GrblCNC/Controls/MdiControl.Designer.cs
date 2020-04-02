@@ -28,21 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.gcodeViewMDI = new GrblCNC.GcodeViewer();
             this.textGcodeLine = new System.Windows.Forms.TextBox();
             this.buttSendGcodeLine = new System.Windows.Forms.Button();
+            this.gStateView = new GrblCNC.Controls.GStateViewer();
+            this.gcodeViewMDI = new GrblCNC.GcodeViewer();
             this.SuspendLayout();
             // 
-            // gcodeViewMDI
-            // 
-            this.gcodeViewMDI.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.gcodeViewMDI.Location = new System.Drawing.Point(6, 6);
-            this.gcodeViewMDI.Name = "gcodeViewMDI";
-            this.gcodeViewMDI.ShowLineNumbers = false;
-            this.gcodeViewMDI.Size = new System.Drawing.Size(234, 307);
-            this.gcodeViewMDI.TabIndex = 1;
-            this.gcodeViewMDI.TabStop = false;
-             // 
             // textGcodeLine
             // 
             this.textGcodeLine.Location = new System.Drawing.Point(6, 319);
@@ -62,15 +53,35 @@
             this.buttSendGcodeLine.UseVisualStyleBackColor = true;
             this.buttSendGcodeLine.Click += new System.EventHandler(this.buttSendGcodeLine_Click);
             // 
+            // gStateView
+            // 
+            this.gStateView.ForeColor = System.Drawing.Color.Sienna;
+            this.gStateView.GStates = null;
+            this.gStateView.Location = new System.Drawing.Point(6, 349);
+            this.gStateView.Name = "gStateView";
+            this.gStateView.Size = new System.Drawing.Size(236, 34);
+            this.gStateView.TabIndex = 5;
+            // 
+            // gcodeViewMDI
+            // 
+            this.gcodeViewMDI.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.gcodeViewMDI.Location = new System.Drawing.Point(6, 6);
+            this.gcodeViewMDI.Name = "gcodeViewMDI";
+            this.gcodeViewMDI.ShowLineNumbers = false;
+            this.gcodeViewMDI.Size = new System.Drawing.Size(234, 307);
+            this.gcodeViewMDI.TabIndex = 1;
+            this.gcodeViewMDI.TabStop = false;
+            // 
             // MdiControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.gStateView);
             this.Controls.Add(this.buttSendGcodeLine);
             this.Controls.Add(this.textGcodeLine);
             this.Controls.Add(this.gcodeViewMDI);
             this.Name = "MdiControl";
-            this.Size = new System.Drawing.Size(267, 370);
+            this.Size = new System.Drawing.Size(273, 392);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -81,5 +92,6 @@
         private GcodeViewer gcodeViewMDI;
         private System.Windows.Forms.TextBox textGcodeLine;
         private System.Windows.Forms.Button buttSendGcodeLine;
+        private GStateViewer gStateView;
     }
 }

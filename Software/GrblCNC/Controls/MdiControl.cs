@@ -79,11 +79,13 @@ namespace GrblCNC.Controls
         void UpdateControlLocations()
         {
             // scale internal controls
-            textGcodeLine.Location = new Point(6, Height - 25);
+            gStateView.Location = new Point(6, Height - 40);
+            gStateView.Width = Width - 6;
+            textGcodeLine.Location = new Point(6, gStateView.Location.Y - 25);
             textGcodeLine.Width = Width - 73;
-            buttSendGcodeLine.Location = new Point(Width - 61, Height - 26);
+            buttSendGcodeLine.Location = new Point(Width - 61, gStateView.Location.Y - 26);
             gcodeViewMDI.Width = Width - 14;
-            gcodeViewMDI.Height = Height - 38;
+            gcodeViewMDI.Height = gStateView.Location.Y - 38;
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -106,6 +108,11 @@ namespace GrblCNC.Controls
                 return;
             }
             gcodeViewMDI.AddLine(line);
+        }
+
+        public void SetGcodeParserStatus(string [] stat)
+        {
+            gStateView.GStates = stat;
         }
 
         //private void gcodeViewMDI_Enter(object sender, EventArgs e)

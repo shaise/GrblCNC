@@ -62,7 +62,14 @@ namespace GrblCNC
         {
             ReadGrblParam = 0,
             ReadGcodeOffsets,
+            ReadGcodeState,
             ReadEnd
+        }
+
+        public enum MessageType
+        {
+            Info,
+            Error
         }
         string [] portNames;
         public string activePort;
@@ -87,6 +94,7 @@ namespace GrblCNC
         string curJogCommand;
         string lastError;
         int showStatusMsg = 0;
+        int gStateCnt = 0;
 
         
         int scanCount;
@@ -103,8 +111,8 @@ namespace GrblCNC
         public event StatusUpdateDelegate StatusUpdate;
         public delegate void ParameterUpdateDelegate(object sender, GrblConfig grblConf, GCodeConfig gcodeConf);
         public event ParameterUpdateDelegate ParameterUpdate;
-        public delegate void ErrorDetectedDelegate(object sender, string err);
-        public event ErrorDetectedDelegate ErrorDetected;
+        public delegate void MessageReceivedDelegate(object sender, string message, MessageType type);
+        public event MessageReceivedDelegate MessageReceived;
         
 
         public GrblComm()
@@ -185,8 +193,8 @@ namespace GrblCNC
                 lastError = line.Substring(6);
                 if (grblErrorCodes.ContainsKey(lastError))
                     lastError = grblErrorCodes[lastError];
-                if (ErrorDetected != null)
-                    ErrorDetected(this, lastError);
+                if (MessageReceived != null)
+                    MessageReceived(this, lastError, MessageType.Error);
             }
             if (LineReceived != null)
             {
@@ -212,6 +220,10 @@ namespace GrblCNC
             {
                 case ParamReadStage.ReadGcodeOffsets:
                     GetAllGcodeParameters();
+                    break;
+
+                case ParamReadStage.ReadGcodeState:
+                    GetGCodeParserState();
                     break;
 
                 case ParamReadStage.ReadEnd:
@@ -247,8 +259,27 @@ namespace GrblCNC
         void HandleMessageLine(string line)
         {
             machineState = MachineState.ParamRead;
-            paramReadStage = ParamReadStage.ReadGcodeOffsets;
-            gcodeConfig.ParseParam(line);
+            //paramReadStage = ParamReadStage.ReadGcodeOffsets;
+            string[] vars = line.Split(new char[] { '[', ']', ':' }, StringSplitOptions.RemoveEmptyEntries);
+            if (vars.Length != 2)
+                return;
+            // first check if this is a gcode parameter 
+            if (gcodeConfig.ParseParam(vars[0], vars[1]))
+                return;
+            switch(vars[0])
+            {
+                case "GC":
+                    grblStatus.ParseGState(vars[1]);
+                    if (StatusUpdate != null)
+                        StatusUpdate(this, grblStatus);
+                    break;
+
+                case "MSG":
+                    if (MessageReceived != null)
+                        MessageReceived(this, vars[1], MessageType.Info);
+                    break;
+
+            }
         }
 
 
@@ -458,6 +489,12 @@ namespace GrblCNC
         {
             PostLine("$#");
             paramReadStage = ParamReadStage.ReadGcodeOffsets;
+        }
+
+        public void GetGCodeParserState()
+        {
+            PostLine("$G");
+            paramReadStage = ParamReadStage.ReadGcodeState;
         }
 
         public void SetGrblParameter(int code, string value)

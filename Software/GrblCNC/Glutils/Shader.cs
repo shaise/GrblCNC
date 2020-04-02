@@ -37,10 +37,10 @@ namespace GrblCNC.Glutils
                 ShaderDict[ShadingType.MultiColor2D] = new Shader(Resources.VertShader2DColor, Resources.FragShaderColor);
                 ShaderDict[ShadingType.Textured3D] = new Shader(Resources.VertShader3DText, Resources.FragShaderText);
                 ShaderDict[ShadingType.Flat3D] = new Shader(Resources.VertShader3DFlat, Resources.FragShaderFlat);
-                //ShaderDict[ShadingType.Wire3D] = new Shader(Resources.VertShader3DWire, Resources.FragShaderWire);
                 ShaderDict[ShadingType.Wire3D] = new Shader(Resources.VertShader3DWire, Resources.FragShaderWire);
                 ShaderDict[ShadingType.FlatNorm3D] = new Shader(Resources.VertShader3DNorm, Resources.FragShaderNorm);
                 ShaderDict[ShadingType.Line3D] = new Shader(Resources.VertShader3DLine, Resources.FragShaderLine);
+                ShaderDict[ShadingType.Textured2D] = new Shader(Resources.VertShader2DText, Resources.FragShaderText);
             }
             return ShaderDict[stype];
         }

@@ -288,6 +288,7 @@
             // splitMain.Panel2
             // 
             this.splitMain.Panel2.Controls.Add(this.splitBottom);
+            this.splitMain.Panel2MinSize = 100;
             this.splitMain.Size = new System.Drawing.Size(1264, 588);
             this.splitMain.SplitterDistance = 455;
             this.splitMain.TabIndex = 4;
@@ -393,10 +394,12 @@
             // splitBottom.Panel1
             // 
             this.splitBottom.Panel1.Controls.Add(this.gcodeMainViewer);
+            this.splitBottom.Panel1MinSize = 200;
             // 
             // splitBottom.Panel2
             // 
             this.splitBottom.Panel2.Controls.Add(this.statusView);
+            this.splitBottom.Panel2MinSize = 200;
             this.splitBottom.Size = new System.Drawing.Size(1264, 129);
             this.splitBottom.SplitterDistance = 642;
             this.splitBottom.TabIndex = 0;

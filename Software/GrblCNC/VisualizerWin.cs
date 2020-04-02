@@ -27,6 +27,7 @@ namespace GrblCNC
         float screenAspect = 1;
         GCodeDimensions gcodeDim;
         Camera camera;
+        Overlay overlay;
 
         public delegate void NewGcodeLoadedDelegate(object sender, string[] lines);
         public event NewGcodeLoadedDelegate NewGcodeLoaded;
@@ -36,8 +37,29 @@ namespace GrblCNC
             : base(new OpenTK.Graphics.GraphicsMode(32, 24, 0, 8))
         {
             InitializeComponent();
-        }    
-        
+        }
+
+
+        public Bitmap GetOverlayBitmap()
+        {
+            return overlay.bitmap;
+        }
+
+        public Graphics GetOverlayGraphics()
+        {
+            if (overlay == null)
+                return null;
+            return overlay.GetOverlayGraphics();
+        }
+
+        public void UpdateOverlay()
+        {
+            if (overlay == null)
+                return;
+            overlay.UpdateOverlay();
+            Invalidate();
+        }
+
         protected override void OnLoad(EventArgs e)
         {
             if (Site != null && Site.DesignMode) return;
@@ -55,6 +77,9 @@ namespace GrblCNC
             floor = new Obj3DFloor(20);
             gcodeDim = new GCodeDimensions();
             millHead = new MillHead3D();
+            overlay = new Overlay();
+            overlay.Init(512, 512);
+            overlay.UpdateVerts(Width, Height);
             //gcodepath = new Wire3D();
             //gcodepath.Init(new float[] { 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 20 });
             GL.Viewport(0, 0, Width, Height);
@@ -72,6 +97,7 @@ namespace GrblCNC
                 e.Graphics.Clear(Color.Aqua);
                 return;
             }
+            GL.Enable(EnableCap.DepthTest);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             coloredQuad.Render();
             GL.Clear(ClearBufferMask.DepthBufferBit);    // clearing again after paintin bgnd
@@ -80,6 +106,8 @@ namespace GrblCNC
             millHead.Render();
             ginterp.Render();
             gcodeDim.Render();
+            GL.Disable(EnableCap.DepthTest);
+            overlay.Render();
             Context.SwapBuffers();
             
             //e.Graphics.DrawLine(Pens.Black, 0, 0, 100, 100);
@@ -93,6 +121,7 @@ namespace GrblCNC
 
             //MakeCurrent();
             GL.Viewport(0, 0, Width, Height);
+            overlay.UpdateVerts(Width, Height);
             screenAspect = (float)Width / (float)Height;
             camera.UpdateProjection(screenAspect);
             base.OnResize(e);

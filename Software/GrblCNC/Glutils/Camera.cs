@@ -15,7 +15,7 @@ namespace GrblCNC.Glutils
         public Camera(float aspectRatio)
         {
             screenAspect = aspectRatio;
-            SetCameraPosition(new Vector3(0.0f, 0.0f, 10.0f), 50, 270, 20);
+            SetCameraPosition(new Vector3(18, -10, 10.0f), 40, 250, 22);
         }
 
         void SetCameraPosition(Vector3 target, float distance, float horizAngle, float vertAngle)

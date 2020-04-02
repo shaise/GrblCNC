@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GrblCNC.Glutils;
+using System.Drawing.Text;
 
 namespace GrblCNC.Controls
 {
@@ -71,7 +72,18 @@ namespace GrblCNC.Controls
 
         private void jogButtTouchOff_Click(object sender, EventArgs e)
         {
-
+            Bitmap bmp = Global.visualizeWindow.GetOverlayBitmap();
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.Transparent);
+                g.PageUnit = GraphicsUnit.Display;
+                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                Font fnt = new Font("Arial", 10, FontStyle.Bold);
+                //SizeF sz = g.MeasureString("T01", fnt);
+                //g.FillRectangle(Brushes.Beige, 10, 10, sz.Width, sz.Height);
+                g.DrawString("T01", fnt, Brushes.Black, 10, 10);
+            }
+            Global.visualizeWindow.UpdateOverlay();
         }
 
         private void jogButtToolTouchOff_Click(object sender, EventArgs e)

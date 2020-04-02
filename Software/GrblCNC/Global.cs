@@ -17,6 +17,7 @@ namespace GrblCNC
         public static GrblComm grblComm;
         public static MdiControl mdiControl;
         public static GcodeInterp ginterp;
+        public static VisualizerWin visualizeWindow;
 
         public const int NUM_AXIS = 5;
 

@@ -49,7 +49,7 @@ namespace GrblCNC
             grblComm.LineReceived += grblComm_LineReceived;
             grblComm.StatusUpdate += grblComm_StatusUpdate;
             grblComm.ParameterUpdate += grblComm_ParameterUpdate;
-            grblComm.ErrorDetected += grblComm_ErrorDetected;
+            grblComm.MessageReceived += grblComm_MessageReceived;
             Global.grblComm = grblComm;
             grblScanTimer = new Timer();
             grblScanTimer.Interval = 100;
@@ -64,15 +64,15 @@ namespace GrblCNC
             bmpFont = FontManager.BitmapFont;
         }
 
-        void grblComm_ErrorDetected(object sender, string err)
+        void grblComm_MessageReceived(object sender, string message, GrblComm.MessageType type)
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => { grblComm_ErrorDetected(sender, err); }));
+                BeginInvoke(new MethodInvoker(() => { grblComm_MessageReceived(sender, message, type); }));
                 return;
             }
-            toolStripStatus.ForeColor = Color.Red;
-            toolStripStatus.Text = err;
+            toolStripStatus.ForeColor = type == GrblComm.MessageType.Error ? Color.Red : Color.Blue;
+            toolStripStatus.Text = message;
         }
 
         void InitializeGlControl()
@@ -89,6 +89,7 @@ namespace GrblCNC
             this.visualizerWinMain.TabIndex = 0;
             this.visualizerWinMain.VSync = false;
             this.splitTopRight.Panel1.Controls.Add(this.visualizerWinMain);
+            Global.visualizeWindow = this.visualizerWinMain;
         }
 
         void manualControl_AxisHomePressed(object sender, int axis)
@@ -113,7 +114,7 @@ namespace GrblCNC
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => { grblComm_ParameterUpdate(sender, grblConf, gcodeConf); }));
+                BeginInvoke(new MethodInvoker(() => { grblComm_ParameterUpdate(sender, grblConf, gcodeConf); }));
                 return;
             }
             paramView.FillParameters(grblConf);
@@ -127,7 +128,7 @@ namespace GrblCNC
             if (InvokeRequired)
             {
                 GrblStatus statCopy = status.Clone();
-                Invoke(new MethodInvoker(() => { grblComm_StatusUpdate(sender, statCopy); }));
+                BeginInvoke(new MethodInvoker(() => { grblComm_StatusUpdate(sender, statCopy); }));
                 return;
             }
             Vector3 headpos = new Vector3(status.axisPos[0], status.axisPos[1], status.axisPos[2]);
@@ -139,6 +140,8 @@ namespace GrblCNC
             statusView.SetAlarms(status.alarms);
             statusView.SetFeedSpindle(status.feedRate, status.spindleRpm);
             statusView.SetHomeState(status.homeStatus);
+            if (status.gStateChange)
+                mdiCtrl.SetGcodeParserStatus(status.gState);
             toolStripProgressBuff.Value1 = status.uartBuffer;
             toolStripProgressBuff.Value2 = status.planBuffer;
         }
@@ -147,7 +150,7 @@ namespace GrblCNC
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => { grblComm_LineReceived(sender, line, isStatus); }));
+                BeginInvoke(new MethodInvoker(() => { grblComm_LineReceived(sender, line, isStatus); }));
                 return;
             }
             if (!isStatus)
@@ -164,7 +167,7 @@ namespace GrblCNC
             if (InvokeRequired)
             {
                 // different thread so must invoke
-                Invoke(new MethodInvoker(() => { grblComm_StatusChanged(sender, status); }));
+                BeginInvoke(new MethodInvoker(() => { grblComm_StatusChanged(sender, status); }));
                 return;
             }
             if (status == GrblComm.CommStatus.Connected)

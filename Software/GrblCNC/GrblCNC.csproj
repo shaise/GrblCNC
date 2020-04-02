@@ -69,6 +69,12 @@
     <Compile Include="Controls\DualProgressTool.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\GStateViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GStateViewer.Designer.cs">
+      <DependentUpon>GStateViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\JogButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -116,6 +122,7 @@
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="Glutils\ColoredQuad.cs" />
+    <Compile Include="Glutils\Overlay.cs" />
     <Compile Include="Glutils\Utils.cs" />
     <Compile Include="Glutils\Line3D.cs" />
     <Compile Include="Glutils\Object3D.cs" />
@@ -171,6 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\GcodeViewer.resx">
       <DependentUpon>GcodeViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GStateViewer.resx">
+      <DependentUpon>GStateViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ManualControl.resx">
       <DependentUpon>ManualControl.cs</DependentUpon>
@@ -281,7 +291,6 @@
     <None Include="Resources\GridEmpty.png" />
     <None Include="Resources\GridCenter.png" />
     <None Include="Resources\VertShader3DFlat.txt" />
-    <None Include="Resources\awesomeface.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

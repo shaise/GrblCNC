@@ -46,6 +46,9 @@ namespace GrblCNC
         }
 
         List<GCodeParam> parameters;
+        public static string[] validParams = new string[] {
+                "G54", "G55", "G56", "G57", "G58", "G59", "G59.1", "G59.2", "G59.3", "G28", "G30", "G92", "TLO" 
+            };
 
         public GCodeConfig()
         {
@@ -67,17 +70,13 @@ namespace GrblCNC
             return null;
         }
 
-        public void ParseParam(string stparam)
+        public bool ParseParam(string parcode, string stparam)
         {
-            if (!stparam.StartsWith("[G"))
-                return;
-            string[] vars = stparam.Split(new char[] { '[', ':', ']' }, StringSplitOptions.RemoveEmptyEntries);
-            if (vars.Length != 2)
-                return;
-            string parcode = vars[0];
+            if (!validParams.Contains(parcode))
+                return false;
 
             // split all axis vals
-            vars = vars[1].Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string [] vars = stparam.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             // see if we already have this param
             GCodeParam par = GetParam(parcode);
             if (par == null)
@@ -87,6 +86,7 @@ namespace GrblCNC
             }
             else
                 par.SetVals(vars);
+            return true;
         }
         
     }
