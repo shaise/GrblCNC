@@ -18,6 +18,7 @@ namespace GrblCNC
         DataGridViewCellStyle errorGridStyle;
         bool fillParametersInProgress = false;
         GCodeConfig gcodeConf;
+        static string[] G10Codes = new string[] { "G54", "G55", "G56", "G57", "G58", "G59", "G59.1", "G59.2", "G59.3" };
         public GcodeParamViewer()
         {
             InitializeComponent();
@@ -92,6 +93,14 @@ namespace GrblCNC
                 row.Cells[e.ColumnIndex].Style = changedGridStyle;
         }
 
+        int GetPcode(string gcode)
+        {
+            for (int i = 0; i < G10Codes.Length; i++)
+                if (G10Codes[i] == gcode)
+                    return i + 1;
+            return -1;
+        }
+
         private void buttConfProg_Click(object sender, EventArgs e)
         {
             if (Global.grblComm == null)
@@ -99,17 +108,29 @@ namespace GrblCNC
             bool valChanged = false;
             foreach (DataGridViewRow row in dataGridGCodeConf.Rows)
             {
-                if (row.DefaultCellStyle == changedGridStyle)
+                StringBuilder sb = new StringBuilder();
+                int pcode = GetPcode(row.Cells[0].Value.ToString());
+                if (pcode > 0)
                 {
-                    // a param was changed, send to grbl
-                    int code = int.Parse(row.Cells[0].Value.ToString());
-                    string val = row.Cells[2].Value.ToString();
-                    //Global.grblComm.SetGCodeParameter(code, val);
-                    valChanged = true;
+                    for (int i = 1; i < row.Cells.Count; i++)
+                    {
+                        if (row.Cells[i].Style == changedGridStyle)
+                        {
+                            sb.Append(" ");
+                            sb.Append(dataGridGCodeConf.Columns[i].HeaderText);
+                            sb.Append(row.Cells[i].Value);
+                        }
+                    }
+                    if (sb.Length > 0)
+                    {
+                        string cmd = "G10 L2 P" + pcode.ToString() + sb.ToString();
+                        Global.grblComm.PostLine(cmd);
+                        valChanged = true;
+                    }
                 }
             }
-            //if (valChanged)
-            //    Global.grblComm.GetAllGCodeParameters(); // refresh view
+            if (valChanged)
+                Global.grblComm.GetGcodeCoordOfsets(); // refresh view
         }
 
         private void buttConfSave_Click(object sender, EventArgs e)

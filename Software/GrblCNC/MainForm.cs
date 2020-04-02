@@ -20,7 +20,8 @@ namespace GrblCNC
         GrblComm grblComm;
         bool keyHandled;
         bool keyboardJogActive = true;
-        private VisualizerWin visualizerWinMain;
+        VisualizerWin visualizerWinMain;
+        VisualizerOverlay visualizerOverlay;
         int presscount = 0;
         string lastGcodeFile = null;
         Bitmap bmpFont;
@@ -90,6 +91,7 @@ namespace GrblCNC
             this.visualizerWinMain.VSync = false;
             this.splitTopRight.Panel1.Controls.Add(this.visualizerWinMain);
             Global.visualizeWindow = this.visualizerWinMain;
+            visualizerOverlay = new VisualizerOverlay(visualizerWinMain);
         }
 
         void manualControl_AxisHomePressed(object sender, int axis)
@@ -144,6 +146,7 @@ namespace GrblCNC
                 mdiCtrl.SetGcodeParserStatus(status.gState);
             toolStripProgressBuff.Value1 = status.uartBuffer;
             toolStripProgressBuff.Value2 = status.planBuffer;
+            visualizerOverlay.Update(status);
         }
 
         void grblComm_LineReceived(object sender, string line, bool isStatus)

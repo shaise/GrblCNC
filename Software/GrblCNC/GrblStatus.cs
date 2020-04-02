@@ -66,8 +66,9 @@ namespace GrblCNC
             SpindleRPM           // S0
         }
 
-        public const int NUM_AXIS = 6;
+        public const int NUM_AXIS = 5;
         public float [] axisPos = new float[NUM_AXIS];
+        public float[] workingCoords = new float[NUM_AXIS];
         public MachineState state;
         public float feedRate;
         public float spindleRpm;
@@ -109,6 +110,7 @@ namespace GrblCNC
         {
             GrblStatus clone = new GrblStatus();
             for (int i = 0; i < axisPos.Length; i++) clone.axisPos[i] = axisPos[i];
+            for (int i = 0; i < axisPos.Length; i++) clone.workingCoords[i] = workingCoords[i];
             clone.state = state;
             clone.feedRate = feedRate;
             clone.spindleRpm = spindleRpm;
@@ -136,13 +138,13 @@ namespace GrblCNC
             }
         }
 
-        void ParseAxisPosition(string apos)
+        void ParseAxisPosition(string apos, float [] vals)
         {
             string[] posVals = apos.Split(',');
             for (int i = 0; i < posVals.Length && i < NUM_AXIS; i++)
             {
-                try { axisPos[i] = Utils.ParseFloatInvariant(posVals[i]); }
-                catch { axisPos[i] = 0;  }
+                try { vals[i] = Utils.ParseFloatInvariant(posVals[i]); }
+                catch { vals[i] = 0;  }
             }
         }
 
@@ -236,7 +238,8 @@ namespace GrblCNC
                 switch (nameData[0])
                 {
                     case "WPos":
-                    case "MPos": ParseAxisPosition(nameData[1]); break;
+                    case "MPos": ParseAxisPosition(nameData[1], axisPos); break;
+                    case "WCO": ParseAxisPosition(nameData[1], workingCoords); break;
                     case "FS": ParseFeedSpindle(nameData[1]); break;
                     case "Pn": alarms = nameData[1]; break;
                     case "Hs": homeStatus = ParseInt(nameData[1]); break;

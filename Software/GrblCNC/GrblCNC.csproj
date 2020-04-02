@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="Glutils\Text3D.cs" />
     <Compile Include="ToolButton.cs" />
+    <Compile Include="VisualizerOverlay.cs" />
     <Compile Include="VisualizerWin.cs">
       <SubType>UserControl</SubType>
     </Compile>

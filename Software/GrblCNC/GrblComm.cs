@@ -51,7 +51,8 @@ namespace GrblCNC
         public enum MachineState
         {
             Idle = 0,
-            ParamRead,
+            ParamReadAll,
+            ParamReadSingle,
             Jog,
             StopJog,
             Running,
@@ -167,7 +168,7 @@ namespace GrblCNC
                 activePort = port.PortName;
                 if (machineState == MachineState.Idle)
                     GetAllGrblParameters();
-                machineState = MachineState.Idle;
+                //machineState = MachineState.Idle;
                 if (ConnectionStatus != CommStatus.Connected)
                 {
                     ConnectionStatus = CommStatus.Connected;
@@ -207,7 +208,6 @@ namespace GrblCNC
         #region Input line handling
         void HandleParamLine(string line)
         {
-            machineState = MachineState.ParamRead;
             grblConfig.ParseParam(line);
         }
 
@@ -219,7 +219,7 @@ namespace GrblCNC
             switch (paramReadStage)
             {
                 case ParamReadStage.ReadGcodeOffsets:
-                    GetAllGcodeParameters();
+                    GetGcodeCoordOfsets();
                     break;
 
                 case ParamReadStage.ReadGcodeState:
@@ -232,6 +232,12 @@ namespace GrblCNC
                     machineState = MachineState.Idle;
                     break;
             }
+        }
+
+        void HandleReadSingleParam()
+        {
+            if (ParameterUpdate != null)
+                ParameterUpdate(this, grblConfig, gcodeConfig);
         }
 
         void HandleJogInProgress()
@@ -249,7 +255,8 @@ namespace GrblCNC
         {
             switch (machineState)
             {
-                case MachineState.ParamRead: HandleReadParam(); break;
+                case MachineState.ParamReadAll: HandleReadParam(); break;
+                case MachineState.ParamReadSingle: HandleReadSingleParam(); break;
                 case MachineState.Jog: HandleJogInProgress(); break;
                 case MachineState.StopJog: HandleStopJog(); break;
                 case MachineState.Running: SendCurrentGcodeLine(); break;
@@ -258,7 +265,7 @@ namespace GrblCNC
 
         void HandleMessageLine(string line)
         {
-            machineState = MachineState.ParamRead;
+            //machineState = MachineState.ParamRead;
             //paramReadStage = ParamReadStage.ReadGcodeOffsets;
             string[] vars = line.Split(new char[] { '[', ']', ':' }, StringSplitOptions.RemoveEmptyEntries);
             if (vars.Length != 2)
@@ -480,21 +487,30 @@ namespace GrblCNC
         #region Grbl control commands
         public void GetAllGrblParameters()
         {
-            PostLine("$$");
-            machineState = MachineState.ParamRead;
+            GetGrblParameters();
+            machineState = MachineState.ParamReadAll;
             paramReadStage = ParamReadStage.ReadGrblParam;
         }
 
-        public void GetAllGcodeParameters()
+        public void GetGrblParameters()
         {
+            if (machineState == MachineState.Idle)
+                machineState = MachineState.ParamReadSingle;
+            PostLine("$$");
+        }
+
+        public void GetGcodeCoordOfsets()
+        {
+            if (machineState == MachineState.Idle)
+                machineState = MachineState.ParamReadSingle;
             PostLine("$#");
-            paramReadStage = ParamReadStage.ReadGcodeOffsets;
         }
 
         public void GetGCodeParserState()
         {
+            if (machineState == MachineState.Idle)
+                machineState = MachineState.ParamReadSingle;
             PostLine("$G");
-            paramReadStage = ParamReadStage.ReadGcodeState;
         }
 
         public void SetGrblParameter(int code, string value)
