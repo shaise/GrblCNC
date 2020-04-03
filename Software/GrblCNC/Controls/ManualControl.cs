@@ -14,12 +14,19 @@ namespace GrblCNC.Controls
 {
     public partial class ManualControl : UserControl
     {
+        public enum AxisAction
+        {
+            Home = 0,
+            CoordTouchOff,
+            ToolTouchOff,
+            ToolProbe,
+        }
         public delegate void AxisStepJogPressedDelegate(object sender, int axis, float amount);
         public event AxisStepJogPressedDelegate AxisStepJogPressed;
         public delegate void AxisContinuesJogPressedDelegate(object sender, int axis, int direction);
         public event AxisContinuesJogPressedDelegate AxisContinuesJogPressed;
-        public delegate void AxisHomePressedDelegate(object sender, int axis);
-        public event AxisHomePressedDelegate AxisHomePressed;
+        public delegate void AxisActionPressedDelegate(object sender, int axis, AxisAction action);
+        public event AxisActionPressedDelegate AxisActionPressed;
         public ManualControl()
         {
             InitializeComponent();
@@ -64,24 +71,30 @@ namespace GrblCNC.Controls
 
         private void AxisHome_click(object sender, EventArgs e)
         {
-            if (AxisHomePressed == null)
+            if (AxisActionPressed == null)
                 return;
-            JogButton b = (JogButton)sender;
-            AxisHomePressed(this, b.Id);
+            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.Home);
         }
 
         private void jogButtTouchOff_Click(object sender, EventArgs e)
         {
+            if (AxisActionPressed == null)
+                return;
+            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.CoordTouchOff);
         }
 
         private void jogButtToolTouchOff_Click(object sender, EventArgs e)
         {
-
+            if (AxisActionPressed == null)
+                return;
+            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.ToolTouchOff);
         }
 
         private void jogButtProbe_Click(object sender, EventArgs e)
         {
-
+            if (AxisActionPressed == null)
+                return;
+            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.ToolProbe);
         }
 
         private void jogButtSpindleStop_Click(object sender, EventArgs e)

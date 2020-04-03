@@ -36,6 +36,16 @@ namespace GrblCNC.Controls
             }
         }
 
+        public int SelectedItem
+        {
+            get { return selectedItem; }
+            set 
+            { 
+                selectedItem = value;
+                Invalidate();
+            }
+        }
+
         void UpdateFont()
         {
             if (Height < 1)

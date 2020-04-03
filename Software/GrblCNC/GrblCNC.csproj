@@ -69,6 +69,12 @@
     <Compile Include="Controls\DualProgressTool.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\FormOffset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormOffset.Designer.cs">
+      <DependentUpon>FormOffset.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GStateViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -176,6 +182,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\BigNumViewer.resx">
       <DependentUpon>BigNumViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormOffset.resx">
+      <DependentUpon>FormOffset.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\GcodeViewer.resx">
       <DependentUpon>GcodeViewer.cs</DependentUpon>

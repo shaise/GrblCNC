@@ -26,6 +26,19 @@ namespace GrblCNC
             {
                 return states.Contains(code);
             }
+            public int GetIndex(string code)
+            {
+                for (int i = 0; i < states.Length; i++)
+                    if (code == states[i])
+                        return i;
+                return -1;
+            }
+            public string GetCode(int code_ix)
+            {
+                if (code_ix < 0 || code_ix > states.Length)
+                    return null;
+                return states[code_ix];
+            }
         }
 
         public enum MachineState
@@ -250,5 +263,17 @@ namespace GrblCNC
             }
         }
 
+        public string CurrentCoordSystem
+        {
+            get { return gState[(int)GcodeParserStateNames.CoordinateSystem];  }
+        }
+
+        public int CurrentCoordystemIndex
+        {
+            get
+            {
+                return gcodeStatesDict[(int)GcodeParserStateNames.CoordinateSystem].GetIndex(CurrentCoordSystem);
+            }
+        }
     }
 }

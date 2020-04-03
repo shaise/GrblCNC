@@ -133,6 +133,7 @@ namespace GrblCNC
             paramReadStage = ParamReadStage.ReadEnd;
             ReadErrorCodes();
             scanCount = 0;
+            Global.grblStatus = grblStatus;
         }
 
         void ReadErrorCodes()
@@ -532,6 +533,17 @@ namespace GrblCNC
             if (axisLetter == null)
                 return;
             string cmd = string.Format("$H{0}", axisLetter);
+            PostLine(cmd);
+        }
+
+        public void CoordTouchAxis(int axis, int coordSystemIx, float offset)
+        {
+            if (coordSystemIx < 0 || coordSystemIx > 8)
+                return;
+            string axisLetter = Utils.GetAxisLetter(axis);
+            if (axisLetter == null)
+                return;
+            string cmd = string.Format("G10 L2 P{0} {1}{2}", coordSystemIx + 1, axisLetter, offset);
             PostLine(cmd);
         }
 

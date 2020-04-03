@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenTK;
+using GrblCNC.Controls;
 
 
 namespace GrblCNC
@@ -18,13 +19,13 @@ namespace GrblCNC
         Timer grblScanTimer;
         GcodeInterp ginterp;
         GrblComm grblComm;
+        FormOffset frmOffset;
         bool keyHandled;
         bool keyboardJogActive = true;
         VisualizerWin visualizerWinMain;
         VisualizerOverlay visualizerOverlay;
         int presscount = 0;
         string lastGcodeFile = null;
-        Bitmap bmpFont;
 
         public MainForm()
         {
@@ -60,9 +61,9 @@ namespace GrblCNC
             // grbl manual controll
             manualControl.AxisStepJogPressed += manualControl_AxisStepJogPressed;
             manualControl.AxisContinuesJogPressed += manualControl_AxisContinuesJogPressed;
-            manualControl.AxisHomePressed += manualControl_AxisHomePressed;
+            manualControl.AxisActionPressed += manualControl_AxisActionPressed;
 
-            bmpFont = FontManager.BitmapFont;
+            frmOffset = new FormOffset();
         }
 
         void grblComm_MessageReceived(object sender, string message, GrblComm.MessageType type)
@@ -94,10 +95,26 @@ namespace GrblCNC
             visualizerOverlay = new VisualizerOverlay(visualizerWinMain);
         }
 
-        void manualControl_AxisHomePressed(object sender, int axis)
+        void PerformCoordTouchoff(int axis)
         {
-            if (grblComm != null)
-                grblComm.HomeAxis(axis);
+            frmOffset.CoordSystem = Global.grblStatus.CurrentCoordystemIndex;
+            if (frmOffset.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                float offset = frmOffset.Offset + Global.grblStatus.workingCoords[axis] + Global.grblStatus.axisPos[axis];
+                grblComm.CoordTouchAxis(axis, frmOffset.CoordSystem, offset);
+            }
+        }
+
+        void manualControl_AxisActionPressed(object sender, int axis, Controls.ManualControl.AxisAction action)
+        {
+            if (grblComm == null)
+                return;
+            switch (action)
+            {
+                case GrblCNC.Controls.ManualControl.AxisAction.Home: grblComm.HomeAxis(axis); break;
+                case ManualControl.AxisAction.CoordTouchOff: PerformCoordTouchoff(axis); break;
+            }
+            
         }
 
         void manualControl_AxisContinuesJogPressed(object sender, int axis, int direction)
