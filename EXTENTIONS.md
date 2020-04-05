@@ -8,4 +8,6 @@
 #### Report Extentions:
 * '|Hs:\<val\>' : This reports the current bitmask home state of each axis. When the axis is homed, 
  the coresponding bit will be 1. For example Hs:5 means Axis X and Z were homed.
+* '|GC:\<.../>' : Usually returned by the $G command. But now, whenever there is a gcode parser change,
+ this report will be sent automatically
  

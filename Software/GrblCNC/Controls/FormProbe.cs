@@ -7,15 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GrblCNC.Glutils;
 
 namespace GrblCNC.Controls
 {
-    public partial class FormOffset : Form
+    public partial class FormProbe : Form
     {
-        public FormOffset()
+        int axis;
+        public FormProbe()
         {
             InitializeComponent();
-            comboCoord.SelectedIndex = 0;
         }
 
         public float Offset
@@ -31,27 +32,20 @@ namespace GrblCNC.Controls
             base.OnVisibleChanged(e);
         }
 
-        
-
-        public int CoordSystem
+        public int Axis
         {
-            get 
-            {
-                if (comboCoord.Enabled)
-                    return comboCoord.SelectedIndex;
-                else
-                    return -1;
-            }
+            get { return axis; }
             set
             {
-                if (value >= 0 && value < comboCoord.Items.Count)
-                {
-                    comboCoord.SelectedIndex = value;
-                    comboCoord.Enabled = true;
-                }
-                else
-                    comboCoord.Enabled = false;
+                axis = value;
+                labelAxis.Text = "Axis: " + Utils.GetAxisLetter(axis);
             }
+        }
+
+        public float Direction
+        {
+            get { return multiSelDir.SelectedItem == 0 ? -1 : 1; }
+            set { multiSelDir.SelectedItem = value < 0 ? 0 : 1; }
         }
 
         private void buttOK_Click(object sender, EventArgs e)

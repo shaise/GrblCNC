@@ -49,6 +49,13 @@ namespace GrblCNC.Controls
             return Utils.ParseFloatInvariant(vars[0]);
         }
 
+        public void SetCurrentAxis(int axis)
+        {
+            if (axis < 0 || axis >= Global.NUM_AXIS)
+                return;
+            multiSelAxis.SelectedItem = axis;
+        }
+
         private void AxisPos_click(object sender, EventArgs e)
         {
             if (comboJogStep.SelectedIndex <= 0)
@@ -56,6 +63,7 @@ namespace GrblCNC.Controls
             if (AxisStepJogPressed == null)
                 return;
             JogButton b = (JogButton)sender;
+            SetCurrentAxis(b.Id);
             AxisStepJogPressed(this, b.Id, GetSelectedJogStep());
         }
 
@@ -66,6 +74,7 @@ namespace GrblCNC.Controls
             if (AxisStepJogPressed == null)
                 return;
             JogButton b = (JogButton)sender;
+            SetCurrentAxis(b.Id);
             AxisStepJogPressed(this, b.Id, -GetSelectedJogStep());
         }
 
@@ -119,6 +128,7 @@ namespace GrblCNC.Controls
             if (AxisContinuesJogPressed == null)
                 return;
             JogButton b = (JogButton)sender;
+            SetCurrentAxis(b.Id);
             AxisContinuesJogPressed(this, b.Id, 1);
         }
 
@@ -129,6 +139,7 @@ namespace GrblCNC.Controls
             if (AxisContinuesJogPressed == null)
                 return;
             JogButton b = (JogButton)sender;
+            SetCurrentAxis(b.Id);
             AxisContinuesJogPressed(this, b.Id, -1);
         }
 

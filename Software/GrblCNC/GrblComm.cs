@@ -56,6 +56,7 @@ namespace GrblCNC
             Jog,
             StopJog,
             Running,
+            CommandBatch,
             Paused
         }
 
@@ -96,6 +97,8 @@ namespace GrblCNC
         string lastError;
         int showStatusMsg = 0;
         int gStateCnt = 0;
+        List<string> commandBatch;
+        
 
         
         int scanCount;
@@ -130,6 +133,7 @@ namespace GrblCNC
             port.DataReceived += port_DataReceived;
             standardMsgQueue = new List<string>();
             urgentMsgQueue = new List<string>();
+            commandBatch = new List<string>();
             paramReadStage = ParamReadStage.ReadEnd;
             ReadErrorCodes();
             scanCount = 0;
@@ -191,13 +195,7 @@ namespace GrblCNC
             else if (line.StartsWith("["))
                 HandleMessageLine(line);
             else if (line.StartsWith("error"))
-            {
-                lastError = line.Substring(6);
-                if (grblErrorCodes.ContainsKey(lastError))
-                    lastError = grblErrorCodes[lastError];
-                if (MessageReceived != null)
-                    MessageReceived(this, lastError, MessageType.Error);
-            }
+                HandleErrorLine(line);
             if (LineReceived != null)
             {
                 LineReceived(this, line, isStatusLine && showStatusMsg == 0);
@@ -207,6 +205,22 @@ namespace GrblCNC
         }
 
         #region Input line handling
+        void HandleErrorLine(string line)
+        {
+            // clear all buffers and stop running
+            commandBatch.Clear();
+            urgentMsgQueue.Clear();
+            standardMsgQueue.Clear();
+            StopGcode();
+            // clear grbl error state by sending a dummy help request.
+            PostLine("$");
+            lastError = line.Substring(6);
+            if (grblErrorCodes.ContainsKey(lastError))
+                lastError = grblErrorCodes[lastError];
+            if (MessageReceived != null)
+                MessageReceived(this, lastError, MessageType.Error);
+        }
+
         void HandleParamLine(string line)
         {
             grblConfig.ParseParam(line);
@@ -239,6 +253,7 @@ namespace GrblCNC
         {
             if (ParameterUpdate != null)
                 ParameterUpdate(this, grblConfig, gcodeConfig);
+            machineState = MachineState.Idle;
         }
 
         void HandleJogInProgress()
@@ -252,6 +267,17 @@ namespace GrblCNC
             machineState = MachineState.Idle;
         }
 
+        void HandleCommandBatch()
+        {
+            if (commandBatch.Count == 0)
+                machineState = MachineState.Idle;
+            else
+            {
+                PostLine(commandBatch[0]);
+                commandBatch.RemoveAt(0);
+            }
+        }
+
         void HandleOKLine(string line)
         {
             switch (machineState)
@@ -261,6 +287,7 @@ namespace GrblCNC
                 case MachineState.Jog: HandleJogInProgress(); break;
                 case MachineState.StopJog: HandleStopJog(); break;
                 case MachineState.Running: SendCurrentGcodeLine(); break;
+                case MachineState.CommandBatch: HandleCommandBatch(); break;
             }
         }
 
@@ -357,6 +384,22 @@ namespace GrblCNC
                     urgentMsgQueue.Add(line);
                 else
                     standardMsgQueue.Add(line);
+            }
+        }
+
+        // post a series of lines one after the other, waiting for 'OK' from line to line, stop on error
+        public void PostLines(string [] lines)
+        {
+            if (lines == null || lines.Length == 0)
+                return;
+            if (machineState != MachineState.Idle && machineState != MachineState.CommandBatch)
+                return;
+            commandBatch.AddRange(lines);
+            if (machineState != MachineState.CommandBatch)
+            {
+                machineState = MachineState.CommandBatch;
+                PostLine(commandBatch[0]);
+                commandBatch.RemoveAt(0);
             }
         }
 
@@ -543,8 +586,23 @@ namespace GrblCNC
             string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
-            string cmd = string.Format("G10 L2 P{0} {1}{2}", coordSystemIx + 1, axisLetter, offset);
+            string cmd = string.Format("G10 L20 P{0} {1}{2}", coordSystemIx + 1, axisLetter, offset);
             PostLine(cmd);
+        }
+
+        public void ProbeAxis(int axis, int coordSystemIx, float offset, float dir)
+        {
+            if (coordSystemIx < -1 || coordSystemIx > 8)
+                return;
+            string axisLetter = Utils.GetAxisLetter(axis);
+            if (axisLetter == null)
+                return;
+            string[] cmdbatch = new string[4];
+            cmdbatch[0] = string.Format("G10 L20 P0 {0}0", axisLetter);
+            cmdbatch[1] = string.Format("G38.2 {0}{1} F25", axisLetter, 10f * dir);
+            cmdbatch[2] = string.Format("G10 L20 P0 {0}{1}", axisLetter, offset);
+            cmdbatch[3] = string.Format("G0 {0}{1}", axisLetter, Math.Floor(offset - 5.5 * dir));
+            PostLines(cmdbatch);
         }
 
         public void StepJog(int axis, float dist, float feedrate)
@@ -658,6 +716,7 @@ namespace GrblCNC
             }
             if (Global.ginterp != null)
                 Global.ginterp.ResetGcodeLine();
+            machineState = MachineState.Idle;
         }
 
         public void StepGcode()

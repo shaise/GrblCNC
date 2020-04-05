@@ -69,6 +69,12 @@
     <Compile Include="Controls\DualProgressTool.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\FormProbe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormProbe.Designer.cs">
+      <DependentUpon>FormProbe.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FormOffset.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\BigNumViewer.resx">
       <DependentUpon>BigNumViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormProbe.resx">
+      <DependentUpon>FormProbe.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormOffset.resx">
       <DependentUpon>FormOffset.cs</DependentUpon>

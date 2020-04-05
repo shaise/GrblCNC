@@ -20,6 +20,7 @@ namespace GrblCNC
         GcodeInterp ginterp;
         GrblComm grblComm;
         FormOffset frmOffset;
+        FormProbe frmProbe;
         bool keyHandled;
         bool keyboardJogActive = true;
         VisualizerWin visualizerWinMain;
@@ -64,6 +65,7 @@ namespace GrblCNC
             manualControl.AxisActionPressed += manualControl_AxisActionPressed;
 
             frmOffset = new FormOffset();
+            frmProbe = new FormProbe();
         }
 
         void grblComm_MessageReceived(object sender, string message, GrblComm.MessageType type)
@@ -100,8 +102,17 @@ namespace GrblCNC
             frmOffset.CoordSystem = Global.grblStatus.CurrentCoordystemIndex;
             if (frmOffset.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                float offset = frmOffset.Offset + Global.grblStatus.workingCoords[axis] + Global.grblStatus.axisPos[axis];
+                float offset = frmOffset.Offset;
                 grblComm.CoordTouchAxis(axis, frmOffset.CoordSystem, offset);
+            }
+        }
+
+        void PerformProbe(int axis)
+        {
+            frmProbe.Axis = axis;
+            if (frmProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                grblComm.ProbeAxis(axis, -1, frmProbe.Offset, frmProbe.Direction);
             }
         }
 
@@ -113,6 +124,7 @@ namespace GrblCNC
             {
                 case GrblCNC.Controls.ManualControl.AxisAction.Home: grblComm.HomeAxis(axis); break;
                 case ManualControl.AxisAction.CoordTouchOff: PerformCoordTouchoff(axis); break;
+                case ManualControl.AxisAction.ToolProbe: PerformProbe(axis); break;
             }
             
         }
