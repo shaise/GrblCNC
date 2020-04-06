@@ -63,6 +63,16 @@ namespace GrblCNC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AlarmErrorIcon {
+            get {
+                object obj = ResourceManager.GetObject("AlarmErrorIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AlarmIcon {
             get {
                 object obj = ResourceManager.GetObject("AlarmIcon", resourceCulture);
@@ -76,6 +86,16 @@ namespace GrblCNC.Properties {
         internal static System.Drawing.Bitmap checkedButt {
             get {
                 object obj = ResourceManager.GetObject("checkedButt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ErrorIcon {
+            get {
+                object obj = ResourceManager.GetObject("ErrorIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -224,6 +244,19 @@ namespace GrblCNC.Properties {
         internal static string FragShaderWire {
             get {
                 return ResourceManager.GetString("FragShaderWire", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1:Hard limit triggered. Machine position is likely lost due to sudden and immediate halt. Re-homing is highly recommended.
+        ///2:G-code motion target exceeds machine travel. Machine position safely retained. Alarm may be unlocked.
+        ///3:Reset while in motion. Grbl cannot guarantee position. Lost steps are likely. Re-homing is highly recommended.
+        ///4:Probe fail. The probe is not in the expected initial state before starting probe cycle, where G38.2 and G38.3 is not triggered and G38.4 and G38.5 is triggered.
+        ///5:Pro [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string GrblAlarmCodes {
+            get {
+                return ResourceManager.GetString("GrblAlarmCodes", resourceCulture);
             }
         }
         

@@ -1,6 +1,11 @@
 ## GRBL for Chinese CNC3040-like machines. WIP.
 ### Project progress:
 
+* 06 Apr 2020:  Support of g54-59 offsets
+  * Display gcode parser state
+	* Working coordinate display on main 3D window
+	* Coordinate touch off and tool probing
+	* Error display similar to LinuxCNC
 * 28 Mar 2020:  Basic Sender program available
   * move to grblHal as the grbl driver for its more comprehensive gcode support
 * 18 Mar 2020:  Migration to STM32CubeIDE 

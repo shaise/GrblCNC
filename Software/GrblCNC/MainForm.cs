@@ -27,6 +27,7 @@ namespace GrblCNC
         VisualizerOverlay visualizerOverlay;
         int presscount = 0;
         string lastGcodeFile = null;
+        ErrorDisplayHandler errDisplayHandler;
 
         public MainForm()
         {
@@ -66,6 +67,8 @@ namespace GrblCNC
 
             frmOffset = new FormOffset();
             frmProbe = new FormProbe();
+
+            errDisplayHandler = new ErrorDisplayHandler(this);
         }
 
         void grblComm_MessageReceived(object sender, string message, GrblComm.MessageType type)
@@ -75,8 +78,10 @@ namespace GrblCNC
                 BeginInvoke(new MethodInvoker(() => { grblComm_MessageReceived(sender, message, type); }));
                 return;
             }
-            toolStripStatus.ForeColor = type == GrblComm.MessageType.Error ? Color.Red : Color.Blue;
+            toolStripStatus.ForeColor = type == GrblComm.MessageType.Info ? Color.Blue : Color.Red;
             toolStripStatus.Text = message;
+            if (type == GrblComm.MessageType.Alarm || type == GrblComm.MessageType.Error)
+                errDisplayHandler.AddError(message, type == GrblComm.MessageType.Alarm);
         }
 
         void InitializeGlControl()
@@ -361,6 +366,14 @@ namespace GrblCNC
             grblComm.Close();
             base.OnClosing(e);
         }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            if (errDisplayHandler != null)
+                errDisplayHandler.UpdateSize();
+            base.OnSizeChanged(e);
+        }
+
         #endregion
 
         private void tabControlSystem_Selected(object sender, TabControlEventArgs e)

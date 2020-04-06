@@ -51,8 +51,6 @@ namespace GrblCNC
         public enum MachineState
         {
             Idle = 0,
-            ParamReadAll,
-            ParamReadSingle,
             Jog,
             StopJog,
             Running,
@@ -60,19 +58,24 @@ namespace GrblCNC
             Paused
         }
 
-        public enum ParamReadStage
+        public enum GrblParamTypes
         {
-            ReadGrblParam = 0,
+            GrblSysParams = 0,
             ReadGcodeOffsets,
-            ReadGcodeState,
-            ReadEnd
+            GcodeStates,
+
+            NumParamTypes // must be last
         }
 
         public enum MessageType
         {
             Info,
-            Error
+            Error,
+            Alarm
         }
+
+
+
         string [] portNames;
         public string activePort;
         public string grblVersion;
@@ -87,12 +90,13 @@ namespace GrblCNC
         List<string> standardMsgQueue;
         List<string> urgentMsgQueue;
         Dictionary<string, string> grblErrorCodes;
+        Dictionary<string, string> grblAlarmCodes;
         object lockMsgBufferObj = new object();
         object lockSerialSendObj = new object();
         int jogCount = 0;
         public MachineState machineState;
         public CommStatus ConnectionStatus;
-        ParamReadStage paramReadStage;
+        bool [] isParamUpdated = new bool[(int)GrblParamTypes.NumParamTypes];
         string curJogCommand;
         string lastError;
         int showStatusMsg = 0;
@@ -134,22 +138,28 @@ namespace GrblCNC
             standardMsgQueue = new List<string>();
             urgentMsgQueue = new List<string>();
             commandBatch = new List<string>();
-            paramReadStage = ParamReadStage.ReadEnd;
             ReadErrorCodes();
             scanCount = 0;
             Global.grblStatus = grblStatus;
         }
 
-        void ReadErrorCodes()
+        void FillCodes(Dictionary<string, string> dict, string codes)
         {
-            grblErrorCodes = new Dictionary<string, string>();
-            foreach (string line in Resources.GrblErrorCodes.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string line in codes.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] codeName = line.Split(':');
                 if (codeName.Length != 2)
                     continue;
-                grblErrorCodes[codeName[0]] = codeName[1];
+                dict[codeName[0]] = codeName[1];
             }
+        }
+
+        void ReadErrorCodes()
+        {
+            grblErrorCodes = new Dictionary<string, string>();
+            FillCodes(grblErrorCodes, Resources.GrblErrorCodes);
+            grblAlarmCodes = new Dictionary<string, string>();
+            FillCodes(grblAlarmCodes, Resources.GrblAlarmCodes);
         }
 
         public bool connectionActive
@@ -195,7 +205,9 @@ namespace GrblCNC
             else if (line.StartsWith("["))
                 HandleMessageLine(line);
             else if (line.StartsWith("error"))
-                HandleErrorLine(line);
+                HandleErrorLine(line, MessageType.Error);
+            else if (line.StartsWith("ALARM"))
+                HandleErrorLine(line, MessageType.Alarm);
             if (LineReceived != null)
             {
                 LineReceived(this, line, isStatusLine && showStatusMsg == 0);
@@ -204,56 +216,54 @@ namespace GrblCNC
             }
         }
 
+        void ReportUpdatedParams()
+        {
+            if (isParamUpdated[(int)GrblParamTypes.GrblSysParams] || isParamUpdated[(int)GrblParamTypes.ReadGcodeOffsets])
+            {
+                isParamUpdated[(int)GrblParamTypes.GrblSysParams] = isParamUpdated[(int)GrblParamTypes.ReadGcodeOffsets] = false;
+                    if (ParameterUpdate != null)
+                        ParameterUpdate(this, grblConfig, gcodeConfig);
+            }
+            if (isParamUpdated[(int)GrblParamTypes.GcodeStates])
+            {
+                isParamUpdated[(int)GrblParamTypes.GcodeStates] = false;
+                if (StatusUpdate != null)
+                    StatusUpdate(this, grblStatus);
+            }
+
+        }
+
         #region Input line handling
-        void HandleErrorLine(string line)
+        void HandleErrorLine(string line, MessageType msgType)
         {
             // clear all buffers and stop running
             commandBatch.Clear();
             urgentMsgQueue.Clear();
             standardMsgQueue.Clear();
             StopGcode();
-            // clear grbl error state by sending a dummy help request.
-            PostLine("$");
-            lastError = line.Substring(6);
-            if (grblErrorCodes.ContainsKey(lastError))
-                lastError = grblErrorCodes[lastError];
+
+            lastError = line;
+            string errcode = line.Substring(6);
+            if (msgType == MessageType.Error)
+            {
+                PostLine("$"); // clear grbl error state by sending a dummy help request.
+                if (grblErrorCodes.ContainsKey(errcode))
+                    lastError = grblErrorCodes[errcode];
+            }
+            else
+            {
+                if (grblAlarmCodes.ContainsKey(errcode))
+                    lastError = grblAlarmCodes[errcode];
+            }
+
             if (MessageReceived != null)
-                MessageReceived(this, lastError, MessageType.Error);
+                MessageReceived(this, lastError, msgType);
         }
 
         void HandleParamLine(string line)
         {
             grblConfig.ParseParam(line);
-        }
-
-        void HandleReadParam()
-        {
-            if (paramReadStage >= ParamReadStage.ReadEnd)
-                return;
-            paramReadStage++;
-            switch (paramReadStage)
-            {
-                case ParamReadStage.ReadGcodeOffsets:
-                    GetGcodeCoordOfsets();
-                    break;
-
-                case ParamReadStage.ReadGcodeState:
-                    GetGCodeParserState();
-                    break;
-
-                case ParamReadStage.ReadEnd:
-                    if (ParameterUpdate != null)
-                        ParameterUpdate(this, grblConfig, gcodeConfig);
-                    machineState = MachineState.Idle;
-                    break;
-            }
-        }
-
-        void HandleReadSingleParam()
-        {
-            if (ParameterUpdate != null)
-                ParameterUpdate(this, grblConfig, gcodeConfig);
-            machineState = MachineState.Idle;
+            isParamUpdated[(int)GrblParamTypes.GrblSysParams] = true;
         }
 
         void HandleJogInProgress()
@@ -270,7 +280,10 @@ namespace GrblCNC
         void HandleCommandBatch()
         {
             if (commandBatch.Count == 0)
+            {
                 machineState = MachineState.Idle;
+                ReportUpdatedParams();
+            }
             else
             {
                 PostLine(commandBatch[0]);
@@ -282,8 +295,7 @@ namespace GrblCNC
         {
             switch (machineState)
             {
-                case MachineState.ParamReadAll: HandleReadParam(); break;
-                case MachineState.ParamReadSingle: HandleReadSingleParam(); break;
+                case MachineState.Idle: ReportUpdatedParams(); break;
                 case MachineState.Jog: HandleJogInProgress(); break;
                 case MachineState.StopJog: HandleStopJog(); break;
                 case MachineState.Running: SendCurrentGcodeLine(); break;
@@ -300,13 +312,15 @@ namespace GrblCNC
                 return;
             // first check if this is a gcode parameter 
             if (gcodeConfig.ParseParam(vars[0], vars[1]))
+            {
+                isParamUpdated[(int)GrblParamTypes.ReadGcodeOffsets] = true;
                 return;
+            }
             switch(vars[0])
             {
                 case "GC":
                     grblStatus.ParseGState(vars[1]);
-                    if (StatusUpdate != null)
-                        StatusUpdate(this, grblStatus);
+                    isParamUpdated[(int)GrblParamTypes.GcodeStates] = true;
                     break;
 
                 case "MSG":
@@ -531,29 +545,22 @@ namespace GrblCNC
         #region Grbl control commands
         public void GetAllGrblParameters()
         {
-            GetGrblParameters();
-            machineState = MachineState.ParamReadAll;
-            paramReadStage = ParamReadStage.ReadGrblParam;
+            string[] lines = new string[] { "$$", "$#", "$G" };
+            PostLines(lines);
         }
 
         public void GetGrblParameters()
         {
-            if (machineState == MachineState.Idle)
-                machineState = MachineState.ParamReadSingle;
             PostLine("$$");
         }
 
         public void GetGcodeCoordOfsets()
         {
-            if (machineState == MachineState.Idle)
-                machineState = MachineState.ParamReadSingle;
             PostLine("$#");
         }
 
         public void GetGCodeParserState()
         {
-            if (machineState == MachineState.Idle)
-                machineState = MachineState.ParamReadSingle;
             PostLine("$G");
         }
 

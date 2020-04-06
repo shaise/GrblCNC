@@ -69,6 +69,12 @@
     <Compile Include="Controls\DualProgressTool.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ErrorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ErrorView.Designer.cs">
+      <DependentUpon>ErrorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FormProbe.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +129,7 @@
     <Compile Include="Controls\ValueSlider.Designer.cs">
       <DependentUpon>ValueSlider.cs</DependentUpon>
     </Compile>
+    <Compile Include="ErrorDisplayHandler.cs" />
     <Compile Include="FontManager.cs" />
     <Compile Include="GCodeDimensions.cs" />
     <Compile Include="GcodeInterp.cs" />
@@ -189,6 +196,9 @@
     <EmbeddedResource Include="Controls\BigNumViewer.resx">
       <DependentUpon>BigNumViewer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ErrorView.resx">
+      <DependentUpon>ErrorView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormProbe.resx">
       <DependentUpon>FormProbe.cs</DependentUpon>
     </EmbeddedResource>
@@ -253,6 +263,9 @@
     <None Include="Resources\ProbeIcon.png" />
     <None Include="Resources\VertShader3DLine.txt" />
     <None Include="Resources\FragShaderLine.txt" />
+    <None Include="Resources\ErrorIcon.png" />
+    <None Include="Resources\AlarmErrorIcon.png" />
+    <None Include="Resources\GrblAlarmCodes.txt" />
     <Content Include="Resources\GrblLogo_ngc.txt" />
     <None Include="Resources\JetBrainsMono-Medium.ttf" />
     <None Include="Resources\VertShader3DText.txt" />

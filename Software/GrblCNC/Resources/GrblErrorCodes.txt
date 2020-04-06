@@ -6,7 +6,7 @@
 6:Minimum step pulse time must be greater than 3usec
 7:EEPROM read failed. Reset and restored to default values.
 8:Grbl '$' command cannot be used unless Grbl is IDLE. Ensures smooth operation during a job.
-9:G-code locked out during alarm or jog state
+9:G-code locked out during alarm or jog state. Press red knob button to release alarm.
 10:Soft limits cannot be enabled without homing also enabled.
 11:Max characters per line exceeded. Line was not processed and executed.
 12:(Compile Option) Grbl '$' setting value exceeds the maximum step rate supported.
