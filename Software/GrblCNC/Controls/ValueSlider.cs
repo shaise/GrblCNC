@@ -25,10 +25,38 @@ namespace GrblCNC.Controls
         bool thumbPressed = false;
         int thumbPressLoc = 0;
         int thumbSavedLoc = 0;
+        public delegate void ValueChangeDelegate(object sender, float value);
+        public event ValueChangeDelegate ValueChange;
+        Timer timer;
+        bool reportChange = false;
+
         public ValueSlider()
         {
             InitializeComponent();
             DoubleBuffered = true;
+            // limit reports to 5 times a second
+            timer = new Timer();
+            timer.Interval = 200; // ms
+            timer.Tick += timer_Tick;
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            if (reportChange)
+            {
+                if (ValueChange != null)
+                    ValueChange(this, value);
+                reportChange = false;
+            }
+            else
+                timer.Stop();
+        }
+
+        void ReportChange()
+        {
+            reportChange = true;
+            if (!timer.Enabled)
+                timer.Start();
         }
 
         public string DataFormat
@@ -53,6 +81,8 @@ namespace GrblCNC.Controls
             set
             {
                 minValue = value;
+                if (this.value < minValue)
+                    this.value = minValue;
                 UpdateThumbVars();
                 updateValueText();
             }
@@ -64,6 +94,8 @@ namespace GrblCNC.Controls
             set
             {
                 maxValue = value;
+                if (this.value > maxValue)
+                    this.value = maxValue;
                 UpdateThumbVars();
                 updateValueText();
             }
@@ -192,6 +224,7 @@ namespace GrblCNC.Controls
                 {
                     value = (float)(thumbCurPos - thumbMinPos) * (maxValue - minValue) / (thumbMaxPos - thumbMinPos) + minValue;
                     updateValueText();
+                    ReportChange();
                     Invalidate();
                 }
             }

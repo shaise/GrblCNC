@@ -21,18 +21,36 @@ namespace GrblCNC.Controls
             ToolTouchOff,
             ToolProbe,
         }
+
+        public enum Sliders
+        {
+            JogSpeed = 0,
+            SpindleSpeed,
+        }
+
+
+
         public delegate void AxisStepJogPressedDelegate(object sender, int axis, float amount);
         public event AxisStepJogPressedDelegate AxisStepJogPressed;
         public delegate void AxisContinuesJogPressedDelegate(object sender, int axis, int direction);
         public event AxisContinuesJogPressedDelegate AxisContinuesJogPressed;
         public delegate void AxisActionPressedDelegate(object sender, int axis, AxisAction action);
         public event AxisActionPressedDelegate AxisActionPressed;
+        public delegate void SpindleActionDelegate(object sender, float speed, GrblComm.SpindleAction action);
+        public event SpindleActionDelegate SpindleAction;
         public ManualControl()
         {
             InitializeComponent();
             comboJogStep.SelectedIndex = 0;
             Enabled = Global.GrblConnected;
             Global.GrblConnectionChanged += Global_GrblConnectionChanged;
+            valueSlideSpinSpeed.ValueChange += valueSlideSpinSpeed_ValueChange;
+        }
+
+        void valueSlideSpinSpeed_ValueChange(object sender, float value)
+        {
+            if (SpindleAction != null)
+                SpindleAction(this, value, GrblComm.SpindleAction.Speed);
         }
 
         void Global_GrblConnectionChanged(bool isConnected)
@@ -108,17 +126,23 @@ namespace GrblCNC.Controls
 
         private void jogButtSpindleStop_Click(object sender, EventArgs e)
         {
-
+            if (SpindleAction == null)
+                return;
+            SpindleAction(this, 0, GrblComm.SpindleAction.Stop);
         }
 
         private void jogButtSpindleCCW_Click(object sender, EventArgs e)
         {
-
+            if (SpindleAction == null)
+                return;
+            SpindleAction(this, valueSlideSpinSpeed.Value, GrblComm.SpindleAction.StartCCW);
         }
 
         private void jogButtSpindleCW_Click(object sender, EventArgs e)
         {
-
+            if (SpindleAction == null)
+                return;
+            SpindleAction(this, valueSlideSpinSpeed.Value, GrblComm.SpindleAction.StartCW);
         }
 
         private void AxisPos_down(object sender, MouseEventArgs e)
@@ -153,5 +177,13 @@ namespace GrblCNC.Controls
             AxisContinuesJogPressed(this, b.Id, 0);
         }
 
+        public void SetSliderMinMax(Sliders sld, float min, float max)
+        {
+            switch (sld)
+            {
+                case Sliders.JogSpeed: valueSlideJogSpeedXYZ.MinValue = min; valueSlideJogSpeedXYZ.MaxValue = max; break;
+                case Sliders.SpindleSpeed: valueSlideSpinSpeed.MinValue = min; valueSlideSpinSpeed.MaxValue = max; break;
+            }
+        }
     }
 }

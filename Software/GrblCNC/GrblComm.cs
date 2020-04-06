@@ -74,7 +74,13 @@ namespace GrblCNC
             Alarm
         }
 
-
+        public enum SpindleAction
+        {
+            Stop = 0,
+            StartCW,
+            StartCCW,
+            Speed,
+        }
 
         string [] portNames;
         public string activePort;
@@ -658,6 +664,19 @@ namespace GrblCNC
         {
             PostLine("$X");
         }
+
+        // set spindle speed and direction
+        public void SetSpindle(float speed, SpindleAction action)
+        {
+            switch (action)
+            {
+                case SpindleAction.Stop: PostLine("M5"); break;
+                case SpindleAction.StartCW: PostLine(string.Format("M3 S{0:0.0}", speed)); break;
+                case SpindleAction.StartCCW: PostLine(string.Format("M4 S{0:0.0}", speed)); break;
+                case SpindleAction.Speed: PostLine(string.Format("S{0:0.0}", speed)); break;
+            }
+        }
+
         #endregion
 
         #region Gcode Sender

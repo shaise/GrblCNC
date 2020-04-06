@@ -27,6 +27,13 @@ namespace GrblCNC
             public float floatVal;
             public ParamType type;
 
+            // some params codes used:
+            public enum Code
+            { 
+                MaxSpindleSpeedCode = 30,
+                MinSpindleSpeedCode = 31,
+            }
+
             int IComparable.CompareTo(object other)
             {
                 return code.CompareTo(((GrblParam)other).code);
@@ -113,6 +120,11 @@ namespace GrblCNC
                     break;
             }
             return null;
+        }
+
+        public GrblParam GetParam(GrblParam.Code parcode)
+        {
+            return GetParam((int)parcode);
         }
 
         public void ParseParam(string stparam)

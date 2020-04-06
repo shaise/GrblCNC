@@ -98,7 +98,7 @@
             this.jogButtSpindleCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtSpindleCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtSpindleCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleCW.Location = new System.Drawing.Point(117, 170);
+            this.jogButtSpindleCW.Location = new System.Drawing.Point(117, 208);
             this.jogButtSpindleCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
             this.jogButtSpindleCW.Name = "jogButtSpindleCW";
             this.jogButtSpindleCW.Size = new System.Drawing.Size(32, 32);
@@ -194,7 +194,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 170);
+            this.label2.Location = new System.Drawing.Point(6, 208);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 32;
@@ -213,7 +213,7 @@
             // valueSlideJogSpeedXYZ
             // 
             this.valueSlideJogSpeedXYZ.DataFormat = "{0:0} mm/min";
-            this.valueSlideJogSpeedXYZ.Location = new System.Drawing.Point(6, 334);
+            this.valueSlideJogSpeedXYZ.Location = new System.Drawing.Point(9, 172);
             this.valueSlideJogSpeedXYZ.MaxValue = 100F;
             this.valueSlideJogSpeedXYZ.MinValue = 0F;
             this.valueSlideJogSpeedXYZ.Name = "valueSlideJogSpeedXYZ";
@@ -226,7 +226,7 @@
             // valueSlideSpinSpeed
             // 
             this.valueSlideSpinSpeed.DataFormat = "{0:0} RPM";
-            this.valueSlideSpinSpeed.Location = new System.Drawing.Point(6, 314);
+            this.valueSlideSpinSpeed.Location = new System.Drawing.Point(9, 245);
             this.valueSlideSpinSpeed.MaxValue = 100F;
             this.valueSlideSpinSpeed.MinValue = 0F;
             this.valueSlideSpinSpeed.Name = "valueSlideSpinSpeed";
@@ -239,6 +239,7 @@
             // valueSlideMaxVelocity
             // 
             this.valueSlideMaxVelocity.DataFormat = "{0:0} mm/min";
+            this.valueSlideMaxVelocity.Enabled = false;
             this.valueSlideMaxVelocity.Location = new System.Drawing.Point(6, 374);
             this.valueSlideMaxVelocity.MaxValue = 100F;
             this.valueSlideMaxVelocity.MinValue = 0F;
@@ -252,6 +253,7 @@
             // valueSlideJogSpeedAB
             // 
             this.valueSlideJogSpeedAB.DataFormat = "{0:0} deg/min";
+            this.valueSlideJogSpeedAB.Enabled = false;
             this.valueSlideJogSpeedAB.Location = new System.Drawing.Point(6, 354);
             this.valueSlideJogSpeedAB.MaxValue = 100F;
             this.valueSlideJogSpeedAB.MinValue = 0F;
@@ -265,7 +267,8 @@
             // valueSlideRapidOver
             // 
             this.valueSlideRapidOver.DataFormat = "{0:0} %";
-            this.valueSlideRapidOver.Location = new System.Drawing.Point(6, 274);
+            this.valueSlideRapidOver.Enabled = false;
+            this.valueSlideRapidOver.Location = new System.Drawing.Point(6, 314);
             this.valueSlideRapidOver.MaxValue = 100F;
             this.valueSlideRapidOver.MinValue = 0F;
             this.valueSlideRapidOver.Name = "valueSlideRapidOver";
@@ -278,7 +281,8 @@
             // valueSlideSpinOver
             // 
             this.valueSlideSpinOver.DataFormat = "{0:0} %";
-            this.valueSlideSpinOver.Location = new System.Drawing.Point(6, 294);
+            this.valueSlideSpinOver.Enabled = false;
+            this.valueSlideSpinOver.Location = new System.Drawing.Point(6, 334);
             this.valueSlideSpinOver.MaxValue = 120F;
             this.valueSlideSpinOver.MinValue = 0F;
             this.valueSlideSpinOver.Name = "valueSlideSpinOver";
@@ -291,7 +295,8 @@
             // valueSlideFeedOver
             // 
             this.valueSlideFeedOver.DataFormat = "{0:0} %";
-            this.valueSlideFeedOver.Location = new System.Drawing.Point(6, 254);
+            this.valueSlideFeedOver.Enabled = false;
+            this.valueSlideFeedOver.Location = new System.Drawing.Point(6, 294);
             this.valueSlideFeedOver.MaxValue = 120F;
             this.valueSlideFeedOver.MinValue = 0F;
             this.valueSlideFeedOver.Name = "valueSlideFeedOver";
@@ -313,7 +318,7 @@
             this.jogButtSpindleStop.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtSpindleStop.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtSpindleStop.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleStop.Location = new System.Drawing.Point(86, 170);
+            this.jogButtSpindleStop.Location = new System.Drawing.Point(86, 208);
             this.jogButtSpindleStop.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
             this.jogButtSpindleStop.Name = "jogButtSpindleStop";
             this.jogButtSpindleStop.Size = new System.Drawing.Size(32, 32);
@@ -333,7 +338,7 @@
             this.jogButtSpindleCCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtSpindleCCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtSpindleCCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleCCW.Location = new System.Drawing.Point(55, 170);
+            this.jogButtSpindleCCW.Location = new System.Drawing.Point(55, 208);
             this.jogButtSpindleCCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
             this.jogButtSpindleCCW.Name = "jogButtSpindleCCW";
             this.jogButtSpindleCCW.Size = new System.Drawing.Size(32, 32);

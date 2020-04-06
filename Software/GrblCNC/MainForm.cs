@@ -64,6 +64,7 @@ namespace GrblCNC
             manualControl.AxisStepJogPressed += manualControl_AxisStepJogPressed;
             manualControl.AxisContinuesJogPressed += manualControl_AxisContinuesJogPressed;
             manualControl.AxisActionPressed += manualControl_AxisActionPressed;
+            manualControl.SpindleAction += manualControl_SpindleAction;
 
             frmOffset = new FormOffset();
             frmProbe = new FormProbe();
@@ -121,6 +122,14 @@ namespace GrblCNC
             }
         }
 
+        #region Manual control events
+        void manualControl_SpindleAction(object sender, float speed, GrblComm.SpindleAction action)
+        {
+            if (grblComm == null)
+                return;
+            grblComm.SetSpindle(speed, action);
+        }
+
         void manualControl_AxisActionPressed(object sender, int axis, Controls.ManualControl.AxisAction action)
         {
             if (grblComm == null)
@@ -146,6 +155,8 @@ namespace GrblCNC
                 grblComm.StepJog(axis, amount, 600);
         }
 
+        #endregion //Manual control events
+
         void grblComm_ParameterUpdate(object sender, GrblConfig grblConf, GCodeConfig gcodeConf)
         {
             if (InvokeRequired)
@@ -155,6 +166,9 @@ namespace GrblCNC
             }
             paramView.FillParameters(grblConf);
             gcodeParamView.FillParameters(gcodeConf);
+            manualControl.SetSliderMinMax(ManualControl.Sliders.SpindleSpeed,
+                grblConf.GetParam(GrblConfig.GrblParam.Code.MinSpindleSpeedCode).floatVal,
+                grblConf.GetParam(GrblConfig.GrblParam.Code.MaxSpindleSpeedCode).floatVal);
             toolStripProgressBuff.Maximum1 = 10;
             toolStripProgressBuff.Maximum2 = 10;
         }
