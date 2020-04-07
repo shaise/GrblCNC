@@ -37,7 +37,7 @@ namespace GrblCNC.Controls
                     if (!categoryDict.ContainsKey(category))
                     {
                         categoryDict[category] = new List<GrblConfig.ParamDescription>();
-                        if (category == "General")
+                        if (category.StartsWith("General"))
                             categories.Insert(0, category);
                         else
                             categories.Add(category);

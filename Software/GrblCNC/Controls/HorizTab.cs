@@ -21,6 +21,7 @@ namespace GrblCNC.Controls
         Brush bback;
         Brush bfore;
         Brush bbackDark;
+        Brush bbackMed;
         Pen pHiglight, pShadow;
         Point[] triPoints;
 
@@ -46,7 +47,8 @@ namespace GrblCNC.Controls
         {
             bback = new SolidBrush(BackColor);
             bfore = new SolidBrush(ForeColor);
-            bbackDark = new SolidBrush(Utils.TuneColor(BackColor, 0.92f));
+            bbackDark = new SolidBrush(Utils.TuneColor(BackColor, 0.90f));
+            bbackMed = new SolidBrush(Utils.TuneColor(BackColor, 0.95f));
             pHiglight = new Pen(Utils.TuneColor(BackColor, 1.2f));
             pShadow = new Pen(Utils.TuneColor(BackColor, 0.7f));
         }
@@ -132,6 +134,8 @@ namespace GrblCNC.Controls
                 }
                 if (i == hoverTab)
                 {
+                    if (i != selectedTab)
+                        g.FillRectangle(bbackMed, px+1, py+1, w-2, th-2);
                     AdjustTriangle(2, py + 2, px - 4, th - 4);
                     g.FillPolygon(bfore, triPoints);
                 }
