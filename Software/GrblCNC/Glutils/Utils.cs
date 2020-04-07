@@ -100,5 +100,23 @@ namespace GrblCNC.Glutils
         {
             return float.Parse(floatNum, CultureInfo.InvariantCulture);
         }
+
+        static int TuneColorElement(int cElement, float tune)
+        {
+            int res = (int)((float)cElement * tune);
+            if (res < 0)
+                res = 0;
+            if (res > 255)
+                res = 255;
+            return res;
+        }
+
+        public static Color TuneColor(Color baseColor, float tune)
+        {
+            int r = TuneColorElement(baseColor.R, tune);
+            int g = TuneColorElement(baseColor.G, tune);
+            int b = TuneColorElement(baseColor.B, tune);
+            return Color.FromArgb(baseColor.A, r, g, b);
+        }
     }
 }

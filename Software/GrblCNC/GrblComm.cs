@@ -147,6 +147,7 @@ namespace GrblCNC
             ReadErrorCodes();
             scanCount = 0;
             Global.grblStatus = grblStatus;
+            Global.grblConfig = grblConfig;
         }
 
         void FillCodes(Dictionary<string, string> dict, string codes)

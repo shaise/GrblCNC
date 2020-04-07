@@ -1,87 +1,88 @@
-0:Step pulse time, us
-1:Step idle delay, ms
-2:Step pulse invert, mask
-3:Step direction invert, mask
-4:Invert step enable pin, bool
-5:Invert limit pins, mask
-6:Invert probe pin, bool
-10:Status report options, mask
-11:Junction deviation, mm
-12:Arc tolerance, mm
-13:Report in inches, bool
-14:*Control invert, mask
-15:*Coolant invert, mask
-16:*Spindle invert, mask
-17:*Control PullUp disable. mask
-18:*Limit PullUp disable, mask
-19:*Probe PullUp disable, mask
-20:Soft limits enable, bool
-21:Hard limits enable, bool
-22:Homing cycle enable, bool
-23:Homing direction invert, mask
-24:Homing locate feed rate, mm/min
-25:Homing search seek rate, mm/min
-26:Homing switch debounce delay, mm
-27:Homing switch pull-off dist, mm
-28:*G73 Retract, mm
-29:*Pulse delay, us
-30:Max spindle speed, RPM
-31:Min spindle speed, RPM
-32:Laser-mode enable, bool
-33:*PWM Frequency, Hz
-34:*PWM Off value, percent
-35:*PWM Min value, percent
-36:*PWM Max Value, percent
-37:*Stepper deenergize, mask
-38:*Spindle PPR, int
-39:*Enable legacy RT commands, bool
-40:*Jog soft limited, bool
-41:*Parking enable, bool
-42:*Parking axis, int
-43:*Homing locate cycles, int
-44:*Homing Cycle 1, mask
-45:*Homing Cycle 2, mask
-46:*Homing Cycle 3, mask
-47:*Homing Cycle 4, mask
-48:*Homing Cycle 5, mask
-49:*Homing Cycle 6, mask
-50:*Jog step speed, mm/min
-51:*Jog slow speed, mm/min
-52:*Jog fast speed, mm/min
-53:*Jog step distance, mm
-54:*Jog slow distance, mm
-55:*Jog fast distance, mm
-56:*Parking pullout increment, mm
-57:*Parking pullout rate, mm/min
-58:*Parking target, mm
-59:*Parking fast rate, mm/min
-60:*Restore overrides, bool
-61:*Ignore door when idle, bool
-62:*Sleep enable, bool
-63:*Hold actions, mask
-64:*Force init alarm, bool
-65:*Probing feed override, bool
-100:X-axis steps/mm
-101:Y-axis steps/mm
-102:Z-axis steps/mm
-103:A-axis steps/deg
-104:B-axis steps/deg
-105:C-axis steps/deg
-110:X-axis max rate, mm/min
-111:Y-axis max rate, mm/min
-112:Z-axis max rate, mm/min
-113:A-axis max rate, deg/min
-114:B-axis max rate, deg/min
-115:C-axis max rate, deg/min
-120:X-axis acceleration, mm/sec^2
-121:Y-axis acceleration, mm/sec^2
-122:Z-axis acceleration, mm/sec^2
-123:A-axis acceleration, deg/sec^2
-124:B-axis acceleration, deg/sec^2
-125:C-axis acceleration, deg/sec^2
-130:X-axis max travel, mm
-131:Y-axis max travel, mm
-132:Z-axis max travel, mm
-133:A-axis max travel, deg
-134:B-axis max travel, deg
-135:C-axis max travel, deg
+# Code | Description | Units | Type | Group | Extra
+0|Step pulse time|us|Int|Hardware Timings
+1|Step idle delay|ms|Int|Hardware Timings
+2|Step pulse invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
+3|Step direction invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
+4|Invert step enable pin|bool|Bool|Polarity/Direction inverts
+5|Invert limit pins|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
+6|Invert probe pin|bool|Bool|Polarity/Direction inverts
+10|Status report options|mask|Mask|General Settings|Absolute position,Buffer status,Line numbers,Feed rate and spindle RPM,Input pins state,Working coordinate offset,Overrides,Probe coordinates,,Alarm sub-state,Homing status,GCode parser status
+11|Junction deviation|mm|Float|General Settings
+12|Arc tolerance|mm|Float|General Settings
+13|Report in inches|bool|Bool|General Settings
+14|*Control invert|mask|Mask|Polarity/Direction inverts|reset,feed hold,cycle start,safety door,block delete,stop disable
+15|*Coolant invert|mask|Mask|Polarity/Direction inverts|flood,mist
+16|*Spindle invert|mask|Mask|Polarity/Direction inverts|spindle on,spindle ccw
+17|*Control PullUp disable|mask|Mask|Polarity/Direction inverts|reset,feed hold,cycle start,safety door,block delete,stop disable
+18|*Limit PullUp disable|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
+19|*Probe PullUp disable|bool|Bool|Polarity/Direction inverts
+20|Soft limits enable|bool|Bool|General Settings
+21|Hard limits enable|bool|Bool|General Settings
+22|Homing cycle enable|bool|Bool|General Settings,Homing
+23|Homing direction invert|mask|Mask|Polarity/Direction inverts,Homing|X,Y,Z,A,B,C
+24|Homing locate feed rate|mm/min|Float|Homing
+25|Homing search seek rate|mm/min|Float|Homing
+26|Homing switch debounce delay|mm|Float|Hardware Timings,Homing
+27|Homing switch pull-off dist|mm|Float|Homing
+28|*G73 Retract|mm|Float|GCode Settings
+29|*Pulse delay|us|Int|Hardware Timings
+30|Max spindle speed|RPM|Float|Spindle Settings
+31|Min spindle speed|RPM|Float|Spindle Settings
+32|Machine mode|int|Selection|Spindle Settings,General Settings|normal,Laser,Lathe
+33|*PWM Frequency|Hz|Float|Spindle Settings
+34|*PWM Off value|percent|Float|Spindle Settings
+35|*PWM Min value|percent|Float|Spindle Settings
+36|*PWM Max Value|percent|Float|Spindle Settings
+37|*Stepper deenergize|mask|Mask|General Settings|X,Y,Z,A,B,C
+38|*Spindle PPR|int|Int|Spindle Settings
+39|*Enable legacy RT commands|bool|Bool|General Settings
+40|*Jog soft limited|bool|Bool|Jog Settings
+41|*Parking enable|bool|Bool|Homing
+42|*Parking axis|int|Int|Homing
+43|*Homing locate cycles|int|Int|Homing
+44|*Homing Cycle 1|mask|Mask|Homing|X,Y,Z,A,B,C
+45|*Homing Cycle 2|mask|Mask|Homing|X,Y,Z,A,B,C
+46|*Homing Cycle 3|mask|Mask|Homing|X,Y,Z,A,B,C
+47|*Homing Cycle 4|mask|Mask|Homing|X,Y,Z,A,B,C
+48|*Homing Cycle 5|mask|Mask|Homing|X,Y,Z,A,B,C
+49|*Homing Cycle 6|mask|Mask|Homing|X,Y,Z,A,B,C
+50|*Jog step speed|mm/min|Float|Jog Settings
+51|*Jog slow speed|mm/min|Float|Jog Settings
+52|*Jog fast speed|mm/min|Float|Jog Settings
+53|*Jog step distance|mm|Float|Jog Settings
+54|*Jog slow distance|mm|Float|Jog Settings
+55|*Jog fast distance|mm|Float|Jog Settings
+56|*Parking pullout increment|mm|Float|Homing
+57|*Parking pullout rate|mm/min|Float|Homing
+58|*Parking target|mm|Float|Homing
+59|*Parking fast rate|mm/min|Float|Homing
+60|*Restore overrides|bool|Bool|General Settings
+61|*Ignore door when idle|bool|Bool|General Settings
+62|*Sleep enable|bool|Bool|General Settings
+63|*Hold actions|mask|Mask|General Settings|Disable laser during hold
+64|*Force initial alarm|bool|Bool|General Settings
+65|*Probing feed override|bool|Bool|General Settings
+100|X-axis|steps/mm|Float|X-Axis Settings
+101|Y-axis|steps/mm|Float|Y-Axis Settings
+102|Z-axis|steps/mm|Float|Z-Axis Settings
+103|A-axis|steps/deg|Float|A-Axis Settings
+104|B-axis|steps/deg|Float|B-Axis Settings
+105|C-axis|steps/deg|Float|C-Axis Settings
+110|X-axis max rate|mm/min|Float|X-Axis Settings
+111|Y-axis max rate|mm/min|Float|Y-Axis Settings
+112|Z-axis max rate|mm/min|Float|Z-Axis Settings
+113|A-axis max rate|deg/min|Float|A-Axis Settings
+114|B-axis max rate|deg/min|Float|B-Axis Settings
+115|C-axis max rate|deg/min|Float|C-Axis Settings
+120|X-axis acceleration|mm/sec^2|Float|X-Axis Settings
+121|Y-axis acceleration|mm/sec^2|Float|Y-Axis Settings
+122|Z-axis acceleration|mm/sec^2|Float|Z-Axis Settings
+123|A-axis acceleration|deg/sec^2|Float|A-Axis Settings
+124|B-axis acceleration|deg/sec^2|Float|B-Axis Settings
+125|C-axis acceleration|deg/sec^2|Float|C-Axis Settings
+130|X-axis max travel|mm|Float|X-Axis Settings
+131|Y-axis max travel|mm|Float|Y-Axis Settings
+132|Z-axis max travel|mm|Float|Z-Axis Settings
+133|A-axis max travel|deg|Float|A-Axis Settings
+134|B-axis max travel|deg|Float|B-Axis Settings
+135|C-axis max travel|deg|Float|C-Axis Settings

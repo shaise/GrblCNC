@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -93,6 +94,12 @@
     <Compile Include="Controls\GStateViewer.Designer.cs">
       <DependentUpon>GStateViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HorizTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\HorizTab.Designer.cs">
+      <DependentUpon>HorizTab.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\JogButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -123,6 +130,12 @@
     <Compile Include="Controls\MultiSelect.Designer.cs">
       <DependentUpon>MultiSelect.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ParametersEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ParametersEdit.Designer.cs">
+      <DependentUpon>ParametersEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ValueSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -131,6 +144,12 @@
     </Compile>
     <Compile Include="ErrorDisplayHandler.cs" />
     <Compile Include="FontManager.cs" />
+    <Compile Include="FormConfigGrbl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormConfigGrbl.Designer.cs">
+      <DependentUpon>FormConfigGrbl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GCodeDimensions.cs" />
     <Compile Include="GcodeInterp.cs" />
     <Compile Include="Controls\GcodeViewer.cs">
@@ -223,8 +242,14 @@
     <EmbeddedResource Include="Controls\MultiSelect.resx">
       <DependentUpon>MultiSelect.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ParametersEdit.resx">
+      <DependentUpon>ParametersEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ValueSlider.resx">
       <DependentUpon>ValueSlider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormConfigGrbl.resx">
+      <DependentUpon>FormConfigGrbl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

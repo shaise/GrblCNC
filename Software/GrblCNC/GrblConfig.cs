@@ -16,6 +16,7 @@ namespace GrblCNC
             Int,
             Boolean,
             Mask,
+            Selection,
             String // or unknown
         }
 
@@ -76,7 +77,17 @@ namespace GrblCNC
             }
         }
 
-        Dictionary<int, string> parDesc;
+        public class ParamDescription
+        {
+            public int code;
+            public string description;
+            public string uints;
+            public ParamType type;
+            public string [] groups;
+            public string[] options;
+        }
+
+        Dictionary<int, ParamDescription> parDesc;
         List<GrblParam> parameters;
 
         public GrblConfig()
@@ -87,13 +98,31 @@ namespace GrblCNC
         
         void InitParamDictionary()
         {
-            parDesc = new Dictionary<int, string>();
+            parDesc = new Dictionary<int, ParamDescription>();
             foreach (string line in Resources.GrblParamDescription.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] codeName = line.Split(':');
-                if (codeName.Length != 2)
+                string[] vars = line.Split('|');
+                if (line[0] == '#' || vars.Length < 4)
                     continue;
-                try { parDesc[int.Parse(codeName[0])] = codeName[1]; }
+                try {
+                    int code = int.Parse(vars[0]);
+                    ParamDescription pd = new ParamDescription();
+                    pd.code = code;
+                    pd.description = vars[1];
+                    pd.uints = vars[2];
+                    if (!Enum.TryParse<ParamType>(vars[3], out pd.type))
+                        pd.type = ParamType.String;
+                    if (vars.Length > 4)
+                        pd.groups = vars[4].Split(',');
+                    else
+                        pd.groups = new string [] {"General"};
+                    if (vars.Length > 5)
+                        pd.options = vars[5].Split(',');
+                    else
+                        pd.options = null;
+
+                    parDesc[code] = pd; 
+                }
                 catch { }
             }
         }
@@ -103,10 +132,15 @@ namespace GrblCNC
             return parameters;
         }
 
+        public Dictionary<int, ParamDescription> GetParamDescription()
+        {
+            return parDesc;
+        }
+
         public string GetDescription(int code)
         {
             if (parDesc.ContainsKey(code))
-                return parDesc[code];
+                return parDesc[code].description + ", " + parDesc[code].uints;
             return "";
         }
 
@@ -155,9 +189,22 @@ namespace GrblCNC
             // see if we know this val
             if (parDesc.ContainsKey(parcode))
             {
-                string desc = parDesc[parcode];
-                string[] dvars = desc.Split(' ');
-                switch (dvars[dvars.Length - 1])
+                ParamDescription pd = parDesc[parcode];
+                par.type = pd.type;
+                switch (pd.type)
+                {
+                    case ParamType.Float:
+                        try { par.floatVal = Utils.ParseFloatInvariant(par.strVal); }
+                        catch { }
+                        break;
+                    case ParamType.Int:
+                    case ParamType.Mask:
+                    case ParamType.Boolean:
+                        try { par.intVal = int.Parse(par.strVal); }
+                        catch { }
+                        break;
+                }
+                /*switch (pd.uints)
                 {
                     case "mm":
                     case "mm/min":
@@ -190,6 +237,7 @@ namespace GrblCNC
                         catch { }
                         break;
                 }
+                 */
             }
         }
         

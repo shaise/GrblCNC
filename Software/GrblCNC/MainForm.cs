@@ -21,6 +21,7 @@ namespace GrblCNC
         GrblComm grblComm;
         FormOffset frmOffset;
         FormProbe frmProbe;
+        FormConfigGrbl frmConfigGrbl;
         bool keyHandled;
         bool keyboardJogActive = true;
         VisualizerWin visualizerWinMain;
@@ -68,6 +69,8 @@ namespace GrblCNC
 
             frmOffset = new FormOffset();
             frmProbe = new FormProbe();
+            frmConfigGrbl = new FormConfigGrbl();
+            Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
         }
@@ -266,10 +269,21 @@ namespace GrblCNC
             }
         }
 
+        #region Menu commands
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenNewGcodeFile();
         }
+
+        private void configureGrblToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (frmConfigGrbl.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+
+            }
+        }
+
+        #endregion
 
 
         void simTimer_Tick(object sender, EventArgs e)
@@ -401,6 +415,7 @@ namespace GrblCNC
             mdiCtrl.Select(); ;
         }
 
+ 
 
     }
 

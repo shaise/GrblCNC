@@ -19,6 +19,8 @@ namespace GrblCNC
         public static GcodeInterp ginterp;
         public static VisualizerWin visualizeWindow;
         public static GrblStatus grblStatus;
+        public static GrblConfig grblConfig;
+        public static ParametersEdit grblParameterEditor;
 
         public const int NUM_AXIS = 5;
 
