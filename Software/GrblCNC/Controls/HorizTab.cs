@@ -16,7 +16,7 @@ namespace GrblCNC.Controls
         string title;
         string[] tabTexts;
         int selectedTab = 0;
-        int hoverTab = 1;
+        int hoverTab = -1;
         Font titleFont;
         Brush bback;
         Brush bfore;
@@ -25,7 +25,7 @@ namespace GrblCNC.Controls
         Pen pHiglight, pShadow;
         Point[] triPoints;
 
-        public delegate void SelectionChangeDelegate(object sender, int selection);
+        public delegate void SelectionChangeDelegate(object sender, int selection, string selectionName);
         public event SelectionChangeDelegate SelectionChange;
 
         public HorizTab()
@@ -172,9 +172,19 @@ namespace GrblCNC.Controls
                 selectedTab = hoverTab;
                 Invalidate();
                 if (SelectionChange != null)
-                    SelectionChange(this, selectedTab);
+                    SelectionChange(this, selectedTab, tabTexts[selectedTab]);
             }
             base.OnMouseClick(e);
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            if (hoverTab != -1)
+            {
+                hoverTab = -1;
+                Invalidate();
+            }
+            base.OnMouseLeave(e);
         }
 
     }

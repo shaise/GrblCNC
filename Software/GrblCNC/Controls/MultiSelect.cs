@@ -15,9 +15,11 @@ namespace GrblCNC.Controls
         string selTextJoined;
         int depth = 2;
         Color highlightColor = Color.White, shadowColor = Color.Gray;
-        int selectedItem = 0;
+        int selectedValue = 0;
+        bool multiMode = false;
         Font selFont = null;
-        int nsels = 0, cellw;
+        int nsels = 0;
+        float cellw;
         public delegate void SelectionChangedDelegate(object obj, int newSelection);
         public event SelectionChangedDelegate SelectionChanged;
         public MultiSelect()
@@ -36,13 +38,28 @@ namespace GrblCNC.Controls
             }
         }
 
-        public int SelectedItem
+        public void SetSelectionTexts(string [] texts)
         {
-            get { return selectedItem; }
+            SelectionTexts = string.Join("|", texts);
+        }
+
+        public int SelectedValue
+        {
+            get { return selectedValue; }
             set 
-            { 
-                selectedItem = value;
+            {
+                selectedValue = value;
                 Invalidate();
+            }
+        }
+
+        public bool MultiSelectionMode
+        {
+            get { return multiMode; }
+            set
+            {
+                multiMode = value;
+                selectedValue = 0;
             }
         }
 
@@ -81,24 +98,29 @@ namespace GrblCNC.Controls
                 return;
             //h = Height - 2 * depth;
             //w = Width - 2 * depth;
-            cellw = (Width - 2 * depth) / nsels;
+            cellw = ((float)Width - 2 * depth) / nsels;
             Brush bf = Enabled ? new SolidBrush(ForeColor) : new SolidBrush(Color.FromArgb(64, ForeColor));
             Brush bb = new SolidBrush(BackColor);
 
             for (int i = 0; i < nsels; i++)
             {
-                int sp = i * cellw + depth;
+                int sp = (int)(i * cellw + depth);
                 if (i > 0)
                 {
                     g.DrawLine(ph, sp - 1, depth, sp - 1, h - depth);
-                    g.DrawLine(ps, sp + 1, depth, sp + 1, h - depth);
+                    g.DrawLine(ps, sp, depth, sp, h - depth);
                 }
                 SizeF sz = g.MeasureString(selTexts[i], selFont);
                 float offsx = (cellw - sz.Width) / 2;
                 float offsy = (Height - sz.Height) / 2;
-                if (i == selectedItem)
+                bool isSelectedCell = false;
+                if (multiMode)
+                    isSelectedCell = (selectedValue & (1 << i)) != 0;
+                else
+                    isSelectedCell = i == selectedValue;
+                if (isSelectedCell)
                 {
-                    g.FillRectangle(bf, sp + 1, depth + 1, cellw - 1, Height - 2 * depth - 2);
+                    g.FillRectangle(bf, sp + 2, depth + 1, cellw - 3, Height - 2 * depth - 2);
                     g.DrawString(selTexts[i], selFont, bb, sp + offsx, offsy);
                 }
                 else
@@ -120,13 +142,15 @@ namespace GrblCNC.Controls
                 return;
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                int newsel = (e.X - depth) / cellw;
-                if (newsel != selectedItem)
+                int newsel = (int)((e.X - depth) / cellw);
+                if (multiMode)
+                    newsel = selectedValue ^ (1 << newsel);
+                if (newsel != selectedValue)
                 {
-                    selectedItem = newsel;
+                    selectedValue = newsel;
                     Invalidate();
                     if (SelectionChanged != null)
-                        SelectionChanged(this, selectedItem);
+                        SelectionChanged(this, selectedValue);
                 }
             }
             base.OnMouseClick(e);

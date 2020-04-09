@@ -14,7 +14,7 @@ namespace GrblCNC
         {
             Float = 0,
             Int,
-            Boolean,
+            Bool,
             Mask,
             Selection,
             String // or unknown
@@ -55,7 +55,7 @@ namespace GrblCNC
                 {
                     switch (type)
                     {
-                        case ParamType.Boolean:
+                        case ParamType.Bool:
                             result = val == "1" || val == "0" ? val : null;
                             break;
                         case ParamType.Float:
@@ -199,7 +199,7 @@ namespace GrblCNC
                         break;
                     case ParamType.Int:
                     case ParamType.Mask:
-                    case ParamType.Boolean:
+                    case ParamType.Bool:
                         try { par.intVal = int.Parse(par.strVal); }
                         catch { }
                         break;

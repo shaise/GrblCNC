@@ -71,7 +71,7 @@ namespace GrblCNC.Controls
         {
             if (axis < 0 || axis >= Global.NUM_AXIS)
                 return;
-            multiSelAxis.SelectedItem = axis;
+            multiSelAxis.SelectedValue= axis;
         }
 
         private void AxisPos_click(object sender, EventArgs e)
@@ -100,28 +100,28 @@ namespace GrblCNC.Controls
         {
             if (AxisActionPressed == null)
                 return;
-            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.Home);
+            AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.Home);
         }
 
         private void jogButtTouchOff_Click(object sender, EventArgs e)
         {
             if (AxisActionPressed == null)
                 return;
-            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.CoordTouchOff);
+            AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.CoordTouchOff);
         }
 
         private void jogButtToolTouchOff_Click(object sender, EventArgs e)
         {
             if (AxisActionPressed == null)
                 return;
-            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.ToolTouchOff);
+            AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.ToolTouchOff);
         }
 
         private void jogButtProbe_Click(object sender, EventArgs e)
         {
             if (AxisActionPressed == null)
                 return;
-            AxisActionPressed(this, multiSelAxis.SelectedItem, AxisAction.ToolProbe);
+            AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.ToolProbe);
         }
 
         private void jogButtSpindleStop_Click(object sender, EventArgs e)

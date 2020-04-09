@@ -94,7 +94,7 @@
             this.multiSelDir.Location = new System.Drawing.Point(204, 115);
             this.multiSelDir.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.multiSelDir.Name = "multiSelDir";
-            this.multiSelDir.SelectedItem = 0;
+            this.multiSelDir.SelectedValue = 0;
             this.multiSelDir.SelectionTexts = "-|+";
             this.multiSelDir.Size = new System.Drawing.Size(121, 37);
             this.multiSelDir.TabIndex = 4;

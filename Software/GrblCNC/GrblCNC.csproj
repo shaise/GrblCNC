@@ -130,6 +130,9 @@
     <Compile Include="Controls\MultiSelect.Designer.cs">
       <DependentUpon>MultiSelect.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\ParametersEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>

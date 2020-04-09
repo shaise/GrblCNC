@@ -205,7 +205,7 @@
             this.multiSelAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(241)))), ((int)(((byte)(245)))));
             this.multiSelAxis.Location = new System.Drawing.Point(9, 129);
             this.multiSelAxis.Name = "multiSelAxis";
-            this.multiSelAxis.SelectedItem = 0;
+            this.multiSelAxis.SelectedValue = 0;
             this.multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
             this.multiSelAxis.Size = new System.Drawing.Size(113, 27);
             this.multiSelAxis.TabIndex = 34;

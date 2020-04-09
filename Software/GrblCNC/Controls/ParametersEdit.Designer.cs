@@ -28,24 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panelParams = new System.Windows.Forms.Panel();
             this.horizTabs = new GrblCNC.Controls.HorizTab();
             this.SuspendLayout();
+            // 
+            // panelParams
+            // 
+            this.panelParams.AutoScroll = true;
+            this.panelParams.Location = new System.Drawing.Point(155, 3);
+            this.panelParams.Name = "panelParams";
+            this.panelParams.Size = new System.Drawing.Size(303, 385);
+            this.panelParams.TabIndex = 1;
             // 
             // horizTabs
             // 
             this.horizTabs.Location = new System.Drawing.Point(3, 3);
             this.horizTabs.Name = "horizTabs";
+            this.horizTabs.SelectedTab = 0;
             this.horizTabs.Size = new System.Drawing.Size(146, 385);
             this.horizTabs.TabIndex = 0;
             this.horizTabs.TabTexts = new string[] {
         "General",
         "Hardware timings"};
             this.horizTabs.Title = "Categories";
+            this.horizTabs.SelectionChange += new GrblCNC.Controls.HorizTab.SelectionChangeDelegate(this.horizTabs_SelectionChange);
             // 
             // ParametersEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panelParams);
             this.Controls.Add(this.horizTabs);
             this.Name = "ParametersEdit";
             this.Size = new System.Drawing.Size(461, 391);
@@ -56,5 +68,6 @@
         #endregion
 
         private HorizTab horizTabs;
+        private System.Windows.Forms.Panel panelParams;
     }
 }

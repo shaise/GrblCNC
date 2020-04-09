@@ -172,6 +172,7 @@ namespace GrblCNC
             manualControl.SetSliderMinMax(ManualControl.Sliders.SpindleSpeed,
                 grblConf.GetParam(GrblConfig.GrblParam.Code.MinSpindleSpeedCode).floatVal,
                 grblConf.GetParam(GrblConfig.GrblParam.Code.MaxSpindleSpeedCode).floatVal);
+            Global.grblParameterEditor.UpdateGuiParams(grblConf.GetParams());
             toolStripProgressBuff.Maximum1 = 10;
             toolStripProgressBuff.Maximum2 = 10;
         }

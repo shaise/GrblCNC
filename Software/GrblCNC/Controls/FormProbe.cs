@@ -44,8 +44,8 @@ namespace GrblCNC.Controls
 
         public float Direction
         {
-            get { return multiSelDir.SelectedItem == 0 ? -1 : 1; }
-            set { multiSelDir.SelectedItem = value < 0 ? 0 : 1; }
+            get { return multiSelDir.SelectedValue == 0 ? -1 : 1; }
+            set { multiSelDir.SelectedValue = value < 0 ? 0 : 1; }
         }
 
         private void buttOK_Click(object sender, EventArgs e)
