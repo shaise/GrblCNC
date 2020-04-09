@@ -15,10 +15,14 @@ namespace GrblCNC.Controls
         //public List<GrblConfig.ParamDescription> paramList;
         public List<Control> activeControls;
         public GrblConfig.ParamDescription paramDesc;
-        public float floatValue;
-        public int intValue;
+        float floatValue, lastFloatValue;
+        int intValue, lastIntValue;
+        string strValue, lastStrValue; 
         public bool isSimpleMask;
-
+        bool isChanged = false;
+        Color stdBackColor, changeBackColor;
+        bool updatingBgnd = false;
+        bool updatingGui = false;
         public ParameterControl(GrblConfig.ParamDescription pardesc)
         {
             paramDesc = pardesc;
@@ -32,6 +36,7 @@ namespace GrblCNC.Controls
                         cb.AutoSize = true;
                         cb.Text = pardesc.description;
                         cb.Name = "Bool_" + pardesc.code.ToString();
+                        cb.CheckedChanged += ValueChanged;
                         activeControls.Add(cb);
                         cb.Location = new Point(0, 0);
                         this.Width = cb.Width;
@@ -55,6 +60,7 @@ namespace GrblCNC.Controls
                             UpdateNumeric(nud, 0, 0, 999999, pardesc.options);
                         l.Location = new Point(0, (nud.Height - l.Height) / 2);
                         nud.Location = new Point(l.Width, 0);
+                        nud.ValueChanged += ValueChanged;
                         activeControls.Add(nud);
                         this.Width = nud.Location.X + nud.Width;
                         this.Height = nud.Height;
@@ -77,6 +83,7 @@ namespace GrblCNC.Controls
                             ms.Height = 20;
                             ms.Width = 22 * paramDesc.options.Length;
                             ms.MultiSelectionMode = true;
+                            ms.SelectionChanged += ms_SelectionChanged;
                             l.Location = new Point(0, (ms.Height - l.Height) / 2);
                             ms.Location = new Point(l.Width, 0);
                             activeControls.Add(ms);
@@ -96,6 +103,7 @@ namespace GrblCNC.Controls
                                     CheckBox cb = new CheckBox();
                                     cb.AutoSize = true;
                                     cb.Name = "Mask_" + pardesc.code.ToString() + "_" + i.ToString();
+                                    cb.CheckedChanged += ValueChanged;
                                     if (pardesc.options[i].Length > 0)
                                     {
                                         this.Controls.Add(cb);
@@ -124,6 +132,7 @@ namespace GrblCNC.Controls
                         ComboBox cb = new ComboBox();
                         cb.DropDownStyle = ComboBoxStyle.DropDownList;
                         cb.Name = "Selection_" + pardesc.code.ToString();
+                        cb.SelectedIndexChanged += ValueChanged;
                         l.Location = new Point(0, (cb.Height - l.Height) / 2);
                         cb.Location = new Point(l.Width, 0);
                         if (pardesc.options != null)
@@ -139,6 +148,19 @@ namespace GrblCNC.Controls
                     }
                     break;
             }
+            UpdateColors();
+        }
+
+        void ValueChanged(object sender, EventArgs e)
+        {
+            if (!updatingGui)
+                UpdateFromGui();
+        }
+
+        void ms_SelectionChanged(object obj, int newSelection)
+        {
+            if (!updatingGui)
+                UpdateFromGui();
         }
 
         bool IsSimpleMask(string[] maskStrs)
@@ -171,15 +193,111 @@ namespace GrblCNC.Controls
             }
         }
 
-        public void UpdateFromParameter(GrblConfig.GrblParam par)
+        void UpdateColors()
+        {
+            stdBackColor = BackColor;
+            // change color is more yellow-ish
+            Color c1 = Utils.TuneColor(BackColor, 1.1f);
+            Color c2 = Utils.TuneColor(BackColor, 0.9f);
+            changeBackColor = Color.FromArgb(c1.R, c1.G, c2.B);
+            UpdateBackground();
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            UpdateColors();
+            base.OnLoad(e);
+        }
+
+        protected override void OnBackColorChanged(EventArgs e)
+        {
+            if (updatingBgnd)
+                return;
+            UpdateColors();
+            base.OnBackColorChanged(e);
+        }
+
+        void UpdateBackground()
+        {
+            updatingBgnd = true;
+            BackColor = isChanged ? changeBackColor : stdBackColor;
+            Invalidate();
+            foreach (Control ctl in Controls)
+                ctl.Invalidate();
+            updatingBgnd = false;
+        }
+
+        void UpdateFromGui()
         {
             switch (paramDesc.type)
             {
                 case GrblConfig.ParamType.Bool:
                     {
                         CheckBox cb = (CheckBox)activeControls[0];
+                        intValue = cb.Checked ? 1 : 0;
+                        isChanged = intValue != lastIntValue;
+                    }
+                    break;
+
+                case GrblConfig.ParamType.Float:
+                    {
+                        NumericUpDown nud = (NumericUpDown)activeControls[0];
+                        floatValue = (float)nud.Value;
+                        isChanged = floatValue != lastFloatValue;
+                    }
+                    break;
+
+                case GrblConfig.ParamType.Int:
+                    {
+                        NumericUpDown nud = (NumericUpDown)activeControls[0];
+                        intValue = (int)nud.Value;
+                    }
+                    break;
+
+                case GrblConfig.ParamType.Mask:
+                    {
+                        if (isSimpleMask)
+                        {
+                            MultiSelect ms = (MultiSelect)activeControls[0];
+                            intValue = ms.SelectedValue;
+                        }
+                        else
+                        {
+                            intValue = 0;
+                            for (int i = 0; i < activeControls.Count; i++)
+                            {
+                                CheckBox cb = (CheckBox)activeControls[i];
+                                if (cb.Checked)
+                                    intValue |= 1 << i;
+                            }
+                        }
+                        isChanged = intValue != lastIntValue;
+                    }
+                    break;
+
+                case GrblConfig.ParamType.Selection:
+                    {
+                        ComboBox cb = (ComboBox)activeControls[0];
+                        intValue = cb.SelectedIndex;
+                        isChanged = intValue != lastIntValue;
+                    }
+                    break;
+            }
+            UpdateBackground();
+        }
+
+ 
+        public void UpdateFromParameter(GrblConfig.GrblParam par, bool overrideChanges)
+        {
+            updatingGui = true;
+            switch (paramDesc.type)
+            {
+                case GrblConfig.ParamType.Bool:
+                    {
+                        CheckBox cb = (CheckBox)activeControls[0];
                         cb.Checked = par.intVal != 0;
-                        intValue = par.intVal;
+                        if (overrideChanges)
+                            lastIntValue = par.intVal;
                     }
                     break;
 
@@ -187,7 +305,8 @@ namespace GrblCNC.Controls
                     {
                         NumericUpDown nud = (NumericUpDown)activeControls[0];
                         nud.Value = (decimal)par.floatVal;
-                        floatValue = par.floatVal;
+                        if (overrideChanges)
+                            lastFloatValue = par.floatVal;
                     }
                     break;
 
@@ -195,7 +314,8 @@ namespace GrblCNC.Controls
                     {
                         NumericUpDown nud = (NumericUpDown)activeControls[0];
                         nud.Value = (decimal)par.intVal;
-                        floatValue = par.intVal;
+                        if (overrideChanges)
+                            lastIntValue = par.intVal;
                     }
                     break;
 
@@ -214,7 +334,8 @@ namespace GrblCNC.Controls
                                 cb.Checked = (par.intVal & (1 << i)) != 0;
                             }
                         }
-                        intValue = par.intVal;
+                        if (overrideChanges)
+                            lastIntValue = par.intVal;
                     }
                     break;
 
@@ -222,10 +343,14 @@ namespace GrblCNC.Controls
                     {
                         ComboBox cb = (ComboBox)activeControls[0];
                         cb.SelectedIndex = par.intVal;
-                        intValue = par.intVal;
+                        if (overrideChanges)
+                            lastIntValue = par.intVal;
                     }
                     break;
             }
+            updatingGui = false;
+            if (!overrideChanges)
+                UpdateFromGui();
         }
 
     }

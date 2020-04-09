@@ -82,7 +82,7 @@ namespace GrblCNC.Controls
             {
                 if (parameterDict.ContainsKey(par.code))
                 {
-                    parameterDict[par.code].UpdateFromParameter(par);
+                    parameterDict[par.code].UpdateFromParameter(par, true);
                 }
             }
         }
