@@ -229,12 +229,16 @@ namespace GrblCNC
             {
                 toolStripGrbl.Enabled = true;
                 toolStripGrbl.ToolTipText = "Grbl Connected at port " + grblComm.activePort;
+                toolStripConfGrbl.Enabled = true;
+                toolStripPower.Enabled = true;
                 Global.GrblConnected = true;
             }
             else
             {
                 toolStripGrbl.Enabled = false;
                 toolStripGrbl.ToolTipText = "GRBL Disconnected";
+                toolStripConfGrbl.Enabled = false;
+                toolStripPower.Enabled = false;
                 Global.GrblConnected = false;
             }
         }
@@ -278,10 +282,7 @@ namespace GrblCNC
 
         private void configureGrblToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (frmConfigGrbl.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-
-            }
+            frmConfigGrbl.ShowDialog();
         }
 
         #endregion
@@ -323,6 +324,11 @@ namespace GrblCNC
 
         private void toolStripPower_Click(object sender, EventArgs e)
         {
+        }
+
+        private void toolStripConfGrbl_Click(object sender, EventArgs e)
+        {
+            frmConfigGrbl.ShowDialog();
         }
 
         private void toolStripEstop_Click(object sender, EventArgs e)
@@ -416,7 +422,7 @@ namespace GrblCNC
             mdiCtrl.Select(); ;
         }
 
- 
+
 
     }
 

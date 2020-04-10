@@ -294,6 +294,7 @@
     <None Include="Resources\ErrorIcon.png" />
     <None Include="Resources\AlarmErrorIcon.png" />
     <None Include="Resources\GrblAlarmCodes.txt" />
+    <None Include="Resources\ConfGrblButt.png" />
     <Content Include="Resources\GrblLogo_ngc.txt" />
     <None Include="Resources\JetBrainsMono-Medium.ttf" />
     <None Include="Resources\VertShader3DText.txt" />

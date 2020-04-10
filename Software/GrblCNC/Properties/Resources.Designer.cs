@@ -93,6 +93,16 @@ namespace GrblCNC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ConfGrblButt {
+            get {
+                object obj = ResourceManager.GetObject("ConfGrblButt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ErrorIcon {
             get {
                 object obj = ResourceManager.GetObject("ErrorIcon", resourceCulture);
@@ -325,25 +335,15 @@ namespace GrblCNC.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0:Step pulse time, us
-        ///1:Step idle delay, ms
-        ///2:Step pulse invert, mask
-        ///3:Step direction invert, mask
-        ///4:Invert step enable pin, bool
-        ///5:Invert limit pins, mask
-        ///6:Invert probe pin, bool
-        ///10:Status report options, mask
-        ///11:Junction deviation, mm
-        ///12:Arc tolerance, mm
-        ///13:Report in inches, bool
-        ///14:*Control invert, mask
-        ///15:*Coolant invert, mask
-        ///16:*Spindle invert, mask
-        ///17:*Control PullUp disable. mask
-        ///18:*Limit PullUp disable, mask
-        ///19:*Probe PullUp disable, mask
-        ///20:Soft limits enable, bool
-        ///21:Hard li [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to # Code | Description | Units | Type | Group | Extra
+        ///0|Step pulse time|us|Int|Hardware Timings
+        ///1|Step idle delay|ms|Int|Hardware Timings
+        ///2|Step pulse invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
+        ///3|Step direction invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
+        ///4|Invert step enable pin|bool|Bool|Polarity/Direction inverts
+        ///5|Invert limit pins|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
+        ///6|Invert probe pin|bool|Bool|Polarity/Direction inverts
+        ///10|Status report options|mask|Mask|Gene [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string GrblParamDescription {
             get {

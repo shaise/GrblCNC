@@ -23,6 +23,7 @@ namespace GrblCNC.Controls
         Color stdBackColor, changeBackColor;
         bool updatingBgnd = false;
         bool updatingGui = false;
+        public int minimumWidth;
         public ParameterControl(GrblConfig.ParamDescription pardesc)
         {
             paramDesc = pardesc;
@@ -129,6 +130,7 @@ namespace GrblCNC.Controls
                         l.AutoSize = true;
                         l.Text = pardesc.description + ":";
                         l.Name = "Label_" + pardesc.code.ToString();
+                        this.Controls.Add(l);
                         ComboBox cb = new ComboBox();
                         cb.DropDownStyle = ComboBoxStyle.DropDownList;
                         cb.Name = "Selection_" + pardesc.code.ToString();
@@ -143,12 +145,36 @@ namespace GrblCNC.Controls
                         activeControls.Add(cb);
                         this.Width = cb.Location.X + cb.Width;
                         this.Height = cb.Height;
-                        this.Controls.Add(l);
                         this.Controls.Add(cb);
                     }
                     break;
+
+                case GrblConfig.ParamType.String:
+                    {
+                        Label l = new Label();
+                        l.AutoSize = true;
+                        l.Text = pardesc.description + ":";
+                        l.Name = "Label_" + pardesc.code.ToString();
+                        this.Controls.Add(l);
+                        TextBox tb = new TextBox();
+                        tb.Name = "String_" + pardesc.code.ToString();
+                        tb.TextChanged += ValueChanged;
+                        l.Location = new Point(0, (tb.Height - l.Height) / 2);
+                        tb.Location = new Point(l.Width, 0);
+                        activeControls.Add(tb);
+                        this.Width = tb.Location.X + tb.Width;
+                        this.Height = tb.Height;
+                        this.Controls.Add(tb);
+                    }
+                    break;
             }
+            minimumWidth = Width;
             UpdateColors();
+        }
+
+        public bool IsChanged
+        {
+            get { return isChanged; }
         }
 
         void ValueChanged(object sender, EventArgs e)
@@ -251,6 +277,7 @@ namespace GrblCNC.Controls
                     {
                         NumericUpDown nud = (NumericUpDown)activeControls[0];
                         intValue = (int)nud.Value;
+                        isChanged = intValue != lastIntValue;
                     }
                     break;
 
@@ -286,7 +313,6 @@ namespace GrblCNC.Controls
             UpdateBackground();
         }
 
- 
         public void UpdateFromParameter(GrblConfig.GrblParam par, bool overrideChanges)
         {
             updatingGui = true;
@@ -349,8 +375,65 @@ namespace GrblCNC.Controls
                     break;
             }
             updatingGui = false;
-            if (!overrideChanges)
+            if (overrideChanges)
+            {
+                isChanged = false; 
+                UpdateBackground();
+            }
+            else
                 UpdateFromGui();
+        }
+
+        public string GetParamString()
+        {
+            string res = "";
+            switch (paramDesc.type)
+            {
+                case GrblConfig.ParamType.Bool:
+                case GrblConfig.ParamType.Int:
+                case GrblConfig.ParamType.Mask:
+                case GrblConfig.ParamType.Selection:
+                    res = intValue.ToString();
+                    break;
+
+                case GrblConfig.ParamType.Float:
+                    res = Utils.ToInvariantString(floatValue, "0.000");
+                    break;
+
+                case GrblConfig.ParamType.String:
+                    res = strValue;
+                    break;
+            }
+            return res;
+        }
+
+
+        public void FromString(string str)
+        {
+            GrblConfig.GrblParam par = new GrblConfig.GrblParam(0, str);
+            // fixme: lots of duplications of code in parameters. need a good fix
+            switch (paramDesc.type)
+            {
+                case GrblConfig.ParamType.Bool:
+                case GrblConfig.ParamType.Int:
+                case GrblConfig.ParamType.Mask:
+                case GrblConfig.ParamType.Selection:
+                    try { par.intVal = int.Parse(str); }
+                    catch { }
+                    break;
+
+                case GrblConfig.ParamType.Float:
+                    par.floatVal = Utils.ParseFloatInvariant(str);
+                    break;
+            }
+            UpdateFromParameter(par, false);
+        }
+
+
+
+        public override string ToString()
+        {
+            return string.Format("${0}={1}     ({2}, {3})", paramDesc.code, GetParamString(), paramDesc.description, paramDesc.uints);
         }
 
     }

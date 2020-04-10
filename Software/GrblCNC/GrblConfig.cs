@@ -64,6 +64,7 @@ namespace GrblCNC
                             break;
                         case ParamType.Int:
                         case ParamType.Mask:
+                        case ParamType.Selection:
                             tint = int.Parse(val);
                             result = tint >= 0 ? tint.ToString() : null;
                             break;

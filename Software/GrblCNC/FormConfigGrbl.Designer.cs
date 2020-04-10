@@ -35,19 +35,21 @@
             // 
             this.paramEdit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.paramEdit.Location = new System.Drawing.Point(0, 0);
+            this.paramEdit.MinimumSize = new System.Drawing.Size(356, 200);
             this.paramEdit.Name = "paramEdit";
-            this.paramEdit.Size = new System.Drawing.Size(593, 415);
+            this.paramEdit.Size = new System.Drawing.Size(474, 370);
             this.paramEdit.TabIndex = 0;
             // 
             // FormConfigGrbl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(593, 415);
+            this.ClientSize = new System.Drawing.Size(474, 370);
             this.Controls.Add(this.paramEdit);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormConfigGrbl";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure Grbl driver";
             this.ResumeLayout(false);
 
