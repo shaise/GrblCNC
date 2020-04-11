@@ -326,7 +326,7 @@ namespace GrblCNC
             {
                 curInternLine = i;
                 string line = lines[i];
-                if (line[0] == '(')
+                if (line.Length == 0 || line[0] == '(' || line[0] == '%')
                     continue; // remark
                 // backup coords
                 CopyCoords(lastCoords, curCoords);
