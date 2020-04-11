@@ -198,6 +198,7 @@ namespace GrblCNC
                 mdiCtrl.SetGcodeParserStatus(status.gState);
             toolStripProgressBuff.Value1 = status.uartBuffer;
             toolStripProgressBuff.Value2 = status.planBuffer;
+            toolStripStatusMode.Text = status.state.ToString();
             visualizerOverlay.Update(status);
         }
 

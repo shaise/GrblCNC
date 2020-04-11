@@ -34,6 +34,7 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configureGrblToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusMode = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBuff = new GrblCNC.Controls.DualProgressTool();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -41,6 +42,7 @@
             this.toolStripEstop = new System.Windows.Forms.ToolStripButton();
             this.toolStripPower = new System.Windows.Forms.ToolStripButton();
             this.toolStripGrbl = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripConfGrbl = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripOpen = new System.Windows.Forms.ToolStripButton();
             this.toolStripReload = new System.Windows.Forms.ToolStripButton();
@@ -66,7 +68,6 @@
             this.statusView = new GrblCNC.StatusViewer();
             this.openGcodeFile = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripConfGrbl = new System.Windows.Forms.ToolStripButton();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -127,6 +128,7 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusMode,
             this.toolStripStatusLabel1,
             this.toolStripProgressBuff,
             this.toolStripStatus});
@@ -135,6 +137,15 @@
             this.statusStrip1.Size = new System.Drawing.Size(1264, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusMode
+            // 
+            this.toolStripStatusMode.AutoSize = false;
+            this.toolStripStatusMode.BackColor = System.Drawing.Color.Indigo;
+            this.toolStripStatusMode.ForeColor = System.Drawing.Color.White;
+            this.toolStripStatusMode.Name = "toolStripStatusMode";
+            this.toolStripStatusMode.Size = new System.Drawing.Size(60, 17);
+            this.toolStripStatusMode.Text = "Mode";
             // 
             // toolStripStatusLabel1
             // 
@@ -214,6 +225,19 @@
             this.toolStripGrbl.Name = "toolStripGrbl";
             this.toolStripGrbl.Size = new System.Drawing.Size(50, 44);
             this.toolStripGrbl.ToolTipText = "GRBL Disconnected";
+            // 
+            // toolStripConfGrbl
+            // 
+            this.toolStripConfGrbl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripConfGrbl.Enabled = false;
+            this.toolStripConfGrbl.Image = global::GrblCNC.Properties.Resources.ConfGrblButt;
+            this.toolStripConfGrbl.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripConfGrbl.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripConfGrbl.Name = "toolStripConfGrbl";
+            this.toolStripConfGrbl.Size = new System.Drawing.Size(44, 44);
+            this.toolStripConfGrbl.Text = "toolStripButton1";
+            this.toolStripConfGrbl.ToolTipText = "Configure Grbl Parameters";
+            this.toolStripConfGrbl.Click += new System.EventHandler(this.toolStripConfGrbl_Click);
             // 
             // toolStripSeparator1
             // 
@@ -487,19 +511,6 @@
             // 
             this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
             // 
-            // toolStripConfGrbl
-            // 
-            this.toolStripConfGrbl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripConfGrbl.Enabled = false;
-            this.toolStripConfGrbl.Image = global::GrblCNC.Properties.Resources.ConfGrblButt;
-            this.toolStripConfGrbl.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripConfGrbl.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripConfGrbl.Name = "toolStripConfGrbl";
-            this.toolStripConfGrbl.Size = new System.Drawing.Size(44, 44);
-            this.toolStripConfGrbl.Text = "toolStripButton1";
-            this.toolStripConfGrbl.ToolTipText = "Configure Grbl Parameters";
-            this.toolStripConfGrbl.Click += new System.EventHandler(this.toolStripConfGrbl_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -582,6 +593,7 @@
         private GcodeParamViewer gcodeParamView;
         private System.Windows.Forms.ToolStripMenuItem configureGrblToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripConfGrbl;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusMode;
     }
 }
 

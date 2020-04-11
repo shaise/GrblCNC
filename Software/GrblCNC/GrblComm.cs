@@ -21,6 +21,7 @@ namespace GrblCNC
         public const int C_AXIS = 5;
 
         const byte CMD_SOFT_RESET = 0x18;
+        const byte CMD_STOP = 0x19;
         const byte CMD_STATUS_REQUEST = (byte)'?';
         const byte CMD_CYCLE_START = (byte)'~';
         const byte CMD_FEED_HOLD = (byte)'!';
@@ -54,6 +55,7 @@ namespace GrblCNC
             Jog,
             StopJog,
             Running,
+            Stopping,
             CommandBatch,
             Paused
         }
@@ -201,9 +203,7 @@ namespace GrblCNC
             else if (line.StartsWith("<"))
             {
                 isStatusLine = true;
-                grblStatus.Parse(line);
-                if (StatusUpdate != null)
-                    StatusUpdate(this, grblStatus);
+                HandleStatusLine(line);
             }
             else if (line.StartsWith("$"))
                 HandleParamLine(line);
@@ -241,6 +241,38 @@ namespace GrblCNC
         }
 
         #region Input line handling
+        void HandleStatusLine(string line)
+        {
+            GrblStatus.MachineState oldState = grblStatus.state;
+            float[] axis = new float[grblStatus.axisPos.Length];
+            for (int i = 0; i < axis.Length; i++)
+                axis[i] = grblStatus.axisPos[i];
+
+            grblStatus.Parse(line);
+            if (StatusUpdate != null)
+                StatusUpdate(this, grblStatus);
+            if (oldState != grblStatus.state)
+                HandleStateChange(oldState);
+
+            // handle stopping, if in action. Fixme: need to find a better way to do it.
+            if (machineState == MachineState.Stopping && grblStatus.state != GrblStatus.MachineState.Run)
+            {
+                bool motionStopped = true;
+                for (int i = 0; i < axis.Length; i++)
+                    if (axis[i] != grblStatus.axisPos[i])
+                    {
+                        motionStopped = false;
+                        break;
+                    }
+                if (motionStopped)
+                    SendStop();
+            }
+        }
+
+        void HandleStateChange(GrblStatus.MachineState oldState)
+        {
+        }
+
         void HandleErrorLine(string line, MessageType msgType)
         {
             // clear all buffers and stop running
@@ -394,6 +426,18 @@ namespace GrblCNC
         void SendSoftReset()
         {
             SendByte(CMD_SOFT_RESET);
+            if (Global.ginterp != null)
+                Global.ginterp.ResetGcodeLine();
+            machineState = MachineState.Idle;
+        }
+
+        void SendStop()
+        {
+            SendByte(CMD_STOP);
+            //SetSpindle(0, SpindleAction.Stop);
+            if (Global.ginterp != null)
+                Global.ginterp.ResetGcodeLine();
+            machineState = MachineState.Idle;
         }
 
         // add line to send queue. Lines will be send through the poller
@@ -739,12 +783,13 @@ namespace GrblCNC
             if (machineState == MachineState.Running || machineState == MachineState.Paused)
             {
                 if (machineState == MachineState.Running)
+                {
                     PauseGcode();
-                SendByte(CMD_SOFT_RESET);
+                    machineState = MachineState.Stopping;
+                }
+                else
+                    SendStop();
             }
-            if (Global.ginterp != null)
-                Global.ginterp.ResetGcodeLine();
-            machineState = MachineState.Idle;
         }
 
         public void StepGcode()
