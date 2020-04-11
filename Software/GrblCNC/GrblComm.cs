@@ -444,6 +444,7 @@ namespace GrblCNC
                 port.DataBits = 8;
                 port.StopBits = StopBits.One;
                 port.Handshake = Handshake.None;
+                port.WriteTimeout = 500;
                 port.Open();
                 portOpened = true;
                 SendSoftReset();
