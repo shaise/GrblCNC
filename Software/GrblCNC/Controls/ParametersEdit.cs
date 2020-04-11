@@ -19,6 +19,7 @@ namespace GrblCNC.Controls
         Dictionary<int, ParameterControl> parameterDict;
         List<GrblConfig.GrblParam> gParams;
         string lastCategory = "";
+        Color changeBackColor;
 
         public ParametersEdit()
         {
@@ -62,6 +63,7 @@ namespace GrblCNC.Controls
         protected override void OnLoad(EventArgs e)
         {
             UpdateParametersWidth();
+            UpdateColors();
             base.OnLoad(e);
         }
 
@@ -84,6 +86,7 @@ namespace GrblCNC.Controls
             {
                 GrblConfig.ParamDescription parDesc = keyval.Value;
                 ParameterControl parcont = new ParameterControl(parDesc);
+                parcont.ParameterChanged += parcont_ParameterChanged;
                 parameterDict[parDesc.code] = parcont;
                 foreach (string category in parDesc.groups)
                 {
@@ -103,6 +106,43 @@ namespace GrblCNC.Controls
                 ShowCategory(categories[0]);
         }
 
+        #region Handle changes highlighting
+        void parcont_ParameterChanged(object sender, bool isChanged)
+        {
+            UpdateGuiByChanges();
+        }
+
+        void UpdateColors()
+        {
+            Color c1 = Utils.TuneColor(BackColor, 1.1f);
+            Color c2 = Utils.TuneColor(BackColor, 0.9f);
+            changeBackColor = Color.FromArgb(c1.R, c1.G, c2.B);
+        }
+
+        void UpdateGuiByChanges()
+        {
+            bool ischange = false;
+            foreach (ParameterControl pc in parameterDict.Values)
+            {
+                if (pc.IsChanged)
+                {
+                    ischange = true;
+                    break;
+                }
+            }
+            buttProgram.BackColor = ischange ? changeBackColor : default(Color);
+            buttProgram.UseVisualStyleBackColor = !ischange;
+            buttRevert.Enabled = ischange;
+            buttProgram.Enabled = ischange;
+        }
+
+        protected override void OnBackColorChanged(EventArgs e)
+        {
+            UpdateColors();
+            base.OnBackColorChanged(e);
+        }
+        #endregion
+
         public void UpdateGuiParams()
         {
             if (gParams == null)
@@ -114,6 +154,7 @@ namespace GrblCNC.Controls
                     parameterDict[par.code].UpdateFromParameter(par, true);
                 }
             }
+            UpdateGuiByChanges();
         }
 
         public void UpdateGuiParams(List<GrblConfig.GrblParam> gparams)
@@ -175,6 +216,7 @@ namespace GrblCNC.Controls
                         }
                         catch { }
                     }
+                    UpdateGuiByChanges();
                 }
                 catch
                 {

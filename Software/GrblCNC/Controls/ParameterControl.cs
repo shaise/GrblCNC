@@ -24,6 +24,9 @@ namespace GrblCNC.Controls
         bool updatingBgnd = false;
         bool updatingGui = false;
         public int minimumWidth;
+        public delegate void ParameterChangedDelegate(object sender, bool isChanged);
+        public event ParameterChangedDelegate ParameterChanged;
+
         public ParameterControl(GrblConfig.ParamDescription pardesc)
         {
             paramDesc = pardesc;
@@ -179,14 +182,16 @@ namespace GrblCNC.Controls
 
         void ValueChanged(object sender, EventArgs e)
         {
+            bool oldIsChanged = isChanged;
             if (!updatingGui)
                 UpdateFromGui();
+            if (isChanged != oldIsChanged && ParameterChanged != null)
+                ParameterChanged(this, isChanged);
         }
 
         void ms_SelectionChanged(object obj, int newSelection)
         {
-            if (!updatingGui)
-                UpdateFromGui();
+            ValueChanged(this, null);
         }
 
         bool IsSimpleMask(string[] maskStrs)
