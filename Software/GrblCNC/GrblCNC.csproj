@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CncTool.cs" />
     <Compile Include="Controls\AlarmViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -153,11 +154,11 @@
     </Compile>
     <Compile Include="ErrorDisplayHandler.cs" />
     <Compile Include="FontManager.cs" />
-    <Compile Include="FormConfigGrbl.cs">
+    <Compile Include="FormPopWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConfigGrbl.Designer.cs">
-      <DependentUpon>FormConfigGrbl.cs</DependentUpon>
+    <Compile Include="FormPopWindow.Designer.cs">
+      <DependentUpon>FormPopWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="GCodeDimensions.cs" />
     <Compile Include="GcodeInterp.cs" />
@@ -260,8 +261,8 @@
     <EmbeddedResource Include="Controls\ValueSlider.resx">
       <DependentUpon>ValueSlider.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormConfigGrbl.resx">
-      <DependentUpon>FormConfigGrbl.cs</DependentUpon>
+    <EmbeddedResource Include="FormPopWindow.resx">
+      <DependentUpon>FormPopWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

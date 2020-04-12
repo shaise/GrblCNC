@@ -21,7 +21,8 @@ namespace GrblCNC
         GrblComm grblComm;
         FormOffset frmOffset;
         FormProbe frmProbe;
-        FormConfigGrbl frmConfigGrbl;
+        FormPopWindow formPopup;
+        ParametersEdit grblParamEdit;
         bool keyHandled;
         bool keyboardJogActive = true;
         VisualizerWin visualizerWinMain;
@@ -67,9 +68,13 @@ namespace GrblCNC
             manualControl.AxisActionPressed += manualControl_AxisActionPressed;
             manualControl.SpindleAction += manualControl_SpindleAction;
 
+            grblParamEdit = new ParametersEdit();
+            Global.grblParameterEditor = grblParamEdit;
+
+
             frmOffset = new FormOffset();
             frmProbe = new FormProbe();
-            frmConfigGrbl = new FormConfigGrbl();
+            formPopup = new FormPopWindow();
             Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
@@ -283,7 +288,7 @@ namespace GrblCNC
 
         private void configureGrblToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmConfigGrbl.ShowDialog();
+            formPopup.ShowControl(grblParamEdit, "Configure Grbl driver");
         }
 
         #endregion
@@ -329,7 +334,7 @@ namespace GrblCNC
 
         private void toolStripConfGrbl_Click(object sender, EventArgs e)
         {
-            frmConfigGrbl.ShowDialog();
+            formPopup.ShowDialog();
         }
 
         private void toolStripEstop_Click(object sender, EventArgs e)
