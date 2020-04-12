@@ -139,6 +139,12 @@
     <Compile Include="Controls\ParametersEdit.Designer.cs">
       <DependentUpon>ParametersEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ToolTable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ToolTable.Designer.cs">
+      <DependentUpon>ToolTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ValueSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -247,6 +253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ParametersEdit.resx">
       <DependentUpon>ParametersEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ToolTable.resx">
+      <DependentUpon>ToolTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ValueSlider.resx">
       <DependentUpon>ValueSlider.cs</DependentUpon>
