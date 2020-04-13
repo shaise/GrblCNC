@@ -45,7 +45,7 @@
             this.toolStripConfGrbl = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripOpen = new System.Windows.Forms.ToolStripButton();
-            this.toolStripReload = new System.Windows.Forms.ToolStripButton();
+            this.toolStripToolTable = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripStart = new System.Windows.Forms.ToolStripButton();
             this.toolStripStep = new System.Windows.Forms.ToolStripButton();
@@ -68,6 +68,7 @@
             this.statusView = new GrblCNC.StatusViewer();
             this.openGcodeFile = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -123,7 +124,7 @@
             this.configureGrblToolStripMenuItem.Name = "configureGrblToolStripMenuItem";
             this.configureGrblToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.configureGrblToolStripMenuItem.Text = "&Configure Grbl...";
-            this.configureGrblToolStripMenuItem.Click += new System.EventHandler(this.configureGrblToolStripMenuItem_Click);
+            this.configureGrblToolStripMenuItem.Click += new System.EventHandler(this.toolStripConfGrbl_Click);
             // 
             // statusStrip1
             // 
@@ -180,7 +181,8 @@
             this.toolStripConfGrbl,
             this.toolStripSeparator1,
             this.toolStripOpen,
-            this.toolStripReload,
+            this.toolStripButton1,
+            this.toolStripToolTable,
             this.toolStripSeparator2,
             this.toolStripStart,
             this.toolStripStep,
@@ -256,17 +258,17 @@
             this.toolStripOpen.ToolTipText = "Open GCODE file";
             this.toolStripOpen.Click += new System.EventHandler(this.toolStripOpen_Click);
             // 
-            // toolStripReload
+            // toolStripToolTable
             // 
-            this.toolStripReload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripReload.Image = global::GrblCNC.Properties.Resources.ReloaButt;
-            this.toolStripReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripReload.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripReload.Name = "toolStripReload";
-            this.toolStripReload.Size = new System.Drawing.Size(44, 44);
-            this.toolStripReload.Text = "Reload";
-            this.toolStripReload.ToolTipText = "Reload GCODE file";
-            this.toolStripReload.Click += new System.EventHandler(this.toolStripReload_Click);
+            this.toolStripToolTable.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripToolTable.Image = global::GrblCNC.Properties.Resources.ToolTableButt;
+            this.toolStripToolTable.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripToolTable.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripToolTable.Name = "toolStripToolTable";
+            this.toolStripToolTable.Size = new System.Drawing.Size(44, 44);
+            this.toolStripToolTable.Text = "Reload";
+            this.toolStripToolTable.ToolTipText = "Edit Tool Table";
+            this.toolStripToolTable.Click += new System.EventHandler(this.toolStripToolTable_Click);
             // 
             // toolStripSeparator2
             // 
@@ -511,6 +513,17 @@
             // 
             this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = global::GrblCNC.Properties.Resources.ReloaButt;
+            this.toolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(44, 44);
+            this.toolStripButton1.Text = "Reload";
+            this.toolStripButton1.ToolTipText = "Reload GCODE file";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -578,7 +591,7 @@
         private System.Windows.Forms.ToolStripLabel toolStripGrbl;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripOpen;
-        private System.Windows.Forms.ToolStripButton toolStripReload;
+        private System.Windows.Forms.ToolStripButton toolStripToolTable;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.TabPage tabGrbl;
         private ParameterViewer paramView;
@@ -594,6 +607,7 @@
         private System.Windows.Forms.ToolStripMenuItem configureGrblToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripConfGrbl;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusMode;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
 

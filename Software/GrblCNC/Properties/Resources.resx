@@ -265,4 +265,10 @@
   <data name="ConfGrblButt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ConfGrblButt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ConfSenderButt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ConfSenderButt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolTableButt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tooltablebutt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

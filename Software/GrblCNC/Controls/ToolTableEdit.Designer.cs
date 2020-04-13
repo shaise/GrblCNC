@@ -1,6 +1,6 @@
 ﻿namespace GrblCNC.Controls
 {
-    partial class ToolTable
+    partial class ToolTableEdit
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridTools = new System.Windows.Forms.DataGridView();
             this.toolNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pocketNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.xOffset = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -43,15 +43,15 @@
             this.buttImport = new System.Windows.Forms.Button();
             this.buttRemove = new System.Windows.Forms.Button();
             this.buttAdd = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridTools)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // dataGridTools
             // 
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridTools.AllowUserToDeleteRows = false;
+            this.dataGridTools.AllowUserToResizeRows = false;
+            this.dataGridTools.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridTools.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.toolNum,
             this.pocketNum,
             this.xOffset,
@@ -61,11 +61,11 @@
             this.bOffset,
             this.diameter,
             this.decription});
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(619, 263);
-            this.dataGridView1.TabIndex = 0;
+            this.dataGridTools.Location = new System.Drawing.Point(3, 3);
+            this.dataGridTools.Name = "dataGridTools";
+            this.dataGridTools.RowHeadersVisible = false;
+            this.dataGridTools.Size = new System.Drawing.Size(594, 269);
+            this.dataGridTools.TabIndex = 0;
             // 
             // toolNum
             // 
@@ -123,7 +123,7 @@
             // 
             // buttSave
             // 
-            this.buttSave.Location = new System.Drawing.Point(4, 272);
+            this.buttSave.Location = new System.Drawing.Point(3, 275);
             this.buttSave.Name = "buttSave";
             this.buttSave.Size = new System.Drawing.Size(51, 23);
             this.buttSave.TabIndex = 1;
@@ -132,7 +132,7 @@
             // 
             // buttExport
             // 
-            this.buttExport.Location = new System.Drawing.Point(61, 272);
+            this.buttExport.Location = new System.Drawing.Point(60, 275);
             this.buttExport.Name = "buttExport";
             this.buttExport.Size = new System.Drawing.Size(60, 23);
             this.buttExport.TabIndex = 2;
@@ -141,7 +141,7 @@
             // 
             // buttImport
             // 
-            this.buttImport.Location = new System.Drawing.Point(127, 272);
+            this.buttImport.Location = new System.Drawing.Point(126, 275);
             this.buttImport.Name = "buttImport";
             this.buttImport.Size = new System.Drawing.Size(60, 23);
             this.buttImport.TabIndex = 3;
@@ -150,7 +150,7 @@
             // 
             // buttRemove
             // 
-            this.buttRemove.Location = new System.Drawing.Point(562, 272);
+            this.buttRemove.Location = new System.Drawing.Point(538, 275);
             this.buttRemove.Name = "buttRemove";
             this.buttRemove.Size = new System.Drawing.Size(60, 23);
             this.buttRemove.TabIndex = 4;
@@ -159,7 +159,7 @@
             // 
             // buttAdd
             // 
-            this.buttAdd.Location = new System.Drawing.Point(496, 272);
+            this.buttAdd.Location = new System.Drawing.Point(472, 275);
             this.buttAdd.Name = "buttAdd";
             this.buttAdd.Size = new System.Drawing.Size(60, 23);
             this.buttAdd.TabIndex = 5;
@@ -175,17 +175,17 @@
             this.Controls.Add(this.buttImport);
             this.Controls.Add(this.buttExport);
             this.Controls.Add(this.buttSave);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dataGridTools);
             this.Name = "ToolTable";
-            this.Size = new System.Drawing.Size(628, 298);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Size = new System.Drawing.Size(600, 300);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridTools)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridTools;
         private System.Windows.Forms.DataGridViewTextBoxColumn toolNum;
         private System.Windows.Forms.DataGridViewTextBoxColumn pocketNum;
         private System.Windows.Forms.DataGridViewTextBoxColumn xOffset;

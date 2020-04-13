@@ -27,7 +27,6 @@ namespace GrblCNC.Controls
             MinimumSize = new Size(buttProgram.Width + buttRevert.Width + buttLoad.Width + buttSave.Width + 30, 200);
             Dock = System.Windows.Forms.DockStyle.Fill;
             Location = new System.Drawing.Point(0, 0);
-            MinimumSize = new System.Drawing.Size(356, 200);
             Name = "paramEdit";
             Size = new System.Drawing.Size(474, 370);
             TabIndex = 0;

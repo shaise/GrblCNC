@@ -23,6 +23,7 @@ namespace GrblCNC
         FormProbe frmProbe;
         FormPopWindow formPopup;
         ParametersEdit grblParamEdit;
+        ToolTableEdit toolTableEdit;
         bool keyHandled;
         bool keyboardJogActive = true;
         VisualizerWin visualizerWinMain;
@@ -70,6 +71,9 @@ namespace GrblCNC
 
             grblParamEdit = new ParametersEdit();
             Global.grblParameterEditor = grblParamEdit;
+
+            toolTableEdit = new ToolTableEdit();
+            Global.toolTableEdit = toolTableEdit;
 
 
             frmOffset = new FormOffset();
@@ -286,11 +290,6 @@ namespace GrblCNC
             OpenNewGcodeFile();
         }
 
-        private void configureGrblToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            formPopup.ShowControl(grblParamEdit, "Configure Grbl driver");
-        }
-
         #endregion
 
 
@@ -334,7 +333,7 @@ namespace GrblCNC
 
         private void toolStripConfGrbl_Click(object sender, EventArgs e)
         {
-            formPopup.ShowDialog();
+            formPopup.ShowControl(grblParamEdit, "Configure Grbl driver");
         }
 
         private void toolStripEstop_Click(object sender, EventArgs e)
@@ -352,10 +351,14 @@ namespace GrblCNC
 
         private void toolStripReload_Click(object sender, EventArgs e)
         {
-            string res = visualizerWinMain.LoadGcodeFile(openGcodeFile.FileName);
-            if (res != "OK")
-                Error(res);
+
         }
+
+        private void toolStripToolTable_Click(object sender, EventArgs e)
+        {
+            formPopup.ShowControl(toolTableEdit, "Edit Tool Table");
+        }
+
         #endregion
 
         void StepJog(int axis, float dir = 1)

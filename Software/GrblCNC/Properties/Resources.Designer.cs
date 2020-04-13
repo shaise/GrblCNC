@@ -103,6 +103,16 @@ namespace GrblCNC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ConfSenderButt {
+            get {
+                object obj = ResourceManager.GetObject("ConfSenderButt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ErrorIcon {
             get {
                 object obj = ResourceManager.GetObject("ErrorIcon", resourceCulture);
@@ -312,7 +322,7 @@ namespace GrblCNC.Properties {
         ///N45 G0 X45.207 Y14.875
         ///N50 G43 Z15. H2
         ///N55 G0 Z5.
-        ///N60 G1 Z1. F30.
+        ///N60 G1 Z1. F150.
         ///N65 Z-0.2
         ///N70 X45.102 Y15.313 F300.
         ///N75 X45.005 Y15.882
@@ -326,7 +336,7 @@ namespace GrblCNC.Properties {
         ///N115 X45.102 Y21.084
         ///N120 X45.235 Y21.639
         ///N125 X45.404 Y22.18
-        ///N130  [rest of string was truncated]&quot;;.
+        ///N130 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string GrblLogo_ngc {
             get {
@@ -567,6 +577,16 @@ namespace GrblCNC.Properties {
         internal static System.Drawing.Bitmap StopIcon {
             get {
                 object obj = ResourceManager.GetObject("StopIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolTableButt {
+            get {
+                object obj = ResourceManager.GetObject("ToolTableButt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
