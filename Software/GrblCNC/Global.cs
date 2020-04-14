@@ -22,6 +22,7 @@ namespace GrblCNC
         public static GrblConfig grblConfig;
         public static ParametersEdit grblParameterEditor;
         public static ToolTableEdit toolTableEdit;
+        public static ToolTable toolTable;
 
         public const int NUM_AXIS = 5;
 

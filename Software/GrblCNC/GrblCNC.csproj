@@ -89,6 +89,12 @@
     <Compile Include="Controls\FormOffset.Designer.cs">
       <DependentUpon>FormOffset.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FormSelectToolNum.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormSelectToolNum.Designer.cs">
+      <DependentUpon>FormSelectToolNum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GStateViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -212,6 +218,7 @@
     </Compile>
     <Compile Include="Glutils\Text3D.cs" />
     <Compile Include="ToolButton.cs" />
+    <Compile Include="ToolTable.cs" />
     <Compile Include="VisualizerOverlay.cs" />
     <Compile Include="VisualizerWin.cs">
       <SubType>UserControl</SubType>
@@ -233,6 +240,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormOffset.resx">
       <DependentUpon>FormOffset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormSelectToolNum.resx">
+      <DependentUpon>FormSelectToolNum.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\GcodeViewer.resx">
       <DependentUpon>GcodeViewer.cs</DependentUpon>

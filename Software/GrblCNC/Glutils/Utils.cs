@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Text;
+using System.Windows.Forms;
 using System.IO;
 using GrblCNC.Properties;
 using OpenTK;
@@ -117,6 +118,11 @@ namespace GrblCNC.Glutils
             int g = TuneColorElement(baseColor.G, tune);
             int b = TuneColorElement(baseColor.B, tune);
             return Color.FromArgb(baseColor.A, r, g, b);
+        }
+
+        public static void ErrorBox(string message, string title = "Error")
+        {
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
