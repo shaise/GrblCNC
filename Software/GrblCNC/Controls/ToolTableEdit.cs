@@ -18,8 +18,9 @@ namespace GrblCNC.Controls
         DataGridViewCellStyle stdGridStyle;
         DataGridViewCellStyle changedGridStyle;
         DataGridViewCellStyle errorGridStyle;
-        int ttt;
-        string tt;
+        bool haveChanges = false;
+        bool haveErrors = false;
+        Color changeBackColor;
         public ToolTableEdit()
         {
             InitializeComponent();
@@ -36,8 +37,8 @@ namespace GrblCNC.Controls
             stdGridStyle = dataGridTools.DefaultCellStyle;
             errorGridStyle = new DataGridViewCellStyle();
             errorGridStyle.BackColor = Color.LightPink;
-            ttt = 0;
-        }
+            UpdateColors();
+         }
 
         public void UpdateFromGlobal()
         {
@@ -52,15 +53,108 @@ namespace GrblCNC.Controls
         {
             dataGridTools.Rows.Clear();
             foreach (CncTool tool in localTable.Tools)
+            {
                 dataGridTools.Rows.Add(tool.ToString().Split('|'));
+                UpdateLine(dataGridTools.Rows.Count - 1);
+            }
         }
 
 
+        #region Handle changes highlighting
+        void UpdateLine(int rowno)
+        {
+            DataGridViewRow row = dataGridTools.Rows[rowno];
+            int toolno = int.Parse(row.Cells[0].Value.ToString());
+            CncTool tool = localTable.GetTool(toolno);
+            string[] vars = new string[dataGridTools.Columns.Count];
+            for (int i = 0; i < vars.Length; i++)
+            {
+                vars[i] = row.Cells[i].Value.ToString();
+                row.Cells[i].Style = null;
+            }
+            List<int> badcells = tool.Parse(vars, false);
+            CncTool gtool = Global.toolTable.GetTool(toolno);
+            bool lastChanges = haveChanges;
+            bool lastErrors = haveErrors;
+            if (gtool == null)
+            {
+                haveChanges = true;
+                row.DefaultCellStyle = changedGridStyle;
+            }
+            else
+            {
+                row.DefaultCellStyle = null;
+                List<int> changedcells = tool.CompareWith(gtool);
+                haveChanges = changedcells.Count > 0;
+                foreach (int c in changedcells)
+                    row.Cells[c].Style = changedGridStyle;
+            }
+            foreach (int c in badcells)
+                row.Cells[c].Style = errorGridStyle;
+            haveErrors = badcells.Count > 0;
+            if ((!haveErrors && lastErrors) || (!haveChanges && lastChanges))
+                UpdateChangeState();
+            UpdateGuiByChanges();
+        }
+
+        void UpdateChangeState()
+        {
+            haveErrors = false;
+            haveChanges = Global.toolTable.Tools.Count != localTable.Tools.Count;
+            foreach (DataGridViewRow row in dataGridTools.Rows)
+            {
+                if (row.DefaultCellStyle == changedGridStyle)
+                    haveChanges = true;
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (cell.Style == changedGridStyle)
+                        haveChanges = true;
+                    else if (cell.Style == errorGridStyle)
+                        haveErrors = true;
+                }
+                if (haveErrors && haveChanges)
+                    break;
+            }
+        }
+
+        void ClearChanges()
+        {
+            foreach (DataGridViewRow row in dataGridTools.Rows)
+            {
+                row.DefaultCellStyle = null;
+                foreach (DataGridViewCell cell in row.Cells)
+                    cell.Style = null;
+            }
+        }
+
+        void UpdateColors()
+        {
+            Color c1 = Utils.TuneColor(BackColor, 1.1f);
+            Color c2 = Utils.TuneColor(BackColor, 0.9f);
+            changeBackColor = Color.FromArgb(c1.R, c1.G, c2.B);
+        }
+
+        void UpdateGuiByChanges()
+        {
+            bool ishighlight = haveChanges && !haveErrors;
+            buttUpdate.BackColor = ishighlight ? changeBackColor : default(Color);
+            buttUpdate.UseVisualStyleBackColor = !ishighlight;
+            buttUpdate.Enabled = ishighlight;
+            buttExport.Enabled = !haveErrors;
+        }
+
+        protected override void OnBackColorChanged(EventArgs e)
+        {
+            UpdateColors();
+            base.OnBackColorChanged(e);
+        }
+        #endregion
+
         protected override void OnResize(EventArgs e)
         {
-            int bh = Height - buttSave.Height - 3;
-            buttSave.Location = new Point(3, bh);
-            buttExport.Location = new Point(buttSave.Location.X + buttSave.Width + 6, bh);
+            int bh = Height - buttUpdate.Height - 3;
+            buttUpdate.Location = new Point(3, bh);
+            buttExport.Location = new Point(buttUpdate.Location.X + buttUpdate.Width + 6, bh);
             buttImport.Location = new Point(buttExport.Location.X + buttExport.Width + 6, bh);
             buttRemove.Location = new Point(Width - buttRemove.Width - 3, bh);
             buttAdd.Location = new Point(buttRemove.Location.X - buttAdd.Width - 6, bh);
@@ -114,13 +208,50 @@ namespace GrblCNC.Controls
                 localTable.RemoveTool(int.Parse(row.Cells[0].Value.ToString()));
                 dataGridTools.Rows.Remove(row);
             }
+            if (sellines.Keys.Count > 0)
+            {
+                haveChanges = true;
+                UpdateGuiByChanges();
+            }
         }
 
         private void dataGridTools_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
                 return;
-            ttt++;
+            UpdateLine(e.RowIndex);
+        }
+
+        private void buttUpdate_Click(object sender, EventArgs e)
+        {
+            if (haveErrors)
+                return;
+            Global.toolTable.UpdateFrom(localTable);
+            Global.toolTable.Save(Global.ToolTableFile);
+            UpdateDisplayTable();
+        }
+
+        private void buttExport_Click(object sender, EventArgs e)
+        {
+            if (haveErrors)
+                return;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string res = localTable.Save(saveFileDialog.FileName);
+                if (res != "OK")
+                    Utils.ErrorBox(res, "Unable to save file");
+            }
+        }
+
+        private void buttImport_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string res = localTable.Load(openFileDialog.FileName);
+                if (res != "OK")
+                    Utils.ErrorBox(res, "Unable to open tool file");
+                UpdateDisplayTable();
+            }
         }
     }
 }

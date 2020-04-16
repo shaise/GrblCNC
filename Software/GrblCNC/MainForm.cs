@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 using OpenTK;
 using GrblCNC.Controls;
+using GrblCNC.Glutils;
 
 
 namespace GrblCNC
@@ -21,9 +23,11 @@ namespace GrblCNC
         GrblComm grblComm;
         FormOffset frmOffset;
         FormProbe frmProbe;
-        FormPopWindow formPopup;
+        FormPopWindow frmPopup;
+        FormChangeTool frmChangeTool;
         ParametersEdit grblParamEdit;
         ToolTableEdit toolTableEdit;
+        ToolTable toolTable;
         bool keyHandled;
         bool keyboardJogActive = true;
         VisualizerWin visualizerWinMain;
@@ -40,6 +44,13 @@ namespace GrblCNC
 
             InitializeComponent();
             InitializeGlControl();
+            Global.SettingsPath = Assembly.GetEntryAssembly().Location;
+            Global.ToolTableFile = Utils.SettingPath("ToolTable.gtt");
+            
+            toolTable = new ToolTable();
+            Global.toolTable = toolTable;
+            toolTable.Load(Global.ToolTableFile);
+
             Global.mdiControl = mdiCtrl;
             toolStrip1.Renderer = new ToolButton();
             ginterp = new GcodeInterp();
@@ -57,6 +68,7 @@ namespace GrblCNC
             grblComm.StatusUpdate += grblComm_StatusUpdate;
             grblComm.ParameterUpdate += grblComm_ParameterUpdate;
             grblComm.MessageReceived += grblComm_MessageReceived;
+            grblComm.ChangeToolNotify += grblComm_ChangeToolNotify;
             Global.grblComm = grblComm;
             grblScanTimer = new Timer();
             grblScanTimer.Interval = 100;
@@ -78,10 +90,26 @@ namespace GrblCNC
 
             frmOffset = new FormOffset();
             frmProbe = new FormProbe();
-            formPopup = new FormPopWindow();
+            frmPopup = new FormPopWindow();
+            frmChangeTool = new FormChangeTool();
             Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
+        }
+
+        void grblComm_ChangeToolNotify(object sender, int newTool, bool isRunning)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(() => { grblComm_ChangeToolNotify(sender, newTool, isRunning); }));
+                return;
+            }
+            frmChangeTool.SetToolNumber(newTool);
+            if (frmChangeTool.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (isRunning)
+                    grblComm.SendGcode();
+            }
         }
 
         void grblComm_MessageReceived(object sender, string message, GrblComm.MessageType type)
@@ -333,7 +361,7 @@ namespace GrblCNC
 
         private void toolStripConfGrbl_Click(object sender, EventArgs e)
         {
-            formPopup.ShowControl(grblParamEdit, "Configure Grbl driver");
+            frmPopup.ShowControl(grblParamEdit, "Configure Grbl driver");
         }
 
         private void toolStripEstop_Click(object sender, EventArgs e)
@@ -356,7 +384,8 @@ namespace GrblCNC
 
         private void toolStripToolTable_Click(object sender, EventArgs e)
         {
-            formPopup.ShowControl(toolTableEdit, "Edit Tool Table");
+            toolTableEdit.UpdateFromGlobal();
+            frmPopup.ShowControl(toolTableEdit, "Edit Tool Table");
         }
 
         #endregion

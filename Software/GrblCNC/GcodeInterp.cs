@@ -21,6 +21,29 @@ namespace GrblCNC
         }
     }
 
+    public class NonGrblActions
+    {
+        public bool G43;
+        public bool M6;
+        public int H;
+        public NonGrblActions()
+        {
+            Clear();
+        }
+
+        public void Clear()
+        {
+            G43 = false;
+            M6 = false;
+            H = 0;
+        }
+
+        public bool HaveActions()
+        {
+            return G43 || M6 ; // all actions orred. 
+        }
+    }
+
     public class GcodeInterp
     {
         enum MotionType
@@ -31,6 +54,8 @@ namespace GrblCNC
             ArcCW,
             ArcCCW
         }
+
+        
 
         Wire3D wirepath;
         public string[] lines;
@@ -57,9 +82,12 @@ namespace GrblCNC
         bool [] haveCoord = new bool[NUM_COORDS];
         MotionType motionType;
 
+        public int currentTool = 0;
+
         bool relativeMotion = false;
         bool relativeArcCent = true;
         bool useInches = false;
+        public NonGrblActions nonGrblActions;
 
         List<Wire3D.WireVertex> verts;
         int planeAxis1, planeAxis2, perpAxis;
@@ -102,33 +130,51 @@ namespace GrblCNC
         List<GToken> TokenizeLine(string line)
         {
             List<GToken> tokens = new List<GToken>();
-            int pos = 0;
-            while (pos < line.Length)
+            bool inComment = false;
+            char code = '?';
+            string data = "";
+            line += ' '; // add space to not miss the last token
+            foreach (char ch in line) 
             {
-                while (line[pos] == ' ')
-                    pos++;
-                if (pos >= line.Length)
-                    break;
-                char code = VerifyCode(line[pos]);
+                if (inComment)
+                {
+                    if (ch == ')')
+                        inComment = false;
+                    continue;
+                }
+                if (code != '?')
+                {
+                    if (ValidValueChar(ch))
+                    {
+                        data += ch;
+                        continue;
+                    }
+                    if (data.Length == 0)
+                        return tokens;
+                    try
+                    {
+                        float val = Utils.ParseFloatInvariant(data);
+                        tokens.Add(new GToken(code, val));
+                    }
+                    catch
+                    {
+                        return tokens;
+                    }
+                    code = '?';
+                    data = "";
+                }
+                if (ch == '(')
+                {
+                    inComment = true;
+                    continue;
+                }
+                if (ch == ' ') 
+                    continue;
+                if (ch == '%')
+                    return tokens;
+                code = VerifyCode(ch);
                 if (code == '-')
                     return tokens;
-                pos++;
-                int datapos = pos;
-                while (pos < line.Length && ValidValueChar(line[pos]))
-                    pos++;
-                int datalen = pos - datapos;
-                if (datalen == 0)
-                    return tokens;
-                float val;
-                try
-                {
-                    val = Utils.ParseFloatInvariant(line.Substring(datapos, datalen));
-                }
-                catch
-                {
-                    return tokens;
-                }
-                tokens.Add(new GToken(code, val));
             }
 
             return tokens;
@@ -137,6 +183,7 @@ namespace GrblCNC
         public GcodeInterp()
         {
             wirepath = new Wire3D();
+            nonGrblActions = new NonGrblActions();
         }
 
         void SetCoords(float[] coords, float val, int ncoord = NUM_COORDS)
@@ -169,19 +216,26 @@ namespace GrblCNC
                 }
             }
             GeneratePath();
+            ResetGcodeLine();
             return "OK";
         }
 
-        void ParseTokens(List<GToken> tokens)
+        // parse tokens. return tokens cleared from non supported grbl codes
+        List<GToken> ParseTokens(List<GToken> tokens)
         {
             for (int i = 0; i < NUM_COORDS; i++) haveCoord[i] = false;
             for (int i = 0; i < NUM_COORDS; i++) curCoords[i] = 0;
-            
+            nonGrblActions.Clear();
+            List<GToken> cleanedTokens = new List<GToken>();
+
             foreach (GToken token in tokens)
             {
+                bool strip = false;
+                int tokval = (int)(token.value * 10 + 0.5);
+                int tokint = (int)(token.value + 0.5);
                 if (token.code == 'G')
                 {
-                    switch ((int)(token.value * 10 + 0.5))  // mul by 10 to catch gcoses like g91.1
+                    switch (tokval)  // mul by 10 to catch gcoses like g91.1
                     {
                         case 0: motionType = MotionType.Rapid; break;
                         case 10: motionType = MotionType.Line; break;
@@ -195,6 +249,8 @@ namespace GrblCNC
                         case 200: useInches = true; break;
                         case 201: useInches = false; break;
 
+                        case 430: nonGrblActions.G43 = true; strip = true; break;
+
                         case 700: useInches = true; break;
                         case 701: useInches = false; break;
 
@@ -206,7 +262,10 @@ namespace GrblCNC
                 }
                 else if (token.code == 'M')
                 {
-
+                    switch (tokval)  // mul by 10 to catch gcoses like g91.1
+                    {
+                        case 60: nonGrblActions.M6 = true; strip = true; break;
+                    }  
                 }
                 else
                 {
@@ -222,10 +281,17 @@ namespace GrblCNC
                         case 'J': curCoords[pJ] = token.value; haveCoord[pJ] = true; break;
                         case 'K': curCoords[pK] = token.value; haveCoord[pK] = true; break;
                         case 'R': curCoords[pR] = token.value; haveCoord[pR] = true; break;
-                        case 'N': curLine = (int)(token.value + 0.5); break;
+                        case 'N': curLine = tokint; strip = true; break; // strip linr numbers as well since we change them
+                        case 'T': currentTool = tokint; strip = true; break;
+                        case 'H':
+                            if (nonGrblActions.G43) { nonGrblActions.H = tokint; strip = true; }
+                            break;
                     }
                 }
+                if (!strip)
+                    cleanedTokens.Add(token);
             }
+            return cleanedTokens;
         }
 
         bool isCoordChange()
@@ -367,46 +433,54 @@ namespace GrblCNC
             return true;
         }
 
+        string TokensToString(List<GToken> tokens, int n = -1)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (n >= 0)
+            {
+                sb.Append("N");
+                sb.Append(sendLineIx + 1);
+            }
+            if (tokens != null)
+            {
+                foreach (GToken token in tokens)
+                {
+                    sb.Append(token.code);
+                    string st = Utils.ToInvariantString(token.value, "0.000");
+                    st = st.TrimEnd('0');
+                    st = st.TrimEnd('.');
+                    sb.Append(st);
+                }
+            }
+            return sb.ToString();
+        }
+
+        public string PreProcessGcodeLine(string line, int lineno = -1)
+        {
+            List<GToken> tokens = tokens = TokenizeLine(line);
+            tokens = ParseTokens(tokens);
+            if (tokens.Count > 0 || nonGrblActions.HaveActions())
+                return TokensToString(tokens, lineno);
+            return null;
+        }
+
         // compiled line is a line where the gcode N var is the line in the file.
         // if there is an existing N var, it will be replaced
-        public string GetNextCompiledLine()
+        public string GetNextProcessedLine()
         {
             if (lines == null) 
                 return null;
-            string gcommand = "";
+            string res = null;
             while (sendLineIx < lines.Length)
             {
                 sendLineIx++;
                 if (sendLineIx >= lines.Length)
                     return null;
-                gcommand = lines[sendLineIx];
-                if (IsSupportedGcode(gcommand))
+                res = PreProcessGcodeLine(lines[sendLineIx], sendLineIx + 1);
+                if (res != null)
                     break;
             }
-
-            bool nstate = false;
-            bool commentstate = false;
-            StringBuilder sb = new StringBuilder();
-            sb.Append("N");
-            sb.Append(sendLineIx + 1);
-            sb.Append(" ");
-            foreach (char ch in gcommand)
-            {
-                char uch = ch.ToString().ToUpper()[0];
-                if (!commentstate)
-                {
-                    if (nstate == false)
-                        nstate = (uch == 'N');
-                    else
-                    {
-                        if (!(uch == '.' || (uch >= '0' && uch <= '9') || uch == ' '))
-                            nstate = false;
-                    }
-                    if (!nstate)
-                        sb.Append(uch);
-                }
-            }
-            return sb.ToString();
+            return res;
         }
 
         public void Render()

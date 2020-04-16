@@ -130,6 +130,24 @@ namespace GrblCNC
                     res.Add(OffsetsID + i);
             if (!ParseFloat(vars[DiameterID], ref diameter, tryOnly))
                 res.Add(DiameterID);
+            if (!tryOnly)
+                description = vars[DescriptionID];
+            return res;
+        }
+
+        public List<int> CompareWith(CncTool other)
+        {
+            List<int> res = new List<int>();
+            if (toolNum != other.toolNum) res.Add(ToolNumID);
+            if (pocketNum != other.pocketNum) res.Add(PocketNumID);
+            if (offsets.Length != other.offsets.Length) res.Add(NumAxesID);
+            int numaxes = offsets.Length;
+            if (numaxes > other.offsets.Length)
+                numaxes = other.offsets.Length;
+            for (int i = 0; i < numaxes; i++)
+                if (offsets[i] != other.offsets[i]) res.Add(OffsetsID + i);
+            if (diameter != other.diameter) res.Add(DiameterID);
+            if (description != other.description) res.Add(DescriptionID);
             return res;
         }
 

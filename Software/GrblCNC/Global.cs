@@ -24,6 +24,9 @@ namespace GrblCNC
         public static ToolTableEdit toolTableEdit;
         public static ToolTable toolTable;
 
+        public static string SettingsPath;
+        public static string ToolTableFile;
+
         public const int NUM_AXIS = 5;
 
         public static bool GrblConnected

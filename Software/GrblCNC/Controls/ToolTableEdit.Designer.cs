@@ -29,11 +29,6 @@
         private void InitializeComponent()
         {
             this.dataGridTools = new System.Windows.Forms.DataGridView();
-            this.buttSave = new System.Windows.Forms.Button();
-            this.buttExport = new System.Windows.Forms.Button();
-            this.buttImport = new System.Windows.Forms.Button();
-            this.buttRemove = new System.Windows.Forms.Button();
-            this.buttAdd = new System.Windows.Forms.Button();
             this.toolNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pocketNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.numAxes = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -44,6 +39,13 @@
             this.bOffset = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.diameter = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.decription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.buttUpdate = new System.Windows.Forms.Button();
+            this.buttExport = new System.Windows.Forms.Button();
+            this.buttImport = new System.Windows.Forms.Button();
+            this.buttRemove = new System.Windows.Forms.Button();
+            this.buttAdd = new System.Windows.Forms.Button();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTools)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,53 +72,6 @@
             this.dataGridTools.Size = new System.Drawing.Size(594, 269);
             this.dataGridTools.TabIndex = 0;
             this.dataGridTools.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridTools_CellValueChanged);
-            // 
-            // buttSave
-            // 
-            this.buttSave.Location = new System.Drawing.Point(3, 275);
-            this.buttSave.Name = "buttSave";
-            this.buttSave.Size = new System.Drawing.Size(51, 23);
-            this.buttSave.TabIndex = 1;
-            this.buttSave.Text = "Save";
-            this.buttSave.UseVisualStyleBackColor = true;
-            // 
-            // buttExport
-            // 
-            this.buttExport.Location = new System.Drawing.Point(60, 275);
-            this.buttExport.Name = "buttExport";
-            this.buttExport.Size = new System.Drawing.Size(60, 23);
-            this.buttExport.TabIndex = 2;
-            this.buttExport.Text = "Export...";
-            this.buttExport.UseVisualStyleBackColor = true;
-            // 
-            // buttImport
-            // 
-            this.buttImport.Location = new System.Drawing.Point(126, 275);
-            this.buttImport.Name = "buttImport";
-            this.buttImport.Size = new System.Drawing.Size(60, 23);
-            this.buttImport.TabIndex = 3;
-            this.buttImport.Text = "Import...";
-            this.buttImport.UseVisualStyleBackColor = true;
-            // 
-            // buttRemove
-            // 
-            this.buttRemove.Location = new System.Drawing.Point(538, 275);
-            this.buttRemove.Name = "buttRemove";
-            this.buttRemove.Size = new System.Drawing.Size(60, 23);
-            this.buttRemove.TabIndex = 4;
-            this.buttRemove.Text = "Remove";
-            this.buttRemove.UseVisualStyleBackColor = true;
-            this.buttRemove.Click += new System.EventHandler(this.buttRemove_Click);
-            // 
-            // buttAdd
-            // 
-            this.buttAdd.Location = new System.Drawing.Point(472, 275);
-            this.buttAdd.Name = "buttAdd";
-            this.buttAdd.Size = new System.Drawing.Size(60, 23);
-            this.buttAdd.TabIndex = 5;
-            this.buttAdd.Text = "Add";
-            this.buttAdd.UseVisualStyleBackColor = true;
-            this.buttAdd.Click += new System.EventHandler(this.buttAdd_Click);
             // 
             // toolNum
             // 
@@ -179,6 +134,64 @@
             this.decription.Name = "decription";
             this.decription.Width = 180;
             // 
+            // buttUpdate
+            // 
+            this.buttUpdate.Location = new System.Drawing.Point(3, 275);
+            this.buttUpdate.Name = "buttUpdate";
+            this.buttUpdate.Size = new System.Drawing.Size(51, 23);
+            this.buttUpdate.TabIndex = 1;
+            this.buttUpdate.Text = "Update";
+            this.buttUpdate.UseVisualStyleBackColor = true;
+            this.buttUpdate.Click += new System.EventHandler(this.buttUpdate_Click);
+            // 
+            // buttExport
+            // 
+            this.buttExport.Location = new System.Drawing.Point(60, 275);
+            this.buttExport.Name = "buttExport";
+            this.buttExport.Size = new System.Drawing.Size(60, 23);
+            this.buttExport.TabIndex = 2;
+            this.buttExport.Text = "Export...";
+            this.buttExport.UseVisualStyleBackColor = true;
+            this.buttExport.Click += new System.EventHandler(this.buttExport_Click);
+            // 
+            // buttImport
+            // 
+            this.buttImport.Location = new System.Drawing.Point(126, 275);
+            this.buttImport.Name = "buttImport";
+            this.buttImport.Size = new System.Drawing.Size(60, 23);
+            this.buttImport.TabIndex = 3;
+            this.buttImport.Text = "Import...";
+            this.buttImport.UseVisualStyleBackColor = true;
+            this.buttImport.Click += new System.EventHandler(this.buttImport_Click);
+            // 
+            // buttRemove
+            // 
+            this.buttRemove.Location = new System.Drawing.Point(538, 275);
+            this.buttRemove.Name = "buttRemove";
+            this.buttRemove.Size = new System.Drawing.Size(60, 23);
+            this.buttRemove.TabIndex = 4;
+            this.buttRemove.Text = "Remove";
+            this.buttRemove.UseVisualStyleBackColor = true;
+            this.buttRemove.Click += new System.EventHandler(this.buttRemove_Click);
+            // 
+            // buttAdd
+            // 
+            this.buttAdd.Location = new System.Drawing.Point(472, 275);
+            this.buttAdd.Name = "buttAdd";
+            this.buttAdd.Size = new System.Drawing.Size(60, 23);
+            this.buttAdd.TabIndex = 5;
+            this.buttAdd.Text = "Add";
+            this.buttAdd.UseVisualStyleBackColor = true;
+            this.buttAdd.Click += new System.EventHandler(this.buttAdd_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "GrblCNC Tool Table (*.gtt)|*.gtt";
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.Filter = "GrblCNC Tool Table (*.gtt)|*.gtt";
+            // 
             // ToolTableEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -187,7 +200,7 @@
             this.Controls.Add(this.buttRemove);
             this.Controls.Add(this.buttImport);
             this.Controls.Add(this.buttExport);
-            this.Controls.Add(this.buttSave);
+            this.Controls.Add(this.buttUpdate);
             this.Controls.Add(this.dataGridTools);
             this.Name = "ToolTableEdit";
             this.Size = new System.Drawing.Size(600, 300);
@@ -199,7 +212,7 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridTools;
-        private System.Windows.Forms.Button buttSave;
+        private System.Windows.Forms.Button buttUpdate;
         private System.Windows.Forms.Button buttExport;
         private System.Windows.Forms.Button buttImport;
         private System.Windows.Forms.Button buttRemove;
@@ -214,5 +227,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn bOffset;
         private System.Windows.Forms.DataGridViewTextBoxColumn diameter;
         private System.Windows.Forms.DataGridViewTextBoxColumn decription;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }

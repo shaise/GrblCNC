@@ -77,6 +77,12 @@
     <Compile Include="Controls\ErrorView.Designer.cs">
       <DependentUpon>ErrorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FormChangeTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormChangeTool.Designer.cs">
+      <DependentUpon>FormChangeTool.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FormProbe.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -234,6 +240,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ErrorView.resx">
       <DependentUpon>ErrorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormChangeTool.resx">
+      <DependentUpon>FormChangeTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormProbe.resx">
       <DependentUpon>FormProbe.cs</DependentUpon>

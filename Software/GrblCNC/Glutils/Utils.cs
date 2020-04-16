@@ -124,5 +124,10 @@ namespace GrblCNC.Glutils
         {
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        public static string SettingPath(string fileName)
+        {
+            return Global.SettingsPath + Path.PathSeparator + fileName;
+        }
     }
 }

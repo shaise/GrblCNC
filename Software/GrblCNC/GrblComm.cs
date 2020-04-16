@@ -56,6 +56,7 @@ namespace GrblCNC
             StopJog,
             Running,
             Stopping,
+            ToolChange,
             CommandBatch,
             Paused
         }
@@ -110,7 +111,9 @@ namespace GrblCNC
         int showStatusMsg = 0;
         int gStateCnt = 0;
         List<string> commandBatch;
-        
+        int lastTool = -1;
+        bool wasRunningWhenToolChanged = false;
+        public bool debugSending = true;
 
         
         int scanCount;
@@ -129,6 +132,8 @@ namespace GrblCNC
         public event ParameterUpdateDelegate ParameterUpdate;
         public delegate void MessageReceivedDelegate(object sender, string message, MessageType type);
         public event MessageReceivedDelegate MessageReceived;
+        public delegate void ChangeToolNotifyDelegate(object sender, int newTool, bool isRunning);
+        public event ChangeToolNotifyDelegate ChangeToolNotify;
         
 
         public GrblComm()
@@ -267,6 +272,8 @@ namespace GrblCNC
                 if (motionStopped)
                     SendStop();
             }
+            if (machineState == MachineState.ToolChange && grblStatus.state != GrblStatus.MachineState.Run)
+                ChangeTool();
         }
 
         void HandleStateChange(GrblStatus.MachineState oldState)
@@ -392,22 +399,70 @@ namespace GrblCNC
             }
         }
         
-        void SendLine(string line)
+        void SendLineToPort(string line)
         {
-            if (!portOpened)
+            if (line == null || line.Length < 1 || !portOpened)
                 return;
             if (line[0] == '?')
             {   // special case - we want to see the next status request
                 showStatusMsg++;
                 return;
             }
+            if (debugSending)
+                Global.mdiControl.AddLine(line);
             line += "\n";
-            Global.mdiControl.AddLine(line);
             lock (lockSerialSendObj)
             {
                 port.Write(line);
             }
         }
+
+
+        #region Process Gcode commands
+        
+        void SendLine(string line)
+        {
+            line = line.TrimStart(' ');
+            char ch = line[0];
+            if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+                // preprocess gcode line and send to grbl;
+                SendProcessedGcodeLine(Global.ginterp.PreProcessGcodeLine(line));
+            else
+                SendLineToPort(line);
+        }
+
+        void SendProcessedGcodeLine(string line)
+        {
+            // check for actions external to grbl (such as tool changes)
+            if (Global.ginterp.nonGrblActions.M6 && Global.ginterp.currentTool != lastTool)
+            {
+                wasRunningWhenToolChanged = machineState == MachineState.Running;
+                ChangeTool();
+            }
+            else if (Global.ginterp.nonGrblActions.G43)
+            {
+                // Fixme: need to set correct TLO now.
+                SendLineToPort(line);
+            }
+            else
+                SendLineToPort(line);
+
+        }
+
+        void ChangeTool()
+        {
+            if (grblStatus.state != GrblStatus.MachineState.Idle)
+                machineState = MachineState.ToolChange;
+            else
+            {
+                machineState = MachineState.Idle;
+                lastTool = Global.ginterp.currentTool;
+                if (ChangeToolNotify != null)
+                    ChangeToolNotify(this, lastTool, wasRunningWhenToolChanged);
+            }
+        }
+
+        #endregion
 
         void SendByte(byte b)
         {
@@ -731,9 +786,8 @@ namespace GrblCNC
         {
             if (ConnectionStatus != CommStatus.Connected || Global.ginterp == null || Global.ginterp.lines == null)
                 return;
-            if (machineState == GrblComm.MachineState.Idle)
+            if (machineState == MachineState.Idle)
             {
-                Global.ginterp.ResetGcodeLine();
                 machineState = MachineState.Running;
                 SendCurrentGcodeLine();
             }
@@ -753,13 +807,13 @@ namespace GrblCNC
                 StopSendingGcode();
                 return;
             }
-            string curLine = Global.ginterp.GetNextCompiledLine();
+            string curLine = Global.ginterp.GetNextProcessedLine();
             if (curLine == null)
             {
                 StopSendingGcode();
                 return;
             }
-            SendLine(curLine);
+            SendProcessedGcodeLine(curLine);
         }
 
         public void PauseGcode()
@@ -790,6 +844,8 @@ namespace GrblCNC
                 else
                     SendStop();
             }
+            if (Global.ginterp != null)
+                Global.ginterp.ResetGcodeLine();
         }
 
         public void StepGcode()
@@ -798,7 +854,7 @@ namespace GrblCNC
                 return;
             if (Global.ginterp == null || Global.ginterp.lines == null)
                 return;
-            string curLine = Global.ginterp.GetNextCompiledLine();
+            string curLine = Global.ginterp.GetNextProcessedLine();
             if (curLine != null)
                 PostLine(curLine);
         }
