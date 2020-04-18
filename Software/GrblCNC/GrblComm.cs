@@ -44,6 +44,8 @@ namespace GrblCNC
         const byte CMD_TOGGLE_FLOOD = 0xA0;
         const byte CMD_TOGGLE_MIST = 0xA1;
 
+        const int MIN_LOCATION = -999999;
+
         public enum CommStatus
         {
             Disconnected = 0,
@@ -58,7 +60,7 @@ namespace GrblCNC
             Stopping,
             ToolChange,
             CommandBatch,
-            Paused
+            Paused,
         }
 
         public enum GrblParamTypes
@@ -97,7 +99,7 @@ namespace GrblCNC
         GrblConfig grblConfig;
         GCodeConfig gcodeConfig;
         List<string> standardMsgQueue;
-        List<string> urgentMsgQueue;
+        List<string> insertMsgQueue; // when not empty, will be inserted to current running gcode
         Dictionary<string, string> grblErrorCodes;
         Dictionary<string, string> grblAlarmCodes;
         object lockMsgBufferObj = new object();
@@ -114,7 +116,8 @@ namespace GrblCNC
         int lastTool = -1;
         bool wasRunningWhenToolChanged = false;
         public bool debugSending = true;
-
+        float [] tcpAxisPos;
+        float tcpZmax;
         
         int scanCount;
         StringBuilder readLine;
@@ -122,8 +125,10 @@ namespace GrblCNC
         string tmpLongLine; // Removeme
         int maxlinelen = 0;// Removeme
         // events
-        public delegate void StatusChangedDelegate(object sender, CommStatus status);
-        public event StatusChangedDelegate StatusChanged;
+        public delegate void CommStatusChangedDelegate(object sender, CommStatus status);
+        public event CommStatusChangedDelegate CommStatusChanged;
+        public delegate void GrblStatusChangedDelegate(object sender, GrblStatus.MachineState newState, GrblStatus.MachineState oldState);
+        public event GrblStatusChangedDelegate GrblStatusChanged;
         public delegate void LineReceivedDelegate(object sender, string line, bool isStatus);
         public event LineReceivedDelegate LineReceived;
         public delegate void StatusUpdateDelegate(object sender, GrblStatus status);
@@ -149,12 +154,14 @@ namespace GrblCNC
             gcodeConfig = new GCodeConfig();
             port.DataReceived += port_DataReceived;
             standardMsgQueue = new List<string>();
-            urgentMsgQueue = new List<string>();
+            //urgentMsgQueue = new List<string>();
+            insertMsgQueue = new List<string>();
             commandBatch = new List<string>();
             ReadErrorCodes();
             scanCount = 0;
             Global.grblStatus = grblStatus;
             Global.grblConfig = grblConfig;
+            tcpAxisPos = new float[Global.NUM_AXIS];
         }
 
         void FillCodes(Dictionary<string, string> dict, string codes)
@@ -201,8 +208,8 @@ namespace GrblCNC
                 if (ConnectionStatus != CommStatus.Connected)
                 {
                     ConnectionStatus = CommStatus.Connected;
-                    if (StatusChanged != null)
-                        StatusChanged(this, ConnectionStatus);
+                    if (CommStatusChanged != null)
+                        CommStatusChanged(this, ConnectionStatus);
                 }
             }
             else if (line.StartsWith("<"))
@@ -259,6 +266,13 @@ namespace GrblCNC
             if (oldState != grblStatus.state)
                 HandleStateChange(oldState);
 
+            if (wasRunningWhenToolChanged)
+            {
+                float absZ = grblStatus.axisPos[Z_AXIS] + grblStatus.workingCoords[Z_AXIS];
+                if (absZ > tcpZmax)
+                    tcpZmax = absZ;
+            }
+
             // handle stopping, if in action. Fixme: need to find a better way to do it.
             if (machineState == MachineState.Stopping && grblStatus.state != GrblStatus.MachineState.Run)
             {
@@ -278,13 +292,20 @@ namespace GrblCNC
 
         void HandleStateChange(GrblStatus.MachineState oldState)
         {
+            if (grblStatus.state == GrblStatus.MachineState.Hold && machineState != MachineState.Paused)
+            {
+                machineState = MachineState.Paused;
+            }
+            if (GrblStatusChanged != null)
+                GrblStatusChanged(this, grblStatus.state, oldState);
         }
 
         void HandleErrorLine(string line, MessageType msgType)
         {
             // clear all buffers and stop running
             commandBatch.Clear();
-            urgentMsgQueue.Clear();
+            //urgentMsgQueue.Clear();
+            insertMsgQueue.Clear();
             standardMsgQueue.Clear();
             StopGcode();
 
@@ -437,7 +458,7 @@ namespace GrblCNC
             if (Global.ginterp.nonGrblActions.M6 && Global.ginterp.currentTool != lastTool)
             {
                 wasRunningWhenToolChanged = machineState == MachineState.Running;
-                ChangeTool();
+                machineState = MachineState.ToolChange;
             }
             else if (Global.ginterp.nonGrblActions.G43)
             {
@@ -451,14 +472,14 @@ namespace GrblCNC
 
         void ChangeTool()
         {
-            if (grblStatus.state != GrblStatus.MachineState.Idle)
-                machineState = MachineState.ToolChange;
-            else
+            machineState = MachineState.Idle;
+            lastTool = Global.ginterp.currentTool;
+            if (ChangeToolNotify != null)
             {
-                machineState = MachineState.Idle;
-                lastTool = Global.ginterp.currentTool;
-                if (ChangeToolNotify != null)
-                    ChangeToolNotify(this, lastTool, wasRunningWhenToolChanged);
+                for (int i = 0; i < tcpAxisPos.Length; i++)
+                    tcpAxisPos[i] = grblStatus.axisPos[i];
+                tcpZmax = MIN_LOCATION;
+                ChangeToolNotify(this, lastTool, wasRunningWhenToolChanged);
             }
         }
 
@@ -496,12 +517,12 @@ namespace GrblCNC
         }
 
         // add line to send queue. Lines will be send through the poller
-        public void PostLine(string line, bool isurgent = false)
+        public void PostLine(string line, bool isInsertQ = false)
         {
             lock(lockMsgBufferObj)
             {
-                if (isurgent)
-                    urgentMsgQueue.Add(line);
+                if (isInsertQ)
+                    insertMsgQueue.Add(line);
                 else
                     standardMsgQueue.Add(line);
             }
@@ -526,7 +547,7 @@ namespace GrblCNC
         // purge any queued gcode commands 
         public void PurgeMessages()
         {
-            urgentMsgQueue.Clear();
+            insertMsgQueue.Clear();
             standardMsgQueue.Clear();
         }
 
@@ -571,13 +592,7 @@ namespace GrblCNC
 
             lock (lockMsgBufferObj)
             {
-                if (urgentMsgQueue.Count > 0)
-                {
-
-                    line = urgentMsgQueue[0];
-                    urgentMsgQueue.RemoveAt(0);
-                }
-                else if (standardMsgQueue.Count > 0)
+                if (standardMsgQueue.Count > 0)
                 {
                     line = standardMsgQueue[0];
                     standardMsgQueue.RemoveAt(0);
@@ -601,8 +616,8 @@ namespace GrblCNC
             {
                 ClosePort();
                 ConnectionStatus = CommStatus.Disconnected;
-                if (StatusChanged != null)
-                    StatusChanged(this, ConnectionStatus);
+                if (CommStatusChanged != null)
+                    CommStatusChanged(this, ConnectionStatus);
             }
 
         }
@@ -788,10 +803,18 @@ namespace GrblCNC
                 return;
             if (machineState == MachineState.Idle)
             {
+                if (wasRunningWhenToolChanged)
+                {
+                    // tool was manually changed, we need first to return to original location
+                    if (tcpZmax != MIN_LOCATION)
+                        PostLine(string.Format("G53G0Z{0}", tcpZmax), true);
+                    PostLine(string.Format("G0X{0}Y{1}", tcpAxisPos[X_AXIS], tcpAxisPos[Y_AXIS]), true);
+                    wasRunningWhenToolChanged = false;
+                }
                 machineState = MachineState.Running;
                 SendCurrentGcodeLine();
             }
-            else if (machineState == GrblComm.MachineState.Paused)
+           else if (machineState == GrblComm.MachineState.Paused)
                 ResumeGcode();
         }
 
@@ -802,12 +825,27 @@ namespace GrblCNC
 
         void SendCurrentGcodeLine()
         {
+            string curLine = null;
+            // send any inseted lines. non need to preprocess, as they are generated
+            lock (lockMsgBufferObj)
+            {
+                if (insertMsgQueue.Count > 0)
+                {
+                    curLine = insertMsgQueue[0];
+                    insertMsgQueue.RemoveAt(0);
+                }
+            }
+            if (curLine != null)
+            {
+                SendLineToPort(curLine);
+                return;
+            }
             if (Global.ginterp == null || Global.ginterp.lines == null)
             {
                 StopSendingGcode();
                 return;
             }
-            string curLine = Global.ginterp.GetNextProcessedLine();
+            curLine = Global.ginterp.GetNextProcessedLine();
             if (curLine == null)
             {
                 StopSendingGcode();

@@ -63,7 +63,7 @@ namespace GrblCNC
             simTimer.Tick += simTimer_Tick;
             // grbl communication
             grblComm = new GrblComm();
-            grblComm.StatusChanged += grblComm_StatusChanged;
+            grblComm.CommStatusChanged += grblComm_StatusChanged;
             grblComm.LineReceived += grblComm_LineReceived;
             grblComm.StatusUpdate += grblComm_StatusUpdate;
             grblComm.ParameterUpdate += grblComm_ParameterUpdate;
