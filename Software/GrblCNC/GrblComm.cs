@@ -61,6 +61,7 @@ namespace GrblCNC
             ToolChange,
             CommandBatch,
             Paused,
+            ProbeTool,
         }
 
         public enum GrblParamTypes
@@ -118,6 +119,12 @@ namespace GrblCNC
         public bool debugSending = true;
         float [] tcpAxisPos;
         float tcpZmax;
+
+        float probeToolOffset;
+        int probeToolNum;
+        int probeToolAxis;
+        float probeDir;
+        bool lastG90State;
         
         int scanCount;
         StringBuilder readLine;
@@ -208,6 +215,7 @@ namespace GrblCNC
                 if (ConnectionStatus != CommStatus.Connected)
                 {
                     ConnectionStatus = CommStatus.Connected;
+                    grblStatus.state = GrblStatus.MachineState.Unknown;
                     if (CommStatusChanged != null)
                         CommStatusChanged(this, ConnectionStatus);
                 }
@@ -292,12 +300,14 @@ namespace GrblCNC
 
         void HandleStateChange(GrblStatus.MachineState oldState)
         {
-            if (grblStatus.state == GrblStatus.MachineState.Hold && machineState != MachineState.Paused)
+            if (grblStatus.state == GrblStatus.MachineState.Hold && machineState != MachineState.Paused && machineState != MachineState.Stopping)
             {
                 machineState = MachineState.Paused;
             }
             if (GrblStatusChanged != null)
                 GrblStatusChanged(this, grblStatus.state, oldState);
+            if (grblStatus.state == GrblStatus.MachineState.Idle && machineState == MachineState.ProbeTool)
+                ProbeToolEnd();
         }
 
         void HandleErrorLine(string line, MessageType msgType)
@@ -362,7 +372,19 @@ namespace GrblCNC
         {
             switch (machineState)
             {
-                case MachineState.Idle: ReportUpdatedParams(); break;
+                case MachineState.Idle:
+                    if (insertMsgQueue.Count > 0)
+                        SendCurrentGcodeLine();
+                    else
+                        ReportUpdatedParams(); 
+                    break;
+                case MachineState.ProbeTool:
+                    if (insertMsgQueue.Count > 0)
+                        SendCurrentGcodeLine();
+//                    else
+//                       ProbeToolEnd(); 
+                    break;
+
                 case MachineState.Jog: HandleJogInProgress(); break;
                 case MachineState.StopJog: HandleStopJog(); break;
                 case MachineState.Running: SendCurrentGcodeLine(); break;
@@ -452,6 +474,24 @@ namespace GrblCNC
                 SendLineToPort(line);
         }
 
+        void SetTLO(int toolno)
+        {
+            CncTool tool = Global.toolTable.GetTool(toolno);
+            if (tool != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("G43.1");
+                for (int i = 0; i < tool.offsets.Length; i++)
+                {
+                    sb.Append(Utils.GetAxisLetter(i));
+                    sb.Append(Utils.F3(tool.offsets[i]));
+                }
+                PostLine(sb.ToString(), true);
+            }
+            else
+                PostLine("G43.1X0Y0Z0A0B0", true); // assume default tool
+        }
+
         void SendProcessedGcodeLine(string line)
         {
             // check for actions external to grbl (such as tool changes)
@@ -462,8 +502,13 @@ namespace GrblCNC
             }
             else if (Global.ginterp.nonGrblActions.G43)
             {
-                // Fixme: need to set correct TLO now.
-                SendLineToPort(line);
+                int toolno = Global.ginterp.nonGrblActions.H;
+                if (toolno == 0)
+                    toolno = Global.ginterp.currentTool;
+                SetTLO(toolno);
+                if (line.Length > 0)
+                    PostLine(line, true);
+                SendCurrentGcodeLine();
             }
             else
                 SendLineToPort(line);
@@ -710,7 +755,7 @@ namespace GrblCNC
 
         public void CoordTouchAxis(int axis, int coordSystemIx, float offset)
         {
-            if (coordSystemIx < 0 || coordSystemIx > 8)
+            if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
             string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
@@ -723,15 +768,67 @@ namespace GrblCNC
         {
             if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
+            coordSystemIx++;
             string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
-            string[] cmdbatch = new string[4];
-            cmdbatch[0] = string.Format("G10 L20 P0 {0}0", axisLetter);
-            cmdbatch[1] = string.Format("G38.2 {0}{1} F25", axisLetter, 10f * dir);
-            cmdbatch[2] = string.Format("G10 L20 P0 {0}{1}", axisLetter, offset);
-            cmdbatch[3] = string.Format("G0 {0}{1}", axisLetter, Math.Floor(offset - 5.5 * dir));
-            PostLines(cmdbatch);
+            lastG90State = grblStatus.gState[(int)GrblStatus.GcodeParserStateNames.DistanceMode] == "G90";
+            PostLine(string.Format("G91G38.2 {0}{1} F25", axisLetter, Utils.F3(10f * dir)), true);
+            PostLine(string.Format("G10 L20 P{0} {1}{2}", coordSystemIx, axisLetter, Utils.F3(offset)), true);
+            PostLine(string.Format("G0 {0}{1}", axisLetter, Utils.F3(- 5 * dir)), true);
+            if (lastG90State)
+                PostLine("G90");
+        }
+
+        public void ToolTouchOff(int axis, int toolno, float offset)
+        {
+            string axisLetter = Utils.GetAxisLetter(axis);
+            if (axisLetter == null)
+                return;
+            CncTool tool = Global.toolTable.GetTool(toolno);
+            if (tool != null)
+            {
+                tool.offsets[axis] = grblStatus.axisPos[axis] - offset;
+                if (Global.ginterp.currentTool == toolno)
+                {
+                    SetTLO(toolno);
+                    SendCurrentGcodeLine();
+                }
+            }
+        }
+
+        public void ProbeTool(int axis, int tool, float offset, float dir)
+        {
+            string axisLetter = Utils.GetAxisLetter(axis);
+            if (axisLetter == null)
+                return;
+            machineState = MachineState.ProbeTool;
+            probeToolOffset = offset;
+            probeToolNum = tool;
+            probeToolAxis = axis;
+            probeDir = dir;
+            lastG90State = grblStatus.gState[(int)GrblStatus.GcodeParserStateNames.DistanceMode] == "G90";
+            // clear current TLO
+            SetTLO(0);
+            PostLine(string.Format("G91G38.2{0}{1}F25", axisLetter, Utils.F3(10f * dir)), true);
+            //PostLine("G4P0.3");
+            SendCurrentGcodeLine();
+        }
+
+        void ProbeToolEnd()
+        {
+            machineState = MachineState.Idle;
+            CncTool tool = Global.toolTable.GetTool(probeToolNum);
+            if (tool != null)
+            {
+                tool.offsets[probeToolAxis] = grblStatus.axisPos[probeToolAxis] - probeToolOffset;
+                if (Global.ginterp.currentTool != 0)
+                    SetTLO(Global.ginterp.currentTool); // restore current TLO
+            }
+            PostLine(string.Format("G0 {0}{1}", Utils.GetAxisLetter(probeToolAxis), Utils.F3(-5 * probeDir)), true);
+            if (lastG90State)
+                PostLine("G90", true);
+            SendCurrentGcodeLine();
         }
 
         public void StepJog(int axis, float dist, float feedrate)
@@ -807,8 +904,9 @@ namespace GrblCNC
                 {
                     // tool was manually changed, we need first to return to original location
                     if (tcpZmax != MIN_LOCATION)
-                        PostLine(string.Format("G53G0Z{0}", tcpZmax), true);
-                    PostLine(string.Format("G0X{0}Y{1}", tcpAxisPos[X_AXIS], tcpAxisPos[Y_AXIS]), true);
+                        PostLine(string.Format("G53G0Z{0}", Utils.F3(tcpZmax)), true);
+                    PostLine(string.Format("G0X{0}Y{1}", Utils.F3(tcpAxisPos[X_AXIS]),
+                        Utils.F3(tcpAxisPos[Y_AXIS])), true);
                     wasRunningWhenToolChanged = false;
                 }
                 machineState = MachineState.Running;

@@ -13,10 +13,12 @@ namespace GrblCNC.Controls
 {
     public partial class FormProbe : Form
     {
-        int axis;
+        int tool;
+        public bool IsProbe = false;
         public FormProbe()
         {
             InitializeComponent();
+            comboTool.Items.Add("No Tool");
         }
 
         public float Offset
@@ -34,11 +36,81 @@ namespace GrblCNC.Controls
 
         public int Axis
         {
-            get { return axis; }
+            get { return multiSelAxis.SelectedValue; }
+            set { multiSelAxis.SelectedValue = value; }
+        }
+
+        int FindTool(int toolnum)
+        {
+            for (int i = 1; i < comboTool.Items.Count; i++)
+            {
+                string[] vars = comboTool.Items[i].ToString().Split(':');
+                if (toolnum == int.Parse(vars[0]))
+                    return i;
+            }
+            return 0;
+        }
+        public int Tool
+        {
+            get { return tool; }
+            set 
+            {
+                int toolix = FindTool(value);
+                comboTool.SelectedIndex = toolix;
+                labelCoord.Text = "Tool:";
+                comboCoord.Visible = false;
+                comboTool.Visible = true;
+                UpdateToolFromSelection();
+            }
+        }
+
+        public int CoordSystem
+        {
+            get
+            {
+                if (comboCoord.Enabled)
+                    return comboCoord.SelectedIndex;
+                else
+                    return -1;
+            }
             set
             {
-                axis = value;
-                labelAxis.Text = "Axis: " + Utils.GetAxisLetter(axis);
+                if (value >= 0 && value < comboCoord.Items.Count)
+                {
+                    comboCoord.SelectedIndex = value;
+                    comboCoord.Enabled = true;
+                }
+                else
+                    comboCoord.Enabled = false;
+                labelCoord.Text = "Coordinates:";
+                comboTool.Visible = false;
+                comboCoord.Visible = true;
+            }
+        }
+
+        void UpdateToolFromSelection()
+        {
+            if (comboTool.SelectedIndex == 0)
+                tool = 0;
+            else
+            {
+                string[] vars = comboTool.SelectedItem.ToString().Split(':');
+                tool = int.Parse(vars[0]);
+            }
+        }
+
+
+
+        public void UpdateTools()
+        {
+            comboTool.Items.Clear();
+            comboTool.Items.Add("No Tool");
+            foreach (CncTool tool in Global.toolTable.Tools)
+            {
+                if (tool.description.Length > 0)
+                    comboTool.Items.Add(string.Format("{0}: {1}", tool.toolNum, tool.description));
+                else
+                    comboTool.Items.Add(tool.toolNum.ToString());
             }
         }
 
@@ -50,6 +122,19 @@ namespace GrblCNC.Controls
 
         private void buttOK_Click(object sender, EventArgs e)
         {
+            IsProbe = false;
+            DialogResult = System.Windows.Forms.DialogResult.OK;
+            Close();
+        }
+
+        private void comboTool_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateToolFromSelection();
+        }
+
+        private void buttProbe_Click(object sender, EventArgs e)
+        {
+            IsProbe = true;
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
         }

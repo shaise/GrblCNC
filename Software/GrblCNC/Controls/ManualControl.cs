@@ -19,7 +19,6 @@ namespace GrblCNC.Controls
             Home = 0,
             CoordTouchOff,
             ToolTouchOff,
-            ToolProbe,
         }
 
         public enum Sliders
@@ -115,13 +114,6 @@ namespace GrblCNC.Controls
             if (AxisActionPressed == null)
                 return;
             AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.ToolTouchOff);
-        }
-
-        private void jogButtProbe_Click(object sender, EventArgs e)
-        {
-            if (AxisActionPressed == null)
-                return;
-            AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.ToolProbe);
         }
 
         private void jogButtSpindleStop_Click(object sender, EventArgs e)

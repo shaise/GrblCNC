@@ -97,6 +97,12 @@ namespace GrblCNC.Glutils
             return value.ToString(format, CultureInfo.InvariantCulture);
         }
 
+        // convert float to string with 3 decimal digits
+        public static string F3(double value)
+        {
+            return ToInvariantString(value, "0.000");
+        }
+
         public static float ParseFloatInvariant(string floatNum)
         {
             return float.Parse(floatNum, CultureInfo.InvariantCulture);

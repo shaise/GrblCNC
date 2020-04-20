@@ -38,7 +38,7 @@
             // buttResume
             // 
             this.buttResume.Location = new System.Drawing.Point(17, 178);
-            this.buttResume.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.buttResume.Margin = new System.Windows.Forms.Padding(6);
             this.buttResume.Name = "buttResume";
             this.buttResume.Size = new System.Drawing.Size(106, 44);
             this.buttResume.TabIndex = 0;
@@ -100,8 +100,9 @@
             this.Controls.Add(this.buttResume);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "FormChangeTool";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Change Tool";
             this.ResumeLayout(false);
             this.PerformLayout();

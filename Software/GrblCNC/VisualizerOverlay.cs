@@ -13,7 +13,9 @@ namespace GrblCNC
     {
         string[] lines;
         VisualizerWin viswin;
+        int cury, curx;
         string lastCoordCode = "";
+        int lastTool = -2;
         float[] lastCoords = new float[GrblStatus.NUM_AXIS];
         Font font;
         public VisualizerOverlay(VisualizerWin viswin)
@@ -36,23 +38,29 @@ namespace GrblCNC
             return isChange;
         }
         
+        void PrintLine(Graphics g, string str)
+        {
+            g.DrawString(str, font, Brushes.Black, curx, cury);
+            cury += 15;
+        }
+
         public void Update(GrblStatus status)
         {
             if (status.gState == null)
                 return;
             if (CopyCoords(status.workingCoords) || 
-                lastCoordCode != status.CurrentCoordSystem)
+                lastCoordCode != status.CurrentCoordSystem || lastTool != Global.ginterp.currentTool)
             {
                 lastCoordCode = status.CurrentCoordSystem;
+                lastTool = Global.ginterp.currentTool;
                 using (Graphics g = viswin.GetOverlayGraphics())
                 {
                     g.Clear(Color.Transparent);
                     g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                    cury = curx = 10;
+                    PrintLine(g, "WCO active: " + lastCoordCode + ", T" + lastTool.ToString());
                     for (int i = 0; i < lastCoords.Length; i++)
-                    {
-                        string str = lastCoordCode + " " + Utils.GetAxisLetter(i) + ": " + lastCoords[i].ToString("0.000");
-                        g.DrawString(str, font, Brushes.Black, 10, i * 15 + 10);
-                    }
+                        PrintLine(g, "WCO " + Utils.GetAxisLetter(i) + ": " + lastCoords[i].ToString("0.000"));
                 }
                 viswin.UpdateOverlay();
             }

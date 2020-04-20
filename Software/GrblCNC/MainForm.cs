@@ -69,6 +69,7 @@ namespace GrblCNC
             grblComm.ParameterUpdate += grblComm_ParameterUpdate;
             grblComm.MessageReceived += grblComm_MessageReceived;
             grblComm.ChangeToolNotify += grblComm_ChangeToolNotify;
+            grblComm.GrblStatusChanged += grblComm_GrblStatusChanged;
             Global.grblComm = grblComm;
             grblScanTimer = new Timer();
             grblScanTimer.Interval = 100;
@@ -95,6 +96,20 @@ namespace GrblCNC
             Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
+        }
+
+        void grblComm_GrblStatusChanged(object sender, GrblStatus.MachineState newState, GrblStatus.MachineState oldState)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(() => { grblComm_GrblStatusChanged(sender, newState, oldState); }));
+                return;
+            }
+            toolStripStep.Enabled = newState == GrblStatus.MachineState.Idle;
+            toolStripStart.Enabled = newState == GrblStatus.MachineState.Idle || newState == GrblStatus.MachineState.Hold;
+            toolStripStart.Checked = newState == GrblStatus.MachineState.Run;
+            toolStripPause.Enabled = newState == GrblStatus.MachineState.Run;
+            toolStripPause.Checked = newState == GrblStatus.MachineState.Hold;
         }
 
         void grblComm_ChangeToolNotify(object sender, int newTool, bool isRunning)
@@ -143,22 +158,30 @@ namespace GrblCNC
             visualizerOverlay = new VisualizerOverlay(visualizerWinMain);
         }
 
-        void PerformCoordTouchoff(int axis)
+        void PerformTouchOff(int axis)
         {
-            frmOffset.CoordSystem = Global.grblStatus.CurrentCoordystemIndex;
-            if (frmOffset.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            frmProbe.Axis = axis;
+            frmProbe.CoordSystem = Global.grblStatus.CurrentCoordystemIndex;
+            if (frmProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                float offset = frmOffset.Offset;
-                grblComm.CoordTouchAxis(axis, frmOffset.CoordSystem, offset);
+                if (frmProbe.IsProbe)
+                    grblComm.ProbeAxis(frmProbe.Axis, -frmOffset.CoordSystem, frmProbe.Offset, frmProbe.Direction);
+                else
+                    grblComm.CoordTouchAxis(frmProbe.Axis, frmOffset.CoordSystem, frmProbe.Offset);
             }
         }
 
-        void PerformProbe(int axis)
+        void PerformToolTouchOff(int axis)
         {
-            frmProbe.Axis = axis;
+            frmProbe.Axis = GrblComm.Z_AXIS; // we always default axis to Z as it is most common.
+            frmProbe.UpdateTools();
+            frmProbe.Tool = Global.ginterp.currentTool;
             if (frmProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                grblComm.ProbeAxis(axis, -1, frmProbe.Offset, frmProbe.Direction);
+                if (frmProbe.IsProbe)
+                    grblComm.ProbeTool(frmProbe.Axis, frmProbe.Tool, frmProbe.Offset, frmProbe.Direction);
+                else
+                    grblComm.ToolTouchOff(frmProbe.Axis, frmProbe.Tool, frmProbe.Offset);
             }
         }
 
@@ -177,8 +200,8 @@ namespace GrblCNC
             switch (action)
             {
                 case GrblCNC.Controls.ManualControl.AxisAction.Home: grblComm.HomeAxis(axis); break;
-                case ManualControl.AxisAction.CoordTouchOff: PerformCoordTouchoff(axis); break;
-                case ManualControl.AxisAction.ToolProbe: PerformProbe(axis); break;
+                case ManualControl.AxisAction.CoordTouchOff: PerformTouchOff(axis); break;
+                case ManualControl.AxisAction.ToolTouchOff: PerformToolTouchOff(axis); break;
             }
             
         }

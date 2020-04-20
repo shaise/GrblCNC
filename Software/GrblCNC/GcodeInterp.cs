@@ -221,12 +221,10 @@ namespace GrblCNC
         }
 
         // parse tokens. return tokens cleared from non supported grbl codes
-        List<GToken> ParseTokens(List<GToken> tokens)
+        void ParseTokens(List<GToken> tokens)
         {
             for (int i = 0; i < NUM_COORDS; i++) haveCoord[i] = false;
             for (int i = 0; i < NUM_COORDS; i++) curCoords[i] = 0;
-            nonGrblActions.Clear();
-            List<GToken> cleanedTokens = new List<GToken>();
 
             foreach (GToken token in tokens)
             {
@@ -249,8 +247,6 @@ namespace GrblCNC
                         case 200: useInches = true; break;
                         case 201: useInches = false; break;
 
-                        case 430: nonGrblActions.G43 = true; strip = true; break;
-
                         case 700: useInches = true; break;
                         case 701: useInches = false; break;
 
@@ -262,10 +258,6 @@ namespace GrblCNC
                 }
                 else if (token.code == 'M')
                 {
-                    switch (tokval)  // mul by 10 to catch gcoses like g91.1
-                    {
-                        case 60: nonGrblActions.M6 = true; strip = true; break;
-                    }  
                 }
                 else
                 {
@@ -281,17 +273,10 @@ namespace GrblCNC
                         case 'J': curCoords[pJ] = token.value; haveCoord[pJ] = true; break;
                         case 'K': curCoords[pK] = token.value; haveCoord[pK] = true; break;
                         case 'R': curCoords[pR] = token.value; haveCoord[pR] = true; break;
-                        case 'N': curLine = tokint; strip = true; break; // strip linr numbers as well since we change them
-                        case 'T': currentTool = tokint; strip = true; break;
-                        case 'H':
-                            if (nonGrblActions.G43) { nonGrblActions.H = tokint; strip = true; }
-                            break;
+                        case 'N': curLine = tokint; break;
                     }
                 }
-                if (!strip)
-                    cleanedTokens.Add(token);
             }
-            return cleanedTokens;
         }
 
         bool isCoordChange()
@@ -455,10 +440,58 @@ namespace GrblCNC
             return sb.ToString();
         }
 
+        // parse tokens. return tokens cleared from non supported grbl codes
+        List<GToken> PreProcessTokens(List<GToken> tokens)
+        {
+            nonGrblActions.Clear();
+            List<GToken> cleanedTokens = new List<GToken>();
+
+            foreach (GToken token in tokens)
+            {
+                bool strip = false;
+                int tokval = (int)(token.value * 10 + 0.5);
+                int tokint = (int)(token.value + 0.5);
+                if (token.code == 'G')
+                {
+                    switch (tokval)  // mul by 10 to catch gcoses like g91.1
+                    {
+                        case 200: useInches = true; break;
+                        case 201: useInches = false; break;
+
+                        case 430: nonGrblActions.G43 = true; strip = true; break;
+
+                        case 700: useInches = true; break;
+                        case 701: useInches = false; break;
+                    }
+                }
+                else if (token.code == 'M')
+                {
+                    switch (tokval)  // mul by 10 to catch gcoses like g91.1
+                    {
+                        case 60: nonGrblActions.M6 = true; strip = true; break;
+                    }
+                }
+                else
+                {
+                    switch (token.code)
+                    {
+                        case 'N': curLine = tokint; strip = true; break; // strip linr numbers as well since we change them
+                        case 'T': currentTool = tokint; strip = true; break;
+                        case 'H':
+                            if (nonGrblActions.G43) { nonGrblActions.H = tokint; strip = true; }
+                            break;
+                    }
+                }
+                if (!strip)
+                    cleanedTokens.Add(token);
+            }
+            return cleanedTokens;
+        }
+
         public string PreProcessGcodeLine(string line, int lineno = -1)
         {
             List<GToken> tokens = tokens = TokenizeLine(line);
-            tokens = ParseTokens(tokens);
+            tokens = PreProcessTokens(tokens);
             if (tokens.Count > 0 || nonGrblActions.HaveActions())
                 return TokensToString(tokens, lineno);
             return null;

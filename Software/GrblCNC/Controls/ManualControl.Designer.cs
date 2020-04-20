@@ -34,7 +34,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.jogButtSpindleCW = new GrblCNC.Controls.JogButton();
             this.jogButtAllHome = new GrblCNC.Controls.JogButton();
-            this.jogButtProbe = new GrblCNC.Controls.JogButton();
             this.jogButtToolTouchOff = new GrblCNC.Controls.JogButton();
             this.jogButtTouchOff = new GrblCNC.Controls.JogButton();
             this.label2 = new System.Windows.Forms.Label();
@@ -128,27 +127,6 @@
             this.toolTip1.SetToolTip(this.jogButtAllHome, "Home Axis");
             this.jogButtAllHome.Click += new System.EventHandler(this.AxisHome_click);
             // 
-            // jogButtProbe
-            // 
-            this.jogButtProbe.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
-            this.jogButtProbe.Caption = "";
-            this.jogButtProbe.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.jogButtProbe.FontScale = 0.5F;
-            this.jogButtProbe.ForeColor = System.Drawing.Color.DarkSlateBlue;
-            this.jogButtProbe.Id = 0;
-            this.jogButtProbe.Image = global::GrblCNC.Properties.Resources.ProbeIcon;
-            this.jogButtProbe.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
-            this.jogButtProbe.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
-            this.jogButtProbe.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtProbe.Location = new System.Drawing.Point(246, 126);
-            this.jogButtProbe.Margin = new System.Windows.Forms.Padding(18, 16, 18, 16);
-            this.jogButtProbe.Name = "jogButtProbe";
-            this.jogButtProbe.Size = new System.Drawing.Size(32, 32);
-            this.jogButtProbe.TabIndex = 19;
-            this.jogButtProbe.TextOffset = new System.Drawing.Point(0, 0);
-            this.toolTip1.SetToolTip(this.jogButtProbe, "Tool Probe");
-            this.jogButtProbe.Click += new System.EventHandler(this.jogButtProbe_Click);
-            // 
             // jogButtToolTouchOff
             // 
             this.jogButtToolTouchOff.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
@@ -167,7 +145,7 @@
             this.jogButtToolTouchOff.Size = new System.Drawing.Size(32, 32);
             this.jogButtToolTouchOff.TabIndex = 18;
             this.jogButtToolTouchOff.TextOffset = new System.Drawing.Point(0, 0);
-            this.toolTip1.SetToolTip(this.jogButtToolTouchOff, "Tool touch off");
+            this.toolTip1.SetToolTip(this.jogButtToolTouchOff, "Tool Touch Off");
             this.jogButtToolTouchOff.Click += new System.EventHandler(this.jogButtToolTouchOff_Click);
             // 
             // jogButtTouchOff
@@ -188,7 +166,7 @@
             this.jogButtTouchOff.Size = new System.Drawing.Size(32, 32);
             this.jogButtTouchOff.TabIndex = 17;
             this.jogButtTouchOff.TextOffset = new System.Drawing.Point(0, 0);
-            this.toolTip1.SetToolTip(this.jogButtTouchOff, "WCO Axis touch off");
+            this.toolTip1.SetToolTip(this.jogButtTouchOff, "WCO Touch off");
             this.jogButtTouchOff.Click += new System.EventHandler(this.jogButtTouchOff_Click);
             // 
             // label2
@@ -204,6 +182,7 @@
             // 
             this.multiSelAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(241)))), ((int)(((byte)(245)))));
             this.multiSelAxis.Location = new System.Drawing.Point(9, 129);
+            this.multiSelAxis.MultiSelectionMode = false;
             this.multiSelAxis.Name = "multiSelAxis";
             this.multiSelAxis.SelectedValue = 0;
             this.multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
@@ -584,7 +563,6 @@
             this.Controls.Add(this.jogButtSpindleStop);
             this.Controls.Add(this.jogButtSpindleCW);
             this.Controls.Add(this.jogButtSpindleCCW);
-            this.Controls.Add(this.jogButtProbe);
             this.Controls.Add(this.jogButtToolTouchOff);
             this.Controls.Add(this.jogButtTouchOff);
             this.Controls.Add(this.jogButtBpos);
@@ -623,7 +601,6 @@
         private JogButton jogButtBpos;
         private JogButton jogButtTouchOff;
         private JogButton jogButtToolTouchOff;
-        private JogButton jogButtProbe;
         private JogButton jogButtSpindleCCW;
         private JogButton jogButtSpindleCW;
         private JogButton jogButtSpindleStop;
