@@ -55,6 +55,8 @@ namespace GrblCNC.Controls
             int h = 0;
             foreach (ParameterControl par in categoryDict[category])
             {
+                if (par.Visible == false)
+                    continue;
                 par.Location = new Point(0, h);
                 h += par.Height + 4;
                 panelParams.Controls.Add(par);
@@ -152,6 +154,10 @@ namespace GrblCNC.Controls
         {
             if (gParams == null)
                 return;
+            foreach (ParameterControl pc in parameterDict.Values)
+            {
+                pc.Visible = false;
+            }
             foreach (GrblConfig.GrblParam par in gParams)
             {
                 if (parameterDict.ContainsKey(par.code))
@@ -189,7 +195,12 @@ namespace GrblCNC.Controls
                     List<int> codes = parameterDict.Keys.ToList();
                     codes.Sort();
                     foreach (int code in codes)
-                        sw.WriteLine(parameterDict[code].ToString());
+                    {
+                        if (parameterDict[code].Visible == false)
+                            continue;
+                        string strdict = parameterDict[code].ToString();
+                        sw.WriteLine(strdict);
+                    }
                     sw.Close();
                 }
                 catch
@@ -238,7 +249,7 @@ namespace GrblCNC.Controls
             foreach (var keyVal in parameterDict)
             {
                 ParameterControl pc = keyVal.Value;
-                if (pc.IsChanged)
+                if (pc.IsChanged && pc.Visible)
                 {
                     Global.grblComm.SetGrblParameter(pc.paramDesc.code, pc.GetParamString());
                     valChanged = true;

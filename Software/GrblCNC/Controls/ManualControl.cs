@@ -29,14 +29,18 @@ namespace GrblCNC.Controls
 
 
 
-        public delegate void AxisStepJogPressedDelegate(object sender, int axis, float amount);
+        public delegate void AxisStepJogPressedDelegate(object sender, int axis, float amount, float speed);
         public event AxisStepJogPressedDelegate AxisStepJogPressed;
-        public delegate void AxisContinuesJogPressedDelegate(object sender, int axis, int direction);
+        public delegate void AxisContinuesJogPressedDelegate(object sender, int axis, int direction, float speed);
         public event AxisContinuesJogPressedDelegate AxisContinuesJogPressed;
         public delegate void AxisActionPressedDelegate(object sender, int axis, AxisAction action);
         public event AxisActionPressedDelegate AxisActionPressed;
         public delegate void SpindleActionDelegate(object sender, float speed, GrblComm.SpindleAction action);
         public event SpindleActionDelegate SpindleAction;
+
+        float fastJog = 50;
+        float slowJog = 50;
+        bool isJogFast = true;
         public ManualControl()
         {
             InitializeComponent();
@@ -44,6 +48,23 @@ namespace GrblCNC.Controls
             Enabled = Global.GrblConnected;
             Global.GrblConnectionChanged += Global_GrblConnectionChanged;
             valueSlideSpinSpeed.ValueChange += valueSlideSpinSpeed_ValueChange;
+            valueSlideJogSpeedXYZ.ValueChange += valueSlideJogSpeedXYZ_ValueChange;
+        }
+
+        public float GetJogSpeed()
+        {
+            return valueSlideJogSpeedXYZ.Value;
+        }
+
+        void valueSlideJogSpeedXYZ_ValueChange(object sender, float value)
+        {
+            float minval = valueSlideJogSpeedXYZ.MinValue;
+            float maxval = valueSlideJogSpeedXYZ.MaxValue;
+            float val = (valueSlideJogSpeedXYZ.Value - minval) * 100 / (maxval - minval);
+            if (isJogFast)
+                fastJog = val;
+            else
+                slowJog = val;
         }
 
         void valueSlideSpinSpeed_ValueChange(object sender, float value)
@@ -81,7 +102,7 @@ namespace GrblCNC.Controls
                 return;
             JogButton b = (JogButton)sender;
             SetCurrentAxis(b.Id);
-            AxisStepJogPressed(this, b.Id, GetSelectedJogStep());
+            AxisStepJogPressed(this, b.Id, GetSelectedJogStep(), valueSlideJogSpeedXYZ.Value);
         }
 
         private void AxisNeg_click(object sender, EventArgs e)
@@ -92,7 +113,7 @@ namespace GrblCNC.Controls
                 return;
             JogButton b = (JogButton)sender;
             SetCurrentAxis(b.Id);
-            AxisStepJogPressed(this, b.Id, -GetSelectedJogStep());
+            AxisStepJogPressed(this, b.Id, -GetSelectedJogStep(), valueSlideJogSpeedXYZ.Value);
         }
 
         private void AxisHome_click(object sender, EventArgs e)
@@ -145,7 +166,7 @@ namespace GrblCNC.Controls
                 return;
             JogButton b = (JogButton)sender;
             SetCurrentAxis(b.Id);
-            AxisContinuesJogPressed(this, b.Id, 1);
+            AxisContinuesJogPressed(this, b.Id, 1, valueSlideJogSpeedXYZ.Value);
         }
 
         private void AxisNeg_down(object sender, MouseEventArgs e)
@@ -156,7 +177,7 @@ namespace GrblCNC.Controls
                 return;
             JogButton b = (JogButton)sender;
             SetCurrentAxis(b.Id);
-            AxisContinuesJogPressed(this, b.Id, -1);
+            AxisContinuesJogPressed(this, b.Id, -1, valueSlideJogSpeedXYZ.Value);
         }
 
         private void Axis_up(object sender, MouseEventArgs e)
@@ -166,15 +187,33 @@ namespace GrblCNC.Controls
             if (AxisContinuesJogPressed == null)
                 return;
             JogButton b = (JogButton)sender;
-            AxisContinuesJogPressed(this, b.Id, 0);
+            AxisContinuesJogPressed(this, b.Id, 0, 0);
+        }
+
+        void UpdateJogSlider()
+        {
+            float val = valueSlideJogSpeedXYZ.MaxValue - valueSlideJogSpeedXYZ.MinValue;
+            if (isJogFast)
+                val = val * fastJog / 100;
+            else
+                val = val * slowJog / 100;
+            valueSlideJogSpeedXYZ.Value = valueSlideJogSpeedXYZ.MinValue + val;    
         }
 
         public void SetSliderMinMax(Sliders sld, float min, float max)
         {
             switch (sld)
             {
-                case Sliders.JogSpeed: valueSlideJogSpeedXYZ.MinValue = min; valueSlideJogSpeedXYZ.MaxValue = max; break;
-                case Sliders.SpindleSpeed: valueSlideSpinSpeed.MinValue = min; valueSlideSpinSpeed.MaxValue = max; break;
+                case Sliders.JogSpeed: 
+                    valueSlideJogSpeedXYZ.MinValue = min; 
+                    valueSlideJogSpeedXYZ.MaxValue = max; 
+                    UpdateJogSlider();
+                    break;
+
+                case Sliders.SpindleSpeed: 
+                    valueSlideSpinSpeed.MinValue = min; 
+                    valueSlideSpinSpeed.MaxValue = max; 
+                    break;
             }
         }
     }

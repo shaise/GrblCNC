@@ -30,10 +30,15 @@ namespace GrblCNC
 
             // some params codes used:
             public enum Code
-            { 
+            {
+                HomingOption = 22,
                 MaxSpindleSpeedCode = 30,
                 MinSpindleSpeedCode = 31,
+                MaxXaxisRate = 110,
             }
+
+            public const int HomingOptionEnable = 1;
+            public const int HomingOptionSingleAxis = 2;
 
             int IComparable.CompareTo(object other)
             {

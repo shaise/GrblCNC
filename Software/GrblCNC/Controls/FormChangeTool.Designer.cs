@@ -42,7 +42,7 @@
             this.buttResume.Name = "buttResume";
             this.buttResume.Size = new System.Drawing.Size(106, 44);
             this.buttResume.TabIndex = 0;
-            this.buttResume.Text = "Resume";
+            this.buttResume.Text = "Continue";
             this.buttResume.UseVisualStyleBackColor = true;
             this.buttResume.Click += new System.EventHandler(this.buttResume_Click);
             // 
@@ -74,9 +74,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 68);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(288, 25);
+            this.label2.Size = new System.Drawing.Size(303, 25);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Press resume when finished.";
+            this.label2.Text = "Press Continue when finished.";
             // 
             // label3
             // 

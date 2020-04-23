@@ -97,7 +97,7 @@
             this.jogButtSpindleCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtSpindleCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtSpindleCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleCW.Location = new System.Drawing.Point(117, 208);
+            this.jogButtSpindleCW.Location = new System.Drawing.Point(126, 199);
             this.jogButtSpindleCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
             this.jogButtSpindleCW.Name = "jogButtSpindleCW";
             this.jogButtSpindleCW.Size = new System.Drawing.Size(32, 32);
@@ -172,7 +172,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 208);
+            this.label2.Location = new System.Drawing.Point(9, 208);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 32;
@@ -228,6 +228,7 @@
             this.valueSlideMaxVelocity.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
             this.valueSlideMaxVelocity.TitleText = "Max velocity:";
             this.valueSlideMaxVelocity.Value = 0F;
+            this.valueSlideMaxVelocity.Visible = false;
             // 
             // valueSlideJogSpeedAB
             // 
@@ -242,6 +243,7 @@
             this.valueSlideJogSpeedAB.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
             this.valueSlideJogSpeedAB.TitleText = "Jog Speed (AB):";
             this.valueSlideJogSpeedAB.Value = 0F;
+            this.valueSlideJogSpeedAB.Visible = false;
             // 
             // valueSlideRapidOver
             // 
@@ -256,6 +258,7 @@
             this.valueSlideRapidOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
             this.valueSlideRapidOver.TitleText = "Rapid override:";
             this.valueSlideRapidOver.Value = 100F;
+            this.valueSlideRapidOver.Visible = false;
             // 
             // valueSlideSpinOver
             // 
@@ -270,6 +273,7 @@
             this.valueSlideSpinOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
             this.valueSlideSpinOver.TitleText = "Spindle override:";
             this.valueSlideSpinOver.Value = 100F;
+            this.valueSlideSpinOver.Visible = false;
             // 
             // valueSlideFeedOver
             // 
@@ -284,6 +288,7 @@
             this.valueSlideFeedOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
             this.valueSlideFeedOver.TitleText = "Feed override:";
             this.valueSlideFeedOver.Value = 100F;
+            this.valueSlideFeedOver.Visible = false;
             // 
             // jogButtSpindleStop
             // 
@@ -297,7 +302,7 @@
             this.jogButtSpindleStop.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtSpindleStop.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtSpindleStop.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleStop.Location = new System.Drawing.Point(86, 208);
+            this.jogButtSpindleStop.Location = new System.Drawing.Point(95, 199);
             this.jogButtSpindleStop.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
             this.jogButtSpindleStop.Name = "jogButtSpindleStop";
             this.jogButtSpindleStop.Size = new System.Drawing.Size(32, 32);
@@ -317,7 +322,7 @@
             this.jogButtSpindleCCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
             this.jogButtSpindleCCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
             this.jogButtSpindleCCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleCCW.Location = new System.Drawing.Point(55, 208);
+            this.jogButtSpindleCCW.Location = new System.Drawing.Point(64, 199);
             this.jogButtSpindleCCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
             this.jogButtSpindleCCW.Name = "jogButtSpindleCCW";
             this.jogButtSpindleCCW.Size = new System.Drawing.Size(32, 32);

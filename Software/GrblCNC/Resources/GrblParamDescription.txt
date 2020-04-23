@@ -18,11 +18,11 @@
 19|*Probe PullUp disable|bool|Bool|Polarity/Direction inverts
 20|Soft limits enable|bool|Bool|General Settings
 21|Hard limits enable|bool|Bool|General Settings
-22|Homing cycle enable|bool|Bool|General Settings,Homing
+22|Homing cycle|mask|Mask|Homing|Enable automatic homing,Single axis homing,Initial lock,Force set origin
 23|Homing direction invert|mask|Mask|Polarity/Direction inverts,Homing|X,Y,Z,A,B,C
 24|Homing locate feed rate|mm/min|Float|Homing
 25|Homing search seek rate|mm/min|Float|Homing
-26|Homing switch debounce delay|mm|Float|Hardware Timings,Homing
+26|Homing switch debounce delay|ms|Int|Hardware Timings,Homing
 27|Homing switch pull-off dist|mm|Float|Homing
 28|*G73 Retract|mm|Float|GCode Settings
 29|*Pulse delay|us|Int|Hardware Timings
@@ -59,7 +59,7 @@
 60|*Restore overrides|bool|Bool|General Settings
 61|*Ignore door when idle|bool|Bool|General Settings
 62|*Sleep enable|bool|Bool|General Settings
-63|*Hold actions|mask|Mask|General Settings|Disable laser during hold
+63|*Hold actions|mask|Mask|General Settings|Disable laser during hold,Restart laser after hold
 64|*Force initial alarm|bool|Bool|General Settings
 65|*Probing feed override|bool|Bool|General Settings
 100|X-axis|steps/mm|Float|X-Axis Settings

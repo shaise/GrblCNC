@@ -53,7 +53,7 @@ namespace GrblCNC.Controls
                     {
                         Label l = new Label();
                         l.AutoSize = true;
-                        l.Text = pardesc.description + ":";
+                        l.Text = pardesc.description + " (" + pardesc.uints + "):";
                         l.Name = "Label_" + pardesc.code.ToString();
                         this.Controls.Add(l);
                         NumericUpDown nud = new NumericUpDown();
@@ -385,8 +385,8 @@ namespace GrblCNC.Controls
                 isChanged = false; 
                 UpdateBackground();
             }
-            else
-                UpdateFromGui();
+            Visible = true;
+            UpdateFromGui();
         }
 
         public string GetParamString()

@@ -62,6 +62,7 @@ namespace GrblCNC
             CommandBatch,
             Paused,
             ProbeTool,
+            ProbeAxis,
         }
 
         public enum GrblParamTypes
@@ -306,8 +307,13 @@ namespace GrblCNC
             }
             if (GrblStatusChanged != null)
                 GrblStatusChanged(this, grblStatus.state, oldState);
-            if (grblStatus.state == GrblStatus.MachineState.Idle && machineState == MachineState.ProbeTool)
-                ProbeToolEnd();
+            if (grblStatus.state == GrblStatus.MachineState.Idle)
+            {
+                if (machineState == MachineState.ProbeTool)
+                    ProbeToolEnd();
+                if (machineState == MachineState.ProbeAxis && insertMsgQueue.Count == 0)
+                    GetGcodeCoordOfsets();
+            }
         }
 
         void HandleErrorLine(string line, MessageType msgType)
@@ -635,9 +641,16 @@ namespace GrblCNC
         {
             string line = null;
 
+            // pending lines will be sent on idle mode only
+            if (machineState != MachineState.Idle && machineState != MachineState.CommandBatch)
+                return false; 
+            if (grblStatus.state == GrblStatus.MachineState.Run)
+                return false;
+
             lock (lockMsgBufferObj)
             {
-                if (standardMsgQueue.Count > 0)
+                // insert messages have priority over pending messages. do not send if they exist
+                if (insertMsgQueue.Count == 0 && standardMsgQueue.Count > 0)
                 {
                     line = standardMsgQueue[0];
                     standardMsgQueue.RemoveAt(0);
@@ -741,9 +754,12 @@ namespace GrblCNC
 
         public void HomeAxis(int axis)
         {
-            if (axis == 10)
+            int ho = grblConfig.GetParam(GrblConfig.GrblParam.Code.HomingOption).intVal;
+            bool homeen = (ho & GrblConfig.GrblParam.HomingOptionEnable) != 0;
+            bool singleexis = (ho & GrblConfig.GrblParam.HomingOptionSingleAxis) != 0;
+            if (homeen && !singleexis)
             {
-                PostLine("$J=G91 X10 F600\n!");
+                PostLine("$H");
                 return;
             }
             string axisLetter = Utils.GetAxisLetter(axis);
@@ -772,12 +788,14 @@ namespace GrblCNC
             string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
+            machineState = MachineState.ProbeAxis;
             lastG90State = grblStatus.gState[(int)GrblStatus.GcodeParserStateNames.DistanceMode] == "G90";
             PostLine(string.Format("G91G38.2 {0}{1} F25", axisLetter, Utils.F3(10f * dir)), true);
             PostLine(string.Format("G10 L20 P{0} {1}{2}", coordSystemIx, axisLetter, Utils.F3(offset)), true);
             PostLine(string.Format("G0 {0}{1}", axisLetter, Utils.F3(- 5 * dir)), true);
             if (lastG90State)
-                PostLine("G90");
+                PostLine("G90", true);
+            SendCurrentGcodeLine(); //initiate command sending
         }
 
         public void ToolTouchOff(int axis, int toolno, float offset)

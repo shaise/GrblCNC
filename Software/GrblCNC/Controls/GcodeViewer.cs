@@ -38,7 +38,8 @@ namespace GrblCNC
         public void SetLines(string [] glines)
         {
             lines = glines == null ? null : glines.ToList();
-            maxNumLines = glines == null ? 1000 : glines.Length; 
+            maxNumLines = glines == null ? 1000 : glines.Length;
+            startLine = 0;
             UpdateScroll(); 
         }
 
@@ -74,7 +75,7 @@ namespace GrblCNC
             }
             vScroll.Minimum = 0;
             vScroll.Maximum = lines.Count > 1 ? lines.Count - 1 : 1;
-            vScroll.Value = 0;
+            vScroll.Value = startLine;
             vScroll.Enabled = true;
             Invalidate(); 
         }
@@ -183,6 +184,7 @@ namespace GrblCNC
                 startLine = highlightLine - numVisibleLines / 2;
                 if (startLine < 0)
                     startLine = 0;
+                vScroll.Value = startLine;
             }
             Invalidate();
         }

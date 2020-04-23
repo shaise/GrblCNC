@@ -199,23 +199,23 @@ namespace GrblCNC
                 return;
             switch (action)
             {
-                case GrblCNC.Controls.ManualControl.AxisAction.Home: grblComm.HomeAxis(axis); break;
+                case ManualControl.AxisAction.Home: grblComm.HomeAxis(axis); break;
                 case ManualControl.AxisAction.CoordTouchOff: PerformTouchOff(axis); break;
                 case ManualControl.AxisAction.ToolTouchOff: PerformToolTouchOff(axis); break;
             }
             
         }
 
-        void manualControl_AxisContinuesJogPressed(object sender, int axis, int direction)
+        void manualControl_AxisContinuesJogPressed(object sender, int axis, int direction, float speed)
         {
             if (grblComm != null)
-                grblComm.ContinuesJog(axis, direction, 600);
+                grblComm.ContinuesJog(axis, direction, speed);
         }
 
-        void manualControl_AxisStepJogPressed(object sender, int axis, float amount)
+        void manualControl_AxisStepJogPressed(object sender, int axis, float amount, float speed)
         {
             if (grblComm != null)
-                grblComm.StepJog(axis, amount, 600);
+                grblComm.StepJog(axis, amount, speed);
         }
 
         #endregion //Manual control events
@@ -232,6 +232,8 @@ namespace GrblCNC
             manualControl.SetSliderMinMax(ManualControl.Sliders.SpindleSpeed,
                 grblConf.GetParam(GrblConfig.GrblParam.Code.MinSpindleSpeedCode).floatVal,
                 grblConf.GetParam(GrblConfig.GrblParam.Code.MaxSpindleSpeedCode).floatVal);
+            manualControl.SetSliderMinMax(ManualControl.Sliders.JogSpeed, 0,
+                grblConf.GetParam(GrblConfig.GrblParam.Code.MaxXaxisRate).floatVal);
             Global.grblParameterEditor.UpdateGuiParams(grblConf.GetParams());
             toolStripProgressBuff.Maximum1 = 10;
             toolStripProgressBuff.Maximum2 = 10;
@@ -417,9 +419,9 @@ namespace GrblCNC
         {
             float dist = manualControl.GetSelectedJogStep();
             if (dist == 0)
-                grblComm.ContinuesJog(axis, dir, 2400);
+                grblComm.ContinuesJog(axis, dir, manualControl.GetJogSpeed());
             else
-                grblComm.StepJog(axis, dir * dist, 2400);
+                grblComm.StepJog(axis, dir * dist, manualControl.GetJogSpeed());
             keyHandled = true;
         }
 
