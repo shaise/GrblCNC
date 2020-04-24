@@ -27,6 +27,7 @@ namespace GrblCNC
         const byte CMD_FEED_HOLD = (byte)'!';
         const byte CMD_SAFETY_DOOR = 0x84;
         const byte CMD_JOG_CANCEL = 0x85;
+        const byte CMD_STATUS_REQUEST_FULL = 0x87;
         const byte CMD_FEED_SET_100 = 0x90;
         const byte CMD_FEED_ADD_10 = 0x91;
         const byte CMD_FEED_DEC_10 = 0x92;
@@ -126,6 +127,7 @@ namespace GrblCNC
         int probeToolAxis;
         float probeDir;
         bool lastG90State;
+        bool requestFullStatus = false;
         
         int scanCount;
         StringBuilder readLine;
@@ -220,6 +222,7 @@ namespace GrblCNC
                     if (CommStatusChanged != null)
                         CommStatusChanged(this, ConnectionStatus);
                 }
+                requestFullStatus = true;
             }
             else if (line.StartsWith("<"))
             {
@@ -239,7 +242,7 @@ namespace GrblCNC
             if (LineReceived != null)
             {
                 LineReceived(this, line, isStatusLine && showStatusMsg == 0);
-                if (showStatusMsg > 0)
+                if (isStatusLine && (showStatusMsg > 0))
                     showStatusMsg--;
             }
         }
@@ -668,7 +671,14 @@ namespace GrblCNC
                 return;
             try
             {
-                SendByte(CMD_STATUS_REQUEST);
+                if (requestFullStatus)
+                {
+                    SendByte(CMD_STATUS_REQUEST_FULL);
+                    requestFullStatus = false;
+                    showStatusMsg++;
+                }
+                else
+                    SendByte(CMD_STATUS_REQUEST);
             }
             catch 
             {

@@ -6,7 +6,7 @@
 4|Invert step enable pin|bool|Bool|Polarity/Direction inverts
 5|Invert limit pins|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
 6|Invert probe pin|bool|Bool|Polarity/Direction inverts
-10|Status report options|mask|Mask|General Settings|Absolute position,Buffer status,Line numbers,Feed rate and spindle RPM,Input pins state,Working coordinate offset,Overrides,Probe coordinates,,Alarm sub-state,Homing status,GCode parser status
+10|Status report options|mask|Mask|General Settings|Absolute position,Buffer status,Line numbers,Feed rate and spindle RPM,Input pins state,Working coordinate offset,Overrides,Probe coordinates,,Alarm sub-state,GCode parser status
 11|Junction deviation|mm|Float|General Settings
 12|Arc tolerance|mm|Float|General Settings
 13|Report in inches|bool|Bool|General Settings
@@ -18,7 +18,7 @@
 19|*Probe PullUp disable|bool|Bool|Polarity/Direction inverts
 20|Soft limits enable|bool|Bool|General Settings
 21|Hard limits enable|bool|Bool|General Settings
-22|Homing cycle|mask|Mask|Homing|Enable automatic homing,Single axis homing,Initial lock,Force set origin
+22|Homing cycle|mask|Mask|Homing|Enable automatic homing,Single axis homing,Initial lock,Force set origin,Dual limit switches,Manual homing
 23|Homing direction invert|mask|Mask|Polarity/Direction inverts,Homing|X,Y,Z,A,B,C
 24|Homing locate feed rate|mm/min|Float|Homing
 25|Homing search seek rate|mm/min|Float|Homing

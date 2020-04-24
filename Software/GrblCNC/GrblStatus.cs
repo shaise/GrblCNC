@@ -236,7 +236,7 @@ namespace GrblCNC
             string[] statParts = statLine.Split(new char[] { '<', '>', '|' }, StringSplitOptions.RemoveEmptyEntries);
             alarms = "";
             gStateChange = false;
-            homeStatus = 0x1F;
+            //homeStatus = 0x1F;
             for (int i = 0; i < statParts.Length; i++)
             {
                 string statPart = statParts[i];
@@ -255,10 +255,9 @@ namespace GrblCNC
                     case "WCO": ParseAxisPosition(nameData[1], workingCoords); break;
                     case "FS": ParseFeedSpindle(nameData[1]); break;
                     case "Pn": alarms = nameData[1]; break;
-                    case "Hs": homeStatus = ParseInt(nameData[1]); break;
+                    case "H": homeStatus = ParseInt(nameData[1]); break;
                     case "Bf": ParseBuffers(nameData[1]); break;
                     case "Ln": lineNumber = ParseInt(nameData[1]); break;
-                    case "GC": ParseGState(nameData[1]); break;
                 }
             }
         }
