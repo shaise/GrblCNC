@@ -29,10 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.menuMain = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.configureGrblToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusMode = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -45,6 +41,7 @@
             this.toolStripConfGrbl = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripOpen = new System.Windows.Forms.ToolStripButton();
+            this.toolStripReload = new System.Windows.Forms.ToolStripButton();
             this.toolStripToolTable = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripStart = new System.Windows.Forms.ToolStripButton();
@@ -58,8 +55,6 @@
             this.manualControl = new GrblCNC.Controls.ManualControl();
             this.tabMdi = new System.Windows.Forms.TabPage();
             this.mdiCtrl = new GrblCNC.Controls.MdiControl();
-            this.tabGrbl = new System.Windows.Forms.TabPage();
-            this.paramView = new GrblCNC.ParameterViewer();
             this.tabGcodeConf = new System.Windows.Forms.TabPage();
             this.gcodeParamView = new GrblCNC.GcodeParamViewer();
             this.splitTopRight = new System.Windows.Forms.SplitContainer();
@@ -68,8 +63,6 @@
             this.statusView = new GrblCNC.StatusViewer();
             this.openGcodeFile = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.menuMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -83,7 +76,6 @@
             this.tabControlSystem.SuspendLayout();
             this.tabControlPanel.SuspendLayout();
             this.tabMdi.SuspendLayout();
-            this.tabGrbl.SuspendLayout();
             this.tabGcodeConf.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitTopRight)).BeginInit();
             this.splitTopRight.SuspendLayout();
@@ -92,39 +84,6 @@
             this.splitBottom.Panel2.SuspendLayout();
             this.splitBottom.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // menuMain
-            // 
-            this.menuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
-            this.menuMain.Location = new System.Drawing.Point(0, 0);
-            this.menuMain.Name = "menuMain";
-            this.menuMain.Size = new System.Drawing.Size(1264, 24);
-            this.menuMain.TabIndex = 1;
-            this.menuMain.Text = "menuMain";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem,
-            this.configureGrblToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "&File";
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-            this.openToolStripMenuItem.Text = "&Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
-            // 
-            // configureGrblToolStripMenuItem
-            // 
-            this.configureGrblToolStripMenuItem.Name = "configureGrblToolStripMenuItem";
-            this.configureGrblToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-            this.configureGrblToolStripMenuItem.Text = "&Configure Grbl...";
-            this.configureGrblToolStripMenuItem.Click += new System.EventHandler(this.toolStripConfGrbl_Click);
             // 
             // statusStrip1
             // 
@@ -135,7 +94,7 @@
             this.toolStripStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 659);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1264, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -181,16 +140,16 @@
             this.toolStripConfGrbl,
             this.toolStripSeparator1,
             this.toolStripOpen,
-            this.toolStripButton1,
+            this.toolStripReload,
             this.toolStripToolTable,
             this.toolStripSeparator2,
             this.toolStripStart,
             this.toolStripStep,
             this.toolStripPause,
             this.toolStripStop});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1264, 47);
+            this.toolStrip1.Size = new System.Drawing.Size(1008, 47);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -217,6 +176,7 @@
             this.toolStripPower.Size = new System.Drawing.Size(44, 44);
             this.toolStripPower.Text = "Power";
             this.toolStripPower.ToolTipText = "Power on CNC driver";
+            this.toolStripPower.Visible = false;
             this.toolStripPower.Click += new System.EventHandler(this.toolStripPower_Click);
             // 
             // toolStripGrbl
@@ -257,6 +217,18 @@
             this.toolStripOpen.Text = "Open";
             this.toolStripOpen.ToolTipText = "Open GCODE file";
             this.toolStripOpen.Click += new System.EventHandler(this.toolStripOpen_Click);
+            // 
+            // toolStripReload
+            // 
+            this.toolStripReload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripReload.Image = global::GrblCNC.Properties.Resources.ReloaButt;
+            this.toolStripReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripReload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripReload.Name = "toolStripReload";
+            this.toolStripReload.Size = new System.Drawing.Size(44, 44);
+            this.toolStripReload.Text = "Reload";
+            this.toolStripReload.ToolTipText = "Reload GCODE file";
+            this.toolStripReload.Click += new System.EventHandler(this.toolStripReload_Click);
             // 
             // toolStripToolTable
             // 
@@ -326,7 +298,7 @@
             // splitMain
             // 
             this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitMain.Location = new System.Drawing.Point(0, 71);
+            this.splitMain.Location = new System.Drawing.Point(0, 47);
             this.splitMain.Name = "splitMain";
             this.splitMain.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -339,8 +311,8 @@
             // 
             this.splitMain.Panel2.Controls.Add(this.splitBottom);
             this.splitMain.Panel2MinSize = 100;
-            this.splitMain.Size = new System.Drawing.Size(1264, 588);
-            this.splitMain.SplitterDistance = 455;
+            this.splitMain.Size = new System.Drawing.Size(1008, 612);
+            this.splitMain.SplitterDistance = 473;
             this.splitMain.TabIndex = 4;
             // 
             // splitTop
@@ -358,21 +330,20 @@
             // 
             this.splitTop.Panel2.Controls.Add(this.splitTopRight);
             this.splitTop.Panel2MinSize = 100;
-            this.splitTop.Size = new System.Drawing.Size(1264, 455);
-            this.splitTop.SplitterDistance = 385;
+            this.splitTop.Size = new System.Drawing.Size(1008, 473);
+            this.splitTop.SplitterDistance = 307;
             this.splitTop.TabIndex = 0;
             // 
             // tabControlSystem
             // 
             this.tabControlSystem.Controls.Add(this.tabControlPanel);
             this.tabControlSystem.Controls.Add(this.tabMdi);
-            this.tabControlSystem.Controls.Add(this.tabGrbl);
             this.tabControlSystem.Controls.Add(this.tabGcodeConf);
             this.tabControlSystem.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlSystem.Location = new System.Drawing.Point(0, 0);
             this.tabControlSystem.Name = "tabControlSystem";
             this.tabControlSystem.SelectedIndex = 0;
-            this.tabControlSystem.Size = new System.Drawing.Size(385, 455);
+            this.tabControlSystem.Size = new System.Drawing.Size(307, 473);
             this.tabControlSystem.TabIndex = 0;
             this.tabControlSystem.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControlSystem_Selected);
             // 
@@ -382,7 +353,7 @@
             this.tabControlPanel.Location = new System.Drawing.Point(4, 22);
             this.tabControlPanel.Name = "tabControlPanel";
             this.tabControlPanel.Padding = new System.Windows.Forms.Padding(3);
-            this.tabControlPanel.Size = new System.Drawing.Size(377, 429);
+            this.tabControlPanel.Size = new System.Drawing.Size(299, 447);
             this.tabControlPanel.TabIndex = 0;
             this.tabControlPanel.Text = "Manual Control (F3)";
             this.tabControlPanel.UseVisualStyleBackColor = true;
@@ -395,7 +366,7 @@
             this.manualControl.ForeColor = System.Drawing.Color.DarkSlateBlue;
             this.manualControl.Location = new System.Drawing.Point(3, 3);
             this.manualControl.Name = "manualControl";
-            this.manualControl.Size = new System.Drawing.Size(371, 423);
+            this.manualControl.Size = new System.Drawing.Size(293, 441);
             this.manualControl.TabIndex = 0;
             // 
             // tabMdi
@@ -404,7 +375,7 @@
             this.tabMdi.Location = new System.Drawing.Point(4, 22);
             this.tabMdi.Name = "tabMdi";
             this.tabMdi.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMdi.Size = new System.Drawing.Size(377, 429);
+            this.tabMdi.Size = new System.Drawing.Size(299, 447);
             this.tabMdi.TabIndex = 1;
             this.tabMdi.Text = "MDI (F5)";
             this.tabMdi.UseVisualStyleBackColor = true;
@@ -415,27 +386,8 @@
             this.mdiCtrl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mdiCtrl.Location = new System.Drawing.Point(3, 3);
             this.mdiCtrl.Name = "mdiCtrl";
-            this.mdiCtrl.Size = new System.Drawing.Size(371, 423);
+            this.mdiCtrl.Size = new System.Drawing.Size(293, 441);
             this.mdiCtrl.TabIndex = 0;
-            // 
-            // tabGrbl
-            // 
-            this.tabGrbl.Controls.Add(this.paramView);
-            this.tabGrbl.Location = new System.Drawing.Point(4, 22);
-            this.tabGrbl.Name = "tabGrbl";
-            this.tabGrbl.Padding = new System.Windows.Forms.Padding(1);
-            this.tabGrbl.Size = new System.Drawing.Size(377, 429);
-            this.tabGrbl.TabIndex = 2;
-            this.tabGrbl.Text = "Grbl config";
-            this.tabGrbl.UseVisualStyleBackColor = true;
-            // 
-            // paramView
-            // 
-            this.paramView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.paramView.Location = new System.Drawing.Point(1, 1);
-            this.paramView.Name = "paramView";
-            this.paramView.Size = new System.Drawing.Size(375, 427);
-            this.paramView.TabIndex = 0;
             // 
             // tabGcodeConf
             // 
@@ -443,9 +395,9 @@
             this.tabGcodeConf.Location = new System.Drawing.Point(4, 22);
             this.tabGcodeConf.Name = "tabGcodeConf";
             this.tabGcodeConf.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGcodeConf.Size = new System.Drawing.Size(377, 429);
+            this.tabGcodeConf.Size = new System.Drawing.Size(299, 447);
             this.tabGcodeConf.TabIndex = 3;
-            this.tabGcodeConf.Text = "GCode config";
+            this.tabGcodeConf.Text = "Coordinates";
             this.tabGcodeConf.UseVisualStyleBackColor = true;
             // 
             // gcodeParamView
@@ -453,7 +405,7 @@
             this.gcodeParamView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcodeParamView.Location = new System.Drawing.Point(3, 3);
             this.gcodeParamView.Name = "gcodeParamView";
-            this.gcodeParamView.Size = new System.Drawing.Size(371, 423);
+            this.gcodeParamView.Size = new System.Drawing.Size(293, 441);
             this.gcodeParamView.TabIndex = 0;
             // 
             // splitTopRight
@@ -466,7 +418,7 @@
             // 
             this.splitTopRight.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.splitTopRight.Panel2Collapsed = true;
-            this.splitTopRight.Size = new System.Drawing.Size(875, 455);
+            this.splitTopRight.Size = new System.Drawing.Size(697, 473);
             this.splitTopRight.SplitterDistance = 241;
             this.splitTopRight.TabIndex = 0;
             // 
@@ -485,8 +437,8 @@
             // 
             this.splitBottom.Panel2.Controls.Add(this.statusView);
             this.splitBottom.Panel2MinSize = 200;
-            this.splitBottom.Size = new System.Drawing.Size(1264, 129);
-            this.splitBottom.SplitterDistance = 642;
+            this.splitBottom.Size = new System.Drawing.Size(1008, 135);
+            this.splitBottom.SplitterDistance = 442;
             this.splitBottom.TabIndex = 0;
             // 
             // gcodeMainViewer
@@ -498,7 +450,7 @@
             this.gcodeMainViewer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.gcodeMainViewer.Name = "gcodeMainViewer";
             this.gcodeMainViewer.ShowLineNumbers = true;
-            this.gcodeMainViewer.Size = new System.Drawing.Size(642, 129);
+            this.gcodeMainViewer.Size = new System.Drawing.Size(442, 135);
             this.gcodeMainViewer.TabIndex = 0;
             // 
             // statusView
@@ -506,38 +458,23 @@
             this.statusView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.statusView.Location = new System.Drawing.Point(0, 0);
             this.statusView.Name = "statusView";
-            this.statusView.Size = new System.Drawing.Size(618, 129);
+            this.statusView.Size = new System.Drawing.Size(562, 135);
             this.statusView.TabIndex = 0;
             // 
             // openGcodeFile
             // 
             this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
             // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = global::GrblCNC.Properties.Resources.ReloaButt;
-            this.toolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(44, 44);
-            this.toolStripButton1.Text = "Reload";
-            this.toolStripButton1.ToolTipText = "Reload GCODE file";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.ClientSize = new System.Drawing.Size(1008, 681);
             this.Controls.Add(this.splitMain);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.menuMain);
-            this.MainMenuStrip = this.menuMain;
             this.Name = "MainForm";
             this.Text = "GrblCNC";
-            this.menuMain.ResumeLayout(false);
-            this.menuMain.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -553,7 +490,6 @@
             this.tabControlSystem.ResumeLayout(false);
             this.tabControlPanel.ResumeLayout(false);
             this.tabMdi.ResumeLayout(false);
-            this.tabGrbl.ResumeLayout(false);
             this.tabGcodeConf.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitTopRight)).EndInit();
             this.splitTopRight.ResumeLayout(false);
@@ -568,9 +504,6 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuMain;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.SplitContainer splitMain;
@@ -593,8 +526,6 @@
         private System.Windows.Forms.ToolStripButton toolStripOpen;
         private System.Windows.Forms.ToolStripButton toolStripToolTable;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.TabPage tabGrbl;
-        private ParameterViewer paramView;
         private StatusViewer statusView;
         private Controls.ManualControl manualControl;
         private Controls.MdiControl mdiCtrl;
@@ -604,10 +535,9 @@
         private System.Windows.Forms.ToolStripButton toolStripStep;
         private System.Windows.Forms.TabPage tabGcodeConf;
         private GcodeParamViewer gcodeParamView;
-        private System.Windows.Forms.ToolStripMenuItem configureGrblToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripConfGrbl;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusMode;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripReload;
     }
 }
 

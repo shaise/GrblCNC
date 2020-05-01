@@ -227,7 +227,7 @@ namespace GrblCNC
                 BeginInvoke(new MethodInvoker(() => { grblComm_ParameterUpdate(sender, grblConf, gcodeConf); }));
                 return;
             }
-            paramView.FillParameters(grblConf);
+            //paramView.FillParameters(grblConf);
             gcodeParamView.FillParameters(gcodeConf);
             manualControl.SetSliderMinMax(ManualControl.Sliders.SpindleSpeed,
                 grblConf.GetParam(GrblConfig.GrblParam.Code.MinSpindleSpeedCode).floatVal,
@@ -325,26 +325,27 @@ namespace GrblCNC
             MessageBox.Show("Error", errmsg, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+
+
+
+        void LoadGcodeFile(string fileName)
+        {
+            if (fileName == null)
+                return;
+            string res = visualizerWinMain.LoadGcodeFile(fileName);
+            if (res != "OK")
+                Error(res);
+            else
+                lastGcodeFile = openGcodeFile.FileName;
+        }
+
         void OpenNewGcodeFile()
         {
             if (openGcodeFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string res = visualizerWinMain.LoadGcodeFile(openGcodeFile.FileName);
-                if (res != "OK")
-                    Error(res);
-                else
-                    lastGcodeFile = openGcodeFile.FileName;
+                LoadGcodeFile(openGcodeFile.FileName); 
             }
         }
-
-        #region Menu commands
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenNewGcodeFile();
-        }
-
-        #endregion
-
 
         void simTimer_Tick(object sender, EventArgs e)
         {
@@ -401,10 +402,10 @@ namespace GrblCNC
         {
             OpenNewGcodeFile();
         }
-
+        
         private void toolStripReload_Click(object sender, EventArgs e)
         {
-
+            LoadGcodeFile(lastGcodeFile);
         }
 
         private void toolStripToolTable_Click(object sender, EventArgs e)

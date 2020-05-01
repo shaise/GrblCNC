@@ -34,3 +34,15 @@
 36:There are unused, leftover G-code words that aren't used by any command in the block.
 37:The G43.1 dynamic tool length offset command cannot apply an offset to an axis other than its configured axis. The Grbl default axis is the Z-axis.
 38:Tool number greater than max supported value.
+39:GCode value out of range.
+40:Tool change pending.
+41:Spindle not running.
+42:Illegal plane used in GCode.
+43:Maximum feed rate exceeded.
+44:RPM out of range.
+45:Limits engaged.
+46:Homing required.
+47:Tool error.
+48:Value conflict.
+50:Emergency Stop.
+ 
