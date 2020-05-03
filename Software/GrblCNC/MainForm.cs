@@ -26,6 +26,7 @@ namespace GrblCNC
         FormPopWindow frmPopup;
         FormChangeTool frmChangeTool;
         FormConfirmation frmConfirmation;
+        FormAbout frmAbout;
         ParametersEdit grblParamEdit;
         ToolTableEdit toolTableEdit;
         ToolTable toolTable;
@@ -95,6 +96,7 @@ namespace GrblCNC
             frmPopup = new FormPopWindow();
             frmConfirmation = new FormConfirmation();
             frmChangeTool = new FormChangeTool();
+            frmAbout = new FormAbout();
             Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
@@ -448,6 +450,10 @@ namespace GrblCNC
             frmPopup.ShowControl(toolTableEdit, "Edit Tool Table");
         }
 
+        private void toolStripAbout_Click(object sender, EventArgs e)
+        {
+            frmAbout.ShowDialog();
+        }
         #endregion
 
         void StepJog(int axis, float dir = 1)
@@ -520,6 +526,7 @@ namespace GrblCNC
         {
             mdiCtrl.Select(); ;
         }
+
 
 
 

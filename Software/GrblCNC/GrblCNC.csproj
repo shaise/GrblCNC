@@ -77,6 +77,12 @@
     <Compile Include="Controls\ErrorView.Designer.cs">
       <DependentUpon>ErrorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FormConfirmation.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -247,6 +253,9 @@
     <EmbeddedResource Include="Controls\ErrorView.resx">
       <DependentUpon>ErrorView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormConfirmation.resx">
       <DependentUpon>FormConfirmation.cs</DependentUpon>
     </EmbeddedResource>
@@ -335,6 +344,8 @@
     <None Include="Resources\GrblAlarmCodes.txt" />
     <None Include="Resources\ConfGrblButt.png" />
     <None Include="Resources\ConfSenderButt.png" />
+    <None Include="Resources\AboutPicSmall.png" />
+    <None Include="Resources\aboutButt.png" />
     <Content Include="Resources\GrblLogo_ngc.txt" />
     <None Include="Resources\JetBrainsMono-Medium.ttf" />
     <None Include="Resources\VertShader3DText.txt" />

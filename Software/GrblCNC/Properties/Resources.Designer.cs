@@ -63,6 +63,26 @@ namespace GrblCNC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap aboutButt {
+            get {
+                object obj = ResourceManager.GetObject("aboutButt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AboutPicSmall {
+            get {
+                object obj = ResourceManager.GetObject("AboutPicSmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AlarmErrorIcon {
             get {
                 object obj = ResourceManager.GetObject("AlarmErrorIcon", resourceCulture);

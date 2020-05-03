@@ -271,4 +271,10 @@
   <data name="ToolTableButt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\tooltablebutt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AboutPicSmall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AboutPicSmall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="aboutButt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\aboutButt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
