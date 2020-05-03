@@ -18,7 +18,7 @@
 19|*Probe PullUp disable|bool|Bool|Polarity/Direction inverts
 20|Soft limits enable|bool|Bool|General Settings
 21|Hard limits enable|bool|Bool|General Settings
-22|Homing cycle|mask|Mask|Homing|Enable automatic homing,Single axis homing,Initial lock,Force set origin,Dual limit switches,Manual homing
+22|Homing cycle|mask|Mask|Homing|Enable automatic homing,Single axis homing,Initial lock,Set origin to 0,Dual limit switches,Manual homing
 23|Homing direction invert|mask|Mask|Polarity/Direction inverts,Homing|X,Y,Z,A,B,C
 24|Homing locate feed rate|mm/min|Float|Homing
 25|Homing search seek rate|mm/min|Float|Homing

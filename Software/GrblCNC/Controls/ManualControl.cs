@@ -123,6 +123,13 @@ namespace GrblCNC.Controls
             AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.Home);
         }
 
+        private void axisHomeAll_Click(object sender, EventArgs e)
+        {
+            if (AxisActionPressed == null)
+                return;
+            AxisActionPressed(this, -1, AxisAction.Home);
+        }
+ 
         private void jogButtTouchOff_Click(object sender, EventArgs e)
         {
             if (AxisActionPressed == null)

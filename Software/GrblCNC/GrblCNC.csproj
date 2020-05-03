@@ -77,6 +77,12 @@
     <Compile Include="Controls\ErrorView.Designer.cs">
       <DependentUpon>ErrorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FormConfirmation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormConfirmation.Designer.cs">
+      <DependentUpon>FormConfirmation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FormChangeTool.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -240,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ErrorView.resx">
       <DependentUpon>ErrorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormConfirmation.resx">
+      <DependentUpon>FormConfirmation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormChangeTool.resx">
       <DependentUpon>FormChangeTool.cs</DependentUpon>

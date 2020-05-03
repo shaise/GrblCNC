@@ -64,6 +64,7 @@ namespace GrblCNC
             Paused,
             ProbeTool,
             ProbeAxis,
+            waitStatus,
         }
 
         public enum GrblParamTypes
@@ -110,6 +111,7 @@ namespace GrblCNC
         int jogCount = 0;
         public MachineState machineState;
         public CommStatus ConnectionStatus;
+        public string driverVersion = null;
         bool [] isParamUpdated = new bool[(int)GrblParamTypes.NumParamTypes];
         string curJogCommand;
         string lastError;
@@ -210,20 +212,7 @@ namespace GrblCNC
                 tmpLongLine = line;
             }
             if (line.StartsWith("Grbl"))
-            {
-                activePort = port.PortName;
-                if (machineState == MachineState.Idle)
-                    GetAllGrblParameters();
-                //machineState = MachineState.Idle;
-                if (ConnectionStatus != CommStatus.Connected)
-                {
-                    ConnectionStatus = CommStatus.Connected;
-                    grblStatus.state = GrblStatus.MachineState.Unknown;
-                    if (CommStatusChanged != null)
-                        CommStatusChanged(this, ConnectionStatus);
-                }
-                requestFullStatus = true;
-            }
+                HandleReconnection();
             else if (line.StartsWith("<"))
             {
                 isStatusLine = true;
@@ -267,6 +256,9 @@ namespace GrblCNC
         #region Input line handling
         void HandleStatusLine(string line)
         {
+            if (machineState == MachineState.waitStatus)
+                machineState = MachineState.Idle;
+
             GrblStatus.MachineState oldState = grblStatus.state;
             float[] axis = new float[grblStatus.axisPos.Length];
             for (int i = 0; i < axis.Length; i++)
@@ -275,6 +267,7 @@ namespace GrblCNC
             grblStatus.Parse(line);
             if (StatusUpdate != null)
                 StatusUpdate(this, grblStatus);
+            grblStatus.gStateChange = false;
             if (oldState != grblStatus.state)
                 HandleStateChange(oldState);
 
@@ -315,7 +308,10 @@ namespace GrblCNC
                 if (machineState == MachineState.ProbeTool)
                     ProbeToolEnd();
                 if (machineState == MachineState.ProbeAxis && insertMsgQueue.Count == 0)
+                {
+                    machineState = MachineState.waitStatus;
                     GetGcodeCoordOfsets();
+                }
             }
         }
 
@@ -388,8 +384,11 @@ namespace GrblCNC
                         ReportUpdatedParams(); 
                     break;
                 case MachineState.ProbeTool:
+                case MachineState.ProbeAxis:
                     if (insertMsgQueue.Count > 0)
                         SendCurrentGcodeLine();
+                    //if (insertMsgQueue.Count == 0)
+                    //    machineState
 //                    else
 //                       ProbeToolEnd(); 
                     break;
@@ -399,6 +398,23 @@ namespace GrblCNC
                 case MachineState.Running: SendCurrentGcodeLine(); break;
                 case MachineState.CommandBatch: HandleCommandBatch(); break;
             }
+        }
+
+
+        void HandleReconnection()
+        {
+            activePort = port.PortName;
+            if (machineState == MachineState.Idle)
+                GetAllGrblParameters();
+            //machineState = MachineState.Idle;
+            if (ConnectionStatus != CommStatus.Connected)
+            {
+                ConnectionStatus = CommStatus.Connected;
+                grblStatus.state = GrblStatus.MachineState.Unknown;
+                if (CommStatusChanged != null)
+                    CommStatusChanged(this, ConnectionStatus);
+            }
+            requestFullStatus = true;
         }
 
         void HandleMessageLine(string line)
@@ -426,6 +442,9 @@ namespace GrblCNC
                         MessageReceived(this, vars[1], MessageType.Info);
                     break;
 
+                case "DRIVER VERSION":
+                    HandleReconnection();
+                    break;
             }
         }
 
@@ -460,7 +479,7 @@ namespace GrblCNC
                 showStatusMsg++;
                 return;
             }
-            if (debugSending)
+            if (debugSending && ConnectionStatus == CommStatus.Connected)
                 Global.mdiControl.AddLine(line);
             line += "\n";
             lock (lockSerialSendObj)
@@ -552,13 +571,23 @@ namespace GrblCNC
                 port.Write(msg, 0, 1);
             }
         }
-        
-        void SendSoftReset()
+
+        void ClearMachineState()
         {
-            SendByte(CMD_SOFT_RESET);
             if (Global.ginterp != null)
                 Global.ginterp.ResetGcodeLine();
             machineState = MachineState.Idle;
+        }
+
+        public void SendSoftReset()
+        {
+            SendByte(CMD_SOFT_RESET);
+            ClearMachineState();
+        }
+
+        void TestConnection()
+        {
+            SendLineToPort("$I");
         }
 
         void SendStop()
@@ -586,6 +615,8 @@ namespace GrblCNC
         public void PostLines(string [] lines)
         {
             if (lines == null || lines.Length == 0)
+                return;
+            if (machineState == MachineState.waitStatus)
                 return;
             if (machineState != MachineState.Idle && machineState != MachineState.CommandBatch)
                 return;
@@ -621,7 +652,9 @@ namespace GrblCNC
                 port.WriteTimeout = 500;
                 port.Open();
                 portOpened = true;
-                SendSoftReset();
+                //SendSoftReset();
+                TestConnection();
+                ClearMachineState();
             }
             catch
             {
@@ -762,21 +795,27 @@ namespace GrblCNC
             PostLine(cmd);
         }
 
-        public void HomeAxis(int axis)
+        public string HomeAxis(int axis)
         {
             int ho = grblConfig.GetParam(GrblConfig.GrblParam.Code.HomingOption).intVal;
             bool homeen = (ho & GrblConfig.GrblParam.HomingOptionEnable) != 0;
-            bool singleexis = (ho & GrblConfig.GrblParam.HomingOptionSingleAxis) != 0;
-            if (homeen && !singleexis)
+            if (!homeen)
+                return "Driver homing is not enabled. Check homing parameters";
+            if (axis < 0)
             {
                 PostLine("$H");
-                return;
+                return "OK";
             }
+            bool singleexis = (ho & GrblConfig.GrblParam.HomingOptionSingleAxis) != 0;
+            if (!singleexis)
+                return "Single axis homing is not enabled. Check homing parameters";
+
             string axisLetter = Utils.GetAxisLetter(axis);
             if (axisLetter == null)
-                return;
+                return "Invalid homing axis selected";
             string cmd = string.Format("$H{0}", axisLetter);
             PostLine(cmd);
+            return "OK";
         }
 
         public void CoordTouchAxis(int axis, int coordSystemIx, float offset)

@@ -36,6 +36,7 @@
             this.jogButtAllHome = new GrblCNC.Controls.JogButton();
             this.jogButtToolTouchOff = new GrblCNC.Controls.JogButton();
             this.jogButtTouchOff = new GrblCNC.Controls.JogButton();
+            this.axisHomeAll = new GrblCNC.Controls.JogButton();
             this.label2 = new System.Windows.Forms.Label();
             this.multiSelAxis = new GrblCNC.Controls.MultiSelect();
             this.valueSlideJogSpeedXYZ = new GrblCNC.Controls.ValueSlider();
@@ -124,7 +125,7 @@
             this.jogButtAllHome.Size = new System.Drawing.Size(32, 32);
             this.jogButtAllHome.TabIndex = 33;
             this.jogButtAllHome.TextOffset = new System.Drawing.Point(0, 2);
-            this.toolTip1.SetToolTip(this.jogButtAllHome, "Home Axis");
+            this.toolTip1.SetToolTip(this.jogButtAllHome, "Home Selected Axis");
             this.jogButtAllHome.Click += new System.EventHandler(this.AxisHome_click);
             // 
             // jogButtToolTouchOff
@@ -168,6 +169,27 @@
             this.jogButtTouchOff.TextOffset = new System.Drawing.Point(0, 0);
             this.toolTip1.SetToolTip(this.jogButtTouchOff, "WCO Touch off");
             this.jogButtTouchOff.Click += new System.EventHandler(this.jogButtTouchOff_Click);
+            // 
+            // axisHomeAll
+            // 
+            this.axisHomeAll.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.axisHomeAll.Caption = "A";
+            this.axisHomeAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.axisHomeAll.FontScale = 0.5F;
+            this.axisHomeAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(199)))), ((int)(((byte)(211)))));
+            this.axisHomeAll.Id = 10;
+            this.axisHomeAll.Image = global::GrblCNC.Properties.Resources.HomeIconFull;
+            this.axisHomeAll.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
+            this.axisHomeAll.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
+            this.axisHomeAll.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
+            this.axisHomeAll.Location = new System.Drawing.Point(9, 88);
+            this.axisHomeAll.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
+            this.axisHomeAll.Name = "axisHomeAll";
+            this.axisHomeAll.Size = new System.Drawing.Size(32, 32);
+            this.axisHomeAll.TabIndex = 35;
+            this.axisHomeAll.TextOffset = new System.Drawing.Point(0, 2);
+            this.toolTip1.SetToolTip(this.axisHomeAll, "Home all Axes");
+            this.axisHomeAll.Click += new System.EventHandler(this.axisHomeAll_Click);
             // 
             // label2
             // 
@@ -555,6 +577,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(220)))), ((int)(((byte)(232)))));
+            this.Controls.Add(this.axisHomeAll);
             this.Controls.Add(this.multiSelAxis);
             this.Controls.Add(this.jogButtAllHome);
             this.Controls.Add(this.label2);
@@ -620,5 +643,6 @@
         private System.Windows.Forms.Label label2;
         private JogButton jogButtAllHome;
         private MultiSelect multiSelAxis;
+        private JogButton axisHomeAll;
     }
 }

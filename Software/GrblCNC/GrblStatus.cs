@@ -87,7 +87,8 @@ namespace GrblCNC
         public float spindleRpm;
         public bool dataValid;
         public string alarms = "";
-        public int homeStatus;
+        public bool homeStatus;
+        public int homedMask;
         public int planBuffer;
         public int uartBuffer;
         public int lineNumber;
@@ -130,6 +131,7 @@ namespace GrblCNC
             clone.dataValid = dataValid;
             clone.alarms = alarms;
             clone.homeStatus = homeStatus;
+            clone.homedMask = homedMask;
             clone.planBuffer = planBuffer;
             clone.uartBuffer = uartBuffer;
             clone.lineNumber = lineNumber;
@@ -173,6 +175,15 @@ namespace GrblCNC
                 }
                 catch { }
             }
+        }
+
+        void ParseHomeState(string hstate)
+        {
+            string[] homeVals = hstate.Split(',');
+            if (homeVals.Length > 0)
+                homeStatus = ParseInt(homeVals[0]) == 1;
+            if (homeVals.Length > 1)
+                homedMask = ParseInt(homeVals[1]);
         }
 
         void ParseBuffers(string buffs)
@@ -235,7 +246,6 @@ namespace GrblCNC
             // first split to parts
             string[] statParts = statLine.Split(new char[] { '<', '>', '|' }, StringSplitOptions.RemoveEmptyEntries);
             alarms = "";
-            gStateChange = false;
             //homeStatus = 0x1F;
             for (int i = 0; i < statParts.Length; i++)
             {
@@ -255,7 +265,7 @@ namespace GrblCNC
                     case "WCO": ParseAxisPosition(nameData[1], workingCoords); break;
                     case "FS": ParseFeedSpindle(nameData[1]); break;
                     case "Pn": alarms = nameData[1]; break;
-                    case "H": homeStatus = ParseInt(nameData[1]); break;
+                    case "H":  ParseHomeState(nameData[1]); break;
                     case "Bf": ParseBuffers(nameData[1]); break;
                     case "Ln": lineNumber = ParseInt(nameData[1]); break;
                 }

@@ -25,6 +25,7 @@ namespace GrblCNC
         FormProbe frmProbe;
         FormPopWindow frmPopup;
         FormChangeTool frmChangeTool;
+        FormConfirmation frmConfirmation;
         ParametersEdit grblParamEdit;
         ToolTableEdit toolTableEdit;
         ToolTable toolTable;
@@ -92,6 +93,7 @@ namespace GrblCNC
             frmOffset = new FormOffset();
             frmProbe = new FormProbe();
             frmPopup = new FormPopWindow();
+            frmConfirmation = new FormConfirmation();
             frmChangeTool = new FormChangeTool();
             Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
@@ -185,6 +187,32 @@ namespace GrblCNC
             }
         }
 
+        void PerformHoming(int axis)
+        {
+            bool needconfirm = false;
+            if (axis < 0)
+            { 
+                // home all
+                if (Global.grblStatus.homedMask != 0)
+                {
+                    frmConfirmation.SetMessage("Some or all axis are already homed. Do you want to home again?");
+                    needconfirm = true;
+                }
+            }
+            else
+            {
+                if ((Global.grblStatus.homedMask & (1 << axis)) != 0)
+                {
+                    frmConfirmation.SetMessage(Utils.GetAxisLetter(axis) + 
+                        " axis is already homed. Do you want to home it again?");
+                    needconfirm = true;
+                }
+            }
+            if (needconfirm && frmConfirmation.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+            grblComm.HomeAxis(axis);
+        }
+
         #region Manual control events
         void manualControl_SpindleAction(object sender, float speed, GrblComm.SpindleAction action)
         {
@@ -199,7 +227,7 @@ namespace GrblCNC
                 return;
             switch (action)
             {
-                case ManualControl.AxisAction.Home: grblComm.HomeAxis(axis); break;
+                case ManualControl.AxisAction.Home: PerformHoming(axis); break;
                 case ManualControl.AxisAction.CoordTouchOff: PerformTouchOff(axis); break;
                 case ManualControl.AxisAction.ToolTouchOff: PerformToolTouchOff(axis); break;
             }
@@ -255,7 +283,7 @@ namespace GrblCNC
             statusView.SetAxisValues(status.axisPos);
             statusView.SetAlarms(status.alarms);
             statusView.SetFeedSpindle(status.feedRate, status.spindleRpm);
-            statusView.SetHomeState(status.homeStatus);
+            statusView.SetHomeState(status.homedMask);
             if (status.gStateChange)
                 mdiCtrl.SetGcodeParserStatus(status.gState);
             toolStripProgressBuff.Value1 = status.uartBuffer;
@@ -383,6 +411,12 @@ namespace GrblCNC
 
         private void toolStripPower_Click(object sender, EventArgs e)
         {
+            frmConfirmation.SetMessage("This will reset the Grbl CNC driver. After that, location will be lost and the CNC must be rehomed");
+            if (frmConfirmation.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (grblComm != null)
+                    grblComm.SendSoftReset();
+            }
         }
 
         private void toolStripConfGrbl_Click(object sender, EventArgs e)
@@ -423,6 +457,7 @@ namespace GrblCNC
                 grblComm.ContinuesJog(axis, dir, manualControl.GetJogSpeed());
             else
                 grblComm.StepJog(axis, dir * dist, manualControl.GetJogSpeed());
+            manualControl.SetCurrentAxis(axis);
             keyHandled = true;
         }
 
