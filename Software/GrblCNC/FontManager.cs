@@ -74,7 +74,7 @@ namespace GrblCNC
                         g.DrawString(stchar, fnt, Brushes.White, x, y);
                     }
                 }
-                bitmapFont.Save("bmpFont.png", System.Drawing.Imaging.ImageFormat.Png);
+                //bitmapFont.Save("bmpFont.png", System.Drawing.Imaging.ImageFormat.Png);
                 return bitmapFont;
             }
         }
