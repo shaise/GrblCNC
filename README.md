@@ -14,7 +14,7 @@ A C# Clone to LinuxCNC that works with GRBL CNC driver
 * [Click here for project progress](PROGRESS.md)
 * [Click here for list of added capabilities](EXTENTIONS.md)
 ### GRBL for Chinese CNC3040-like machines. WIP. 
-### Based on STM32F103C8T6 "Bluepill" boards with customizes grblHAL firmware 
+### Based on STM32F103C8T6 "Bluepill" boards with customized grblHAL firmware 
 #### Project goals: 
 * Develop simple open hardware plug to replace the vanishing parallel port
     - Support configurable pin assignments

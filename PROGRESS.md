@@ -1,6 +1,7 @@
 ## GRBL for Chinese CNC3040-like machines. WIP.
 ### Project progress:
 
+* 04 May 2020:  First release
 * 18 Apr 2020:  Manual Tool change and start of tool table implemented
 * 06 Apr 2020:  Support of g54-59 offsets
   * Display gcode parser state
