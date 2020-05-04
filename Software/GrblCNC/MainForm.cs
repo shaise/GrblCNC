@@ -321,7 +321,7 @@ namespace GrblCNC
             if (status == GrblComm.CommStatus.Connected)
             {
                 toolStripGrbl.Enabled = true;
-                toolStripGrbl.ToolTipText = "Grbl Connected at port " + grblComm.activePort;
+                toolStripGrbl.ToolTipText = "Grbl Connected at port " + grblComm.activePort + ", HW ver:" + grblComm.grblVersion;
                 toolStripConfGrbl.Enabled = true;
                 toolStripPower.Enabled = true;
                 Global.GrblConnected = true;

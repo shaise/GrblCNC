@@ -93,7 +93,7 @@ namespace GrblCNC
 
         string [] portNames;
         public string activePort;
-        public string grblVersion;
+        public string grblVersion = "Unknown";
         int scanPortIx;
         SerialPort port;
         bool portOpened;
@@ -212,7 +212,7 @@ namespace GrblCNC
                 tmpLongLine = line;
             }
             if (line.StartsWith("Grbl"))
-                HandleReconnection();
+                TestConnection();
             else if (line.StartsWith("<"))
             {
                 isStatusLine = true;
@@ -401,8 +401,15 @@ namespace GrblCNC
         }
 
 
-        void HandleReconnection()
+        void HandleVersion(string verstr)
         {
+            string[] vervars = verstr.Split('.');
+            grblVersion = vervars[vervars.Length - 1];
+        }
+
+        void HandleReconnection(string version)
+        {
+            driverVersion = version;
             activePort = port.PortName;
             if (machineState == MachineState.Idle)
                 GetAllGrblParameters();
@@ -422,7 +429,7 @@ namespace GrblCNC
             //machineState = MachineState.ParamRead;
             //paramReadStage = ParamReadStage.ReadGcodeOffsets;
             string[] vars = line.Split(new char[] { '[', ']', ':' }, StringSplitOptions.RemoveEmptyEntries);
-            if (vars.Length != 2)
+            if (vars.Length < 2)
                 return;
             // first check if this is a gcode parameter 
             if (gcodeConfig.ParseParam(vars[0], vars[1]))
@@ -442,8 +449,12 @@ namespace GrblCNC
                         MessageReceived(this, vars[1], MessageType.Info);
                     break;
 
+                case "VER":
+                    HandleVersion(vars[1]);
+                    break;
+
                 case "DRIVER VERSION":
-                    HandleReconnection();
+                    HandleReconnection(vars[1]);
                     break;
             }
         }
