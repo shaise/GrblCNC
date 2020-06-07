@@ -56,7 +56,7 @@
             this.labelTool.Name = "labelTool";
             this.labelTool.Size = new System.Drawing.Size(184, 37);
             this.labelTool.TabIndex = 1;
-            this.labelTool.Text = "Inset Tool #";
+            this.labelTool.Text = "Insert Tool #";
             // 
             // buttPause
             // 

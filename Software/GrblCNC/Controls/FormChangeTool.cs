@@ -19,7 +19,7 @@ namespace GrblCNC.Controls
 
         public void SetToolNumber(int toolno)
         {
-            labelTool.Text = "Inset Tool #" + toolno.ToString();
+            labelTool.Text = "Insert Tool #" + toolno.ToString();
         }
 
         private void buttResume_Click(object sender, EventArgs e)
