@@ -114,7 +114,7 @@ namespace GrblCNC
                     int code = int.Parse(vars[0]);
                     ParamDescription pd = new ParamDescription();
                     pd.code = code;
-                    pd.description = vars[1];
+                    pd.description = string.Format("{0} [{1}]", vars[1], code);
                     pd.uints = vars[2];
                     if (!Enum.TryParse<ParamType>(vars[3], out pd.type))
                         pd.type = ParamType.String;

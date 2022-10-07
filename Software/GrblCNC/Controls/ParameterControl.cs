@@ -226,7 +226,10 @@ namespace GrblCNC.Controls
 
         void UpdateColors()
         {
-            stdBackColor = BackColor;
+            if (Parent != null)
+                stdBackColor = Parent.BackColor;
+            else
+                stdBackColor = BackColor;
             // change color is more yellow-ish
             Color c1 = Utils.TuneColor(BackColor, 1.1f);
             Color c2 = Utils.TuneColor(BackColor, 0.9f);
@@ -314,6 +317,14 @@ namespace GrblCNC.Controls
                         isChanged = intValue != lastIntValue;
                     }
                     break;
+
+                case GrblConfig.ParamType.String:
+                    {
+                        TextBox tb = (TextBox)activeControls[0];
+                        strValue = tb.Text;
+                        isChanged = strValue != lastStrValue;
+                    }
+                    break;
             }
             UpdateBackground();
         }
@@ -376,6 +387,15 @@ namespace GrblCNC.Controls
                         cb.SelectedIndex = par.intVal;
                         if (overrideChanges)
                             lastIntValue = par.intVal;
+                    }
+                    break;
+
+                case GrblConfig.ParamType.String:
+                    {
+                        TextBox tb = (TextBox)activeControls[0];
+                        tb.Text = par.strVal;
+                        if (overrideChanges)
+                            lastStrValue = par.strVal;
                     }
                     break;
             }

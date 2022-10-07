@@ -210,6 +210,14 @@ namespace GrblCNC.Controls
             }
         }
 
+        bool ParamsHaveCode(int code)
+        {
+            foreach (GrblConfig.GrblParam par in gParams)
+                if (par.code == code)
+                    return true;
+            return false;
+        }
+
         private void buttLoad_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -227,8 +235,11 @@ namespace GrblCNC.Controls
                         try
                         {
                             int code = int.Parse(vars[0]);
-                            ParameterControl pc = parameterDict[code];
-                            pc.FromString(vars[1]);
+                            if (ParamsHaveCode(code)) // only read params that the machine accepts
+                            {
+                                ParameterControl pc = parameterDict[code];
+                                pc.FromString(vars[1]);
+                            }
                         }
                         catch { }
                     }

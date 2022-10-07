@@ -133,7 +133,7 @@ namespace GrblCNC
             bool inComment = false;
             char code = '?';
             string data = "";
-            line += ' '; // add space to not miss the last token
+            line += '*'; // add extra marker to not miss the last token
             foreach (char ch in line) 
             {
                 if (inComment)
@@ -142,8 +142,13 @@ namespace GrblCNC
                         inComment = false;
                     continue;
                 }
+
+                if (ch == ' ')
+                    continue;
+
                 if (code != '?')
                 {
+
                     if (ValidValueChar(ch))
                     {
                         data += ch;
@@ -228,7 +233,6 @@ namespace GrblCNC
 
             foreach (GToken token in tokens)
             {
-                bool strip = false;
                 int tokval = (int)(token.value * 10 + 0.5);
                 int tokint = (int)(token.value + 0.5);
                 if (token.code == 'G')

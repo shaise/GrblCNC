@@ -10,7 +10,7 @@ namespace GrblCNC.Glutils
         Vector3 forward;
         Vector3 right;
         float screenAspect;
-        Matrix4 camera, projection;
+        Matrix4 camera;
 
         public Camera(float aspectRatio)
         {

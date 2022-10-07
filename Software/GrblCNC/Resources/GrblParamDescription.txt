@@ -1,5 +1,5 @@
 # Code | Description | Units | Type | Group | Extra
-0|Step pulse time|us|Int|Hardware Timings
+0|Step pulse time|us|Float|Hardware Timings
 1|Step idle delay|ms|Int|Hardware Timings
 2|Step pulse invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
 3|Step direction invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C

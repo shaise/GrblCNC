@@ -116,7 +116,6 @@ namespace GrblCNC
         string curJogCommand;
         string lastError;
         int showStatusMsg = 0;
-        int gStateCnt = 0;
         List<string> commandBatch;
         int lastTool = -1;
         bool wasRunningWhenToolChanged = false;

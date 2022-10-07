@@ -11,7 +11,6 @@ namespace GrblCNC
 {
     class VisualizerOverlay
     {
-        string[] lines;
         VisualizerWin viswin;
         int cury, curx;
         string lastCoordCode = "";
