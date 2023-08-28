@@ -19,6 +19,27 @@ namespace GrblCNC.Controls
         {
             InitializeComponent();
             comboTool.Items.Add("No Tool");
+            Global.NumAxesChanged += Global_NumAxesChanged;
+        }
+
+        private void Global_NumAxesChanged()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(() => { Global_NumAxesChanged(); }));
+                return;
+            }
+            UpdateNumAxes();
+        }
+
+        public void UpdateNumAxes()
+        {
+            if (Global.numAxes > 4)
+                multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
+            else if (Global.numAxes > 3)
+                multiSelAxis.SelectionTexts = "X|Y|Z|A";
+            else
+                multiSelAxis.SelectionTexts = "X|Y|Z";
         }
 
         public float Offset

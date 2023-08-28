@@ -92,10 +92,12 @@ namespace GrblCNC
         }
 
         string [] portNames;
-        public string activePort;
+        public GrblCommDevice activePort;
+        public GrblCommDevice commDevice;
         public string grblVersion = "Unknown";
+        int scanDeviceIx;
         int scanPortIx;
-        SerialPort port;
+        //SerialPort port;
         bool portOpened;
         //static int PORT_BUFF_LEN = 256;
         static int SCAN_INTERVAL = 10;  // in 100ms units = 1 second
@@ -104,6 +106,7 @@ namespace GrblCNC
         GCodeConfig gcodeConfig;
         List<string> standardMsgQueue;
         List<string> insertMsgQueue; // when not empty, will be inserted to current running gcode
+        List<GrblCommDevice> commDevices;
         Dictionary<string, string> grblErrorCodes;
         Dictionary<string, string> grblAlarmCodes;
         object lockMsgBufferObj = new object();
@@ -131,7 +134,6 @@ namespace GrblCNC
         bool requestFullStatus = false;
         
         int scanCount;
-        StringBuilder readLine;
         int tmpCnt=0; // Removeme
         string tmpLongLine; // Removeme
         int maxlinelen = 0;// Removeme
@@ -155,15 +157,19 @@ namespace GrblCNC
         public GrblComm()
         {
             portNames = null;
-            scanPortIx = -1;
+            scanPortIx = scanDeviceIx = 0;
+
             activePort = null;
             portOpened = false;
-            port = new SerialPort();
-            readLine = new StringBuilder();
+            commDevices = new List<GrblCommDevice>();
+            GrblCommSerial sercomm = new GrblCommSerial();
+            sercomm.LineReceived += CommDevice_LineReceived;
+            commDevices.Add(sercomm);
+            //port = new SerialPort();
             grblStatus = new GrblStatus();
             grblConfig = new GrblConfig();
             gcodeConfig = new GCodeConfig();
-            port.DataReceived += port_DataReceived;
+            //port.DataReceived += port_DataReceived;
             standardMsgQueue = new List<string>();
             //urgentMsgQueue = new List<string>();
             insertMsgQueue = new List<string>();
@@ -172,7 +178,7 @@ namespace GrblCNC
             scanCount = 0;
             Global.grblStatus = grblStatus;
             Global.grblConfig = grblConfig;
-            tcpAxisPos = new float[Global.NUM_AXIS];
+            tcpAxisPos = new float[Global.NumAxes];
         }
 
         void FillCodes(Dictionary<string, string> dict, string codes)
@@ -406,10 +412,17 @@ namespace GrblCNC
             grblVersion = vervars[vervars.Length - 1];
         }
 
+        void HandleAxis(string axisstr)
+        {
+            int naxes;
+            if (int.TryParse(axisstr, out naxes))
+                Global.NumAxes = naxes;
+        }
+
         void HandleReconnection(string version)
         {
             driverVersion = version;
-            activePort = port.PortName;
+            activePort = commDevice;
             if (machineState == MachineState.Idle)
                 GetAllGrblParameters();
             //machineState = MachineState.Idle;
@@ -452,6 +465,10 @@ namespace GrblCNC
                     HandleVersion(vars[1]);
                     break;
 
+                case "AXS":
+                    HandleAxis(vars[1]);
+                    break;
+
                 case "DRIVER VERSION":
                     HandleReconnection(vars[1]);
                     break;
@@ -463,23 +480,14 @@ namespace GrblCNC
 
         void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            SerialPort port = (SerialPort)sender;
-            
-            while (port.BytesToRead != 0)
-            {
-                char ch = (char)port.ReadChar();
-                if (ch == '\r')
-                    continue;
-                if (ch == '\n')
-                {
-                    HandleReceivedLine(readLine.ToString());
-                    readLine.Clear();
-                    continue;
-                }
-                readLine.Append(ch);
-            }
         }
-        
+
+        private void CommDevice_LineReceived(GrblCommDevice sender, string line)
+        {
+            HandleReceivedLine(line);
+        }
+
+
         void SendLineToPort(string line)
         {
             if (line == null || line.Length < 1 || !portOpened)
@@ -491,10 +499,9 @@ namespace GrblCNC
             }
             if (debugSending && ConnectionStatus == CommStatus.Connected)
                 Global.mdiControl.AddLine(line);
-            line += "\n";
             lock (lockSerialSendObj)
             {
-                port.Write(line);
+                commDevice.WriteLine(line);
             }
         }
 
@@ -515,19 +522,22 @@ namespace GrblCNC
         void SetTLO(int toolno)
         {
             CncTool tool = Global.toolTable.GetTool(toolno);
-            if (tool != null)
+            StringBuilder sb = new StringBuilder();
+            sb.Append("G43.1");
+            int naxes = Global.NumAxes;
+            if (tool != null && tool.offsets.Length < naxes)
+                naxes = tool.offsets.Length;
+            for (int i = 0; i < naxes; i++)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("G43.1");
-                for (int i = 0; i < tool.offsets.Length; i++)
-                {
-                    sb.Append(Utils.GetAxisLetter(i));
+                if (i >= Global.NumAxes)
+                    break;
+                sb.Append(Utils.GetAxisLetter(i));
+                if (tool != null)
                     sb.Append(Utils.F3(tool.offsets[i]));
-                }
-                PostLine(sb.ToString(), true);
+                else
+                    sb.Append("0");
             }
-            else
-                PostLine("G43.1X0Y0Z0A0B0", true); // assume default tool
+            PostLine(sb.ToString(), true);
         }
 
         void SendProcessedGcodeLine(string line)
@@ -572,13 +582,11 @@ namespace GrblCNC
         {
             if (!portOpened)
                 return;
-            byte[] msg = new byte[1];
-            msg[0] = b;
             if (ConnectionStatus == CommStatus.Connected && b != CMD_STATUS_REQUEST)
                 Global.mdiControl.AddLine(string.Format("<0x{0:X}>", (int)b));
             lock (lockSerialSendObj)
             {
-                port.Write(msg, 0, 1);
+                activePort.WriteByte(b);
             }
         }
 
@@ -648,37 +656,24 @@ namespace GrblCNC
 
         bool OpenPort(string portName)
         {
-            if (portOpened)
-                ClosePort();
-            try
+            if (commDevice == null)
+                return false;
+            if (commDevice.Open(portName))
             {
-                port.PortName = portName;
-                //serPort.BaudRate = 57600;
-                port.BaudRate = 115200;
-                port.Parity = Parity.None;
-                port.DataBits = 8;
-                port.StopBits = StopBits.One;
-                port.Handshake = Handshake.None;
-                port.WriteTimeout = 500;
-                port.Open();
                 portOpened = true;
                 //SendSoftReset();
                 TestConnection();
                 ClearMachineState();
+                return true;
             }
-            catch
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
 
         public void ClosePort()
         {
             if (!portOpened)
                 return;
-            try { port.Close(); }
-            catch { } // sometimes when the usb disconnects, closing the port causes error
+            commDevice.Close();
             portOpened = false;
             activePort = null;
         }
@@ -749,23 +744,24 @@ namespace GrblCNC
                 return;
 
             scanCount = 0;
-            if (scanPortIx == -1)
+            if (scanPortIx == 0)
             {
-                portNames = SerialPort.GetPortNames();
+                commDevice = commDevices[scanDeviceIx];
+                portNames = commDevice.GetPortNames();
                 // Fixme: for linux we can filter the names to USB/Serial ports only
-                scanPortIx = portNames.Length - 1;
+                scanPortIx = portNames.Length;
+                scanDeviceIx++;
+                if (scanDeviceIx >= commDevices.Count)
+                    scanDeviceIx = 0;
             }
-            if (scanPortIx < 0)
+            if (scanPortIx == 0)
                 return; // empty list
 
-            while (scanPortIx >= 0)
+            while (scanPortIx > 0)
             {
-                if (OpenPort(portNames[scanPortIx]))
-                {
-                    scanPortIx--;
-                    break;
-                }
                 scanPortIx--;
+                if (OpenPort(portNames[scanPortIx]))
+                    break;
             }
 
         }

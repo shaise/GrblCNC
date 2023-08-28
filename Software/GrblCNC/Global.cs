@@ -27,7 +27,25 @@ namespace GrblCNC
         public static string SettingsPath;
         public static string ToolTableFile;
 
-        public const int NUM_AXIS = 5;
+        public const int MAX_AXES = 5;
+        public static int numAxes = MAX_AXES;
+
+        public delegate void NumAxesChangedDelegate();
+        public static event NumAxesChangedDelegate NumAxesChanged;
+
+
+        public static int NumAxes
+        {
+            get { return numAxes; }
+            set
+            {
+                if (numAxes != value)
+                {
+                    numAxes = value;
+                    NumAxesChanged?.Invoke();
+                }
+            }
+        }
 
         public static bool GrblConnected
         {

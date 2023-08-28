@@ -42,7 +42,12 @@ namespace GrblCNC
             dataGridGCodeConf.Rows.Clear();
             foreach (GCodeConfig.GCodeParam par in conf.GetParams())
             {
-                dataGridGCodeConf.Rows.Add(par.code, par.strVal[0], par.strVal[1], par.strVal[2], par.strVal[3], par.strVal[4]);
+                if (Global.NumAxes == 5)
+                    dataGridGCodeConf.Rows.Add(par.code, par.strVal[0], par.strVal[1], par.strVal[2], par.strVal[3], par.strVal[4]);
+                else if (Global.NumAxes == 4)
+                    dataGridGCodeConf.Rows.Add(par.code, par.strVal[0], par.strVal[1], par.strVal[2], par.strVal[3]);
+                else
+                    dataGridGCodeConf.Rows.Add(par.code, par.strVal[0], par.strVal[1], par.strVal[2]);
             }
             gcodeConf = conf;
             fillParametersInProgress = false;

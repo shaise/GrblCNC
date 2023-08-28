@@ -49,6 +49,31 @@ namespace GrblCNC.Controls
             Global.GrblConnectionChanged += Global_GrblConnectionChanged;
             valueSlideSpinSpeed.ValueChange += valueSlideSpinSpeed_ValueChange;
             valueSlideJogSpeedXYZ.ValueChange += valueSlideJogSpeedXYZ_ValueChange;
+            Global.NumAxesChanged += Global_NumAxesChanged;
+        }
+
+        private void Global_NumAxesChanged()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(() => { Global_NumAxesChanged(); }));
+                return;
+            }
+            UpdateNumAxes();
+        }
+
+        public void UpdateNumAxes()
+        {
+            jogButtApos.Enabled = Global.NumAxes > 3;
+            jogButtAneg.Enabled = Global.NumAxes > 3;
+            jogButtBpos.Enabled = Global.NumAxes > 4;
+            jogButtBneg.Enabled = Global.NumAxes > 4;
+            if (Global.numAxes > 4)
+                multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
+            else if (Global.numAxes > 3)
+                multiSelAxis.SelectionTexts = "X|Y|Z|A";
+            else
+                multiSelAxis.SelectionTexts = "X|Y|Z";
         }
 
         public float GetJogSpeed()
@@ -89,7 +114,7 @@ namespace GrblCNC.Controls
 
         public void SetCurrentAxis(int axis)
         {
-            if (axis < 0 || axis >= Global.NUM_AXIS)
+            if (axis < 0 || axis >= Global.NumAxes)
                 return;
             multiSelAxis.SelectedValue= axis;
         }

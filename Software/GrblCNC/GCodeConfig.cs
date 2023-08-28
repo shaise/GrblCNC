@@ -19,15 +19,15 @@ namespace GrblCNC
             public GCodeParam(string parcode, string [] parvals)
             {
                 code = parcode;
-                strVal = new string[Global.NUM_AXIS];
-                for (int i = 0; i < Global.NUM_AXIS; i++)
+                strVal = new string[Global.NumAxes];
+                for (int i = 0; i < Global.NumAxes; i++)
                     strVal[i] = "0.000";
                 SetVals(parvals);
             }
 
             public void SetVals(string [] vals)
             {
-                for (int i = 0; i < Global.NUM_AXIS && i < vals.Length; i++)
+                for (int i = 0; i < Global.NumAxes && i < vals.Length; i++)
                     strVal[i] = vals[i];
             }
 

@@ -31,7 +31,26 @@ namespace GrblCNC
             numViewers.Add(alarmView);
             numViewers.Add(bigNumF);
             numViewers.Add(bigNumS);
+            Global.NumAxesChanged += Global_NumAxesChanged;
             ApplyColors();
+        }
+
+
+
+        private void Global_NumAxesChanged()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(() => { Global_NumAxesChanged(); }));
+                return;
+            }
+            UpdateNumAxes();
+        }
+
+        public void UpdateNumAxes()
+        {
+            bigNumA.Enabled = Global.NumAxes > 3;
+            bigNumB.Enabled = Global.NumAxes > 4;
         }
 
         void ApplyColors()

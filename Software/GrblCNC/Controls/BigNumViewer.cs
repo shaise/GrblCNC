@@ -74,6 +74,15 @@ namespace GrblCNC
             }
         }
 
+        private Color ApplyState(Color col)
+        {
+            if (Enabled)
+                return col;
+            int g = (col.R + col.G + col.B) / 3;
+            g += (255 - g) / 3;
+            return Color.FromArgb(g, g, g);
+        }
+
         public Color TitleBackColor
         {
             get { return titleBgndColor; }
@@ -143,8 +152,8 @@ namespace GrblCNC
             float drad =  rad * 2;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             g.Clear(Parent.BackColor);
-            Brush tbrush = new SolidBrush(titleBgndColor);
-            Brush bbrush = new SolidBrush(BackColor);
+            Brush tbrush = new SolidBrush(ApplyState(titleBgndColor));
+            Brush bbrush = new SolidBrush(ApplyState(BackColor));
             g.FillEllipse(tbrush, 0, 0, drad, drad);
             g.FillEllipse(tbrush, 0, Height - drad, drad, drad);
             g.FillEllipse(bbrush, Width - drad, 0, drad, drad);
@@ -170,10 +179,10 @@ namespace GrblCNC
 
             string stval = Utils.ToInvariantString(value, valueFormat);
             SizeF stsize = g.MeasureString(stval, Font);
-            Brush txtBrush = new SolidBrush(ForeColor);
+            Brush txtBrush = new SolidBrush(ApplyState(ForeColor));
             float gap = rad / 2;
             g.DrawString(stval, Font, txtBrush, Width  - stsize.Width, fontCentH);
-            txtBrush = new SolidBrush(titleColor);
+            txtBrush = new SolidBrush(ApplyState(titleColor));
             stsize = g.MeasureString(titleLetter, Font);
             g.DrawString(titleLetter, Font, txtBrush, gap + (Height - stsize.Width - gap) / 2, fontCentH);
             base.OnPaint(e);

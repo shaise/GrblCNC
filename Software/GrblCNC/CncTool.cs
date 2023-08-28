@@ -20,13 +20,13 @@ namespace GrblCNC
         public const int PocketNumID = 1;
         public const int NumAxesID = 2;
         public const int OffsetsID = 3;
-        public const int DiameterID = 3 + Global.NUM_AXIS;
-        public const int DescriptionID = 4 + Global.NUM_AXIS; 
+        public const int DiameterID = 3 + Global.MAX_AXES;
+        public const int DescriptionID = 4 + Global.MAX_AXES; 
 
         public CncTool(int toolnum)
         {
             toolNum = pocketNum = toolnum;
-            offsets = new float[Global.NUM_AXIS];
+            offsets = new float[Global.NumAxes];
             for (int i = 0; i < offsets.Length; i++)
                 offsets[i] = 0;
             diameter = 0;
@@ -57,10 +57,11 @@ namespace GrblCNC
             sb.Append(pocketNum);
             sb.Append("|");
             sb.Append(offsets.Length);
-            for (int i = 0; i < offsets.Length; i++)
+            for (int i = 0; i < Global.MAX_AXES; i++)
             {
                 sb.Append("|");
-                sb.Append(Utils.ToInvariantString(offsets[i],"0.000"));
+                if (i < offsets.Length)
+                    sb.Append(Utils.ToInvariantString(offsets[i],"0.000"));
             }
             sb.Append("|");
             sb.Append(Utils.ToInvariantString(diameter, "0.000"));
