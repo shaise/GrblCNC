@@ -164,7 +164,10 @@ namespace GrblCNC
             commDevices = new List<GrblCommDevice>();
             GrblCommSerial sercomm = new GrblCommSerial();
             sercomm.LineReceived += CommDevice_LineReceived;
+            GrblCommTelnet telnetcomm = new GrblCommTelnet();
+            telnetcomm.LineReceived += CommDevice_LineReceived;
             commDevices.Add(sercomm);
+            commDevices.Add(telnetcomm);
             //port = new SerialPort();
             grblStatus = new GrblStatus();
             grblConfig = new GrblConfig();
@@ -205,6 +208,14 @@ namespace GrblCNC
             get { return activePort != null; }
         }
 
+        public string CommType
+        {
+            get
+            {
+                if (commDevice == null) return "None";
+                return commDevice.CommType;
+            }
+        }
 
         void HandleReceivedLine(string line)
         {
@@ -432,6 +443,8 @@ namespace GrblCNC
                 grblStatus.state = GrblStatus.MachineState.Unknown;
                 if (CommStatusChanged != null)
                     CommStatusChanged(this, ConnectionStatus);
+                if (MessageReceived != null)
+                    MessageReceived(this, "Connected.", MessageType.Info);
             }
             requestFullStatus = true;
         }
@@ -760,6 +773,9 @@ namespace GrblCNC
             while (scanPortIx > 0)
             {
                 scanPortIx--;
+                if (MessageReceived != null)
+                    MessageReceived(this, string.Format("Trying {0}...",portNames[scanPortIx]), MessageType.Info);
+
                 if (OpenPort(portNames[scanPortIx]))
                     break;
             }

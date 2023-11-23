@@ -321,9 +321,10 @@ namespace GrblCNC
             if (status == GrblComm.CommStatus.Connected)
             {
                 toolStripGrbl.Enabled = true;
-                toolStripGrbl.ToolTipText = "Grbl Connected at port " + grblComm.activePort + ", HW ver:" + grblComm.grblVersion;
+                toolStripGrbl.ToolTipText = "Grbl Connected at port " + grblComm.activePort.CommName + ", HW ver:" + grblComm.grblVersion;
                 toolStripConfGrbl.Enabled = true;
                 toolStripPower.Enabled = true;
+                toolStripPower.Image = grblComm.CommType == "Telnet" ? Properties.Resources.WifiButt : Properties.Resources.powerButt;
                 Global.GrblConnected = true;
             }
             else

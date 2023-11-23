@@ -62,6 +62,10 @@
 63|*Hold actions|mask|Mask|General Settings|Disable laser during hold,Restart laser after hold
 64|*Force initial alarm|bool|Bool|General Settings
 65|*Probing feed override|bool|Bool|General Settings
+70|*Network services|mask|Mask|Network|Telnet,,,,,mDNS
+73|*WiFi mode|int|Selection|Network|Off,WiFi station
+74|*WiFi SSID|string|String|Network
+75|*WiFi password|string|String|Network
 100|X-axis|steps/mm|Float|X-Axis Settings
 101|Y-axis|steps/mm|Float|Y-Axis Settings
 102|Z-axis|steps/mm|Float|Z-Axis Settings

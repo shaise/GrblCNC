@@ -48,6 +48,8 @@
             this.toolStripStep = new System.Windows.Forms.ToolStripButton();
             this.toolStripPause = new System.Windows.Forms.ToolStripButton();
             this.toolStripStop = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripAbout = new System.Windows.Forms.ToolStripButton();
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.splitTop = new System.Windows.Forms.SplitContainer();
             this.tabControlSystem = new System.Windows.Forms.TabControl();
@@ -63,8 +65,6 @@
             this.statusView = new GrblCNC.StatusViewer();
             this.openGcodeFile = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripAbout = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -271,7 +271,7 @@
             this.toolStripStep.Name = "toolStripStep";
             this.toolStripStep.Size = new System.Drawing.Size(44, 44);
             this.toolStripStep.Text = "Start";
-            this.toolStripStep.ToolTipText = "Start CNC program";
+            this.toolStripStep.ToolTipText = "Single step CNC program";
             this.toolStripStep.Click += new System.EventHandler(this.toolStripStep_Click);
             // 
             // toolStripPause
@@ -297,6 +297,23 @@
             this.toolStripStop.Text = "Stop";
             this.toolStripStop.ToolTipText = "Stop CNC Program";
             this.toolStripStop.Click += new System.EventHandler(this.toolStripStop_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 47);
+            // 
+            // toolStripAbout
+            // 
+            this.toolStripAbout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripAbout.Image = global::GrblCNC.Properties.Resources.aboutButt;
+            this.toolStripAbout.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripAbout.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripAbout.Name = "toolStripAbout";
+            this.toolStripAbout.Size = new System.Drawing.Size(44, 44);
+            this.toolStripAbout.Text = "About";
+            this.toolStripAbout.ToolTipText = "About GrblCNC";
+            this.toolStripAbout.Click += new System.EventHandler(this.toolStripAbout_Click);
             // 
             // splitMain
             // 
@@ -467,23 +484,6 @@
             // openGcodeFile
             // 
             this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 47);
-            // 
-            // toolStripAbout
-            // 
-            this.toolStripAbout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripAbout.Image = global::GrblCNC.Properties.Resources.aboutButt;
-            this.toolStripAbout.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripAbout.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripAbout.Name = "toolStripAbout";
-            this.toolStripAbout.Size = new System.Drawing.Size(44, 44);
-            this.toolStripAbout.Text = "About";
-            this.toolStripAbout.ToolTipText = "About GrblCNC";
-            this.toolStripAbout.Click += new System.EventHandler(this.toolStripAbout_Click);
             // 
             // MainForm
             // 

@@ -206,6 +206,7 @@ namespace GrblCNC
                     case ParamType.Int:
                     case ParamType.Mask:
                     case ParamType.Bool:
+                    case ParamType.Selection:
                         try { par.intVal = int.Parse(par.strVal); }
                         catch { }
                         break;

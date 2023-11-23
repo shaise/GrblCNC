@@ -19,7 +19,7 @@ namespace GrblCNC.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -366,14 +366,14 @@ namespace GrblCNC.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to # Code | Description | Units | Type | Group | Extra
-        ///0|Step pulse time|us|Int|Hardware Timings
+        ///0|Step pulse time|us|Float|Hardware Timings
         ///1|Step idle delay|ms|Int|Hardware Timings
         ///2|Step pulse invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
         ///3|Step direction invert|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
         ///4|Invert step enable pin|bool|Bool|Polarity/Direction inverts
         ///5|Invert limit pins|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
         ///6|Invert probe pin|bool|Bool|Polarity/Direction inverts
-        ///10|Status report options|mask|Mask|Gene [rest of string was truncated]&quot;;.
+        ///10|Status report options|mask|Mask|Ge [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string GrblParamDescription {
             get {
@@ -814,6 +814,16 @@ namespace GrblCNC.Properties {
         internal static string VertShader3DWire {
             get {
                 return ResourceManager.GetString("VertShader3DWire", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap WifiButt {
+            get {
+                object obj = ResourceManager.GetObject("WifiButt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

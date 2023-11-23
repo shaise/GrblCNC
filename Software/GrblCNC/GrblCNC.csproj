@@ -203,6 +203,7 @@
     <Compile Include="GCodeConfig.cs" />
     <Compile Include="GrblCommDevice.cs" />
     <Compile Include="GrblCommSerial.cs" />
+    <Compile Include="GrblCommTelnet.cs" />
     <Compile Include="GrblConfig.cs" />
     <Compile Include="GrblStatus.cs" />
     <Compile Include="MainForm.cs">
@@ -214,6 +215,8 @@
     <Compile Include="Glutils\Camera.cs" />
     <Compile Include="Glutils\Shader.cs" />
     <Compile Include="Glutils\Texture.cs" />
+    <Compile Include="mDns\mDNS.cs" />
+    <Compile Include="mDns\packet.cs" />
     <Compile Include="MillHead3D.cs" />
     <Compile Include="Obj3DFloor.cs" />
     <Compile Include="Controls\ParameterViewer.cs">
@@ -335,6 +338,7 @@
     <None Include="Resources\FragShaderText.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\WifiButt.png" />
     <None Include="Resources\ToolTableButt.png" />
     <None Include="Resources\TouchTIcon.png" />
     <None Include="Resources\TouchGIcon.png" />
