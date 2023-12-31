@@ -170,6 +170,13 @@ namespace GrblCNC
         public void ParseParam(string stparam)
         {
             string[] vars = stparam.Split(new char[] { '$', '=' }, StringSplitOptions.RemoveEmptyEntries);
+            if (vars.Length == 1 && stparam.EndsWith("="))
+            {
+                string p1 = vars[0];
+                vars = new string[2];
+                vars[0] = p1;
+                vars[1] = "";
+            }
             if (vars.Length != 2)
                 return;
             int parcode;
