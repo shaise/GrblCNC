@@ -95,6 +95,12 @@
     <Compile Include="Controls\FormChangeTool.Designer.cs">
       <DependentUpon>FormChangeTool.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FormGoto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormGoto.Designer.cs">
+      <DependentUpon>FormGoto.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FormProbe.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -266,6 +272,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormChangeTool.resx">
       <DependentUpon>FormChangeTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormGoto.resx">
+      <DependentUpon>FormGoto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormProbe.resx">
       <DependentUpon>FormProbe.cs</DependentUpon>
