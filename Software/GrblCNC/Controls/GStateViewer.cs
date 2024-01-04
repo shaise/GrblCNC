@@ -14,7 +14,8 @@ namespace GrblCNC.Controls
     {
         string[] gstates;
         Font selFont;
-        int nCellsX = 6, nCellsY = 2;
+        //int nCellsX = 6
+        int nCellsY = 2;
         public GStateViewer()
         {
             DoubleBuffered = true;

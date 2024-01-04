@@ -19,6 +19,7 @@ namespace GrblCNC.Controls
             Home = 0,
             CoordTouchOff,
             ToolTouchOff,
+            GoTo,
         }
 
         public enum Sliders
@@ -68,9 +69,9 @@ namespace GrblCNC.Controls
             jogButtAneg.Enabled = Global.NumAxes > 3;
             jogButtBpos.Enabled = Global.NumAxes > 4;
             jogButtBneg.Enabled = Global.NumAxes > 4;
-            if (Global.numAxes > 4)
+            if (Global.NumAxes > 4)
                 multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
-            else if (Global.numAxes > 3)
+            else if (Global.NumAxes > 3)
                 multiSelAxis.SelectionTexts = "X|Y|Z|A";
             else
                 multiSelAxis.SelectionTexts = "X|Y|Z";
@@ -169,6 +170,13 @@ namespace GrblCNC.Controls
             AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.ToolTouchOff);
         }
 
+        private void jogButtGoto_Click(object sender, EventArgs e)
+        {
+            if (AxisActionPressed == null)
+                return;
+            AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.GoTo);
+        }
+
         private void jogButtSpindleStop_Click(object sender, EventArgs e)
         {
             if (SpindleAction == null)
@@ -248,5 +256,6 @@ namespace GrblCNC.Controls
                     break;
             }
         }
+
     }
 }

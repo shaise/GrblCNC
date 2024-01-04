@@ -23,6 +23,7 @@ namespace GrblCNC
         GrblComm grblComm;
         FormOffset frmOffset;
         FormProbe frmProbe;
+        FormGoto frmGoto;
         FormPopWindow frmPopup;
         FormChangeTool frmChangeTool;
         FormConfirmation frmConfirmation;
@@ -93,6 +94,8 @@ namespace GrblCNC
 
             frmOffset = new FormOffset();
             frmProbe = new FormProbe();
+            frmGoto = new FormGoto();
+            frmGoto.GotoActionPressed += FrmGoto_GotoActionPressed;
             frmPopup = new FormPopWindow();
             frmConfirmation = new FormConfirmation();
             frmChangeTool = new FormChangeTool();
@@ -189,6 +192,17 @@ namespace GrblCNC
             }
         }
 
+        void PerformGoto(int axis)
+        {
+            frmGoto.Axis = 1 << axis;
+            frmGoto.ShowDialog();
+        }
+
+        private void FrmGoto_GotoActionPressed(object sender, GoToAction action)
+        {
+            grblComm.GoTo(action.axisMask, action.coordSystem, action.pos);
+        }
+
         void PerformHoming(int axis)
         {
             bool needconfirm = false;
@@ -205,7 +219,7 @@ namespace GrblCNC
             {
                 if ((Global.grblStatus.homedMask & (1 << axis)) != 0)
                 {
-                    frmConfirmation.SetMessage(Utils.GetAxisLetter(axis) + 
+                    frmConfirmation.SetMessage(GrblUtils.GetAxisLetter(axis) + 
                         " axis is already homed. Do you want to home it again?");
                     needconfirm = true;
                 }
@@ -232,8 +246,9 @@ namespace GrblCNC
                 case ManualControl.AxisAction.Home: PerformHoming(axis); break;
                 case ManualControl.AxisAction.CoordTouchOff: PerformTouchOff(axis); break;
                 case ManualControl.AxisAction.ToolTouchOff: PerformToolTouchOff(axis); break;
+                case ManualControl.AxisAction.GoTo: PerformGoto(axis); break;
             }
-            
+
         }
 
         void manualControl_AxisContinuesJogPressed(object sender, int axis, int direction, float speed)

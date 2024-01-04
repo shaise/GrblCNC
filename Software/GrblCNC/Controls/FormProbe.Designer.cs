@@ -153,16 +153,6 @@
             // 
             this.comboCoord.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboCoord.FormattingEnabled = true;
-            this.comboCoord.Items.AddRange(new object[] {
-            "P1  (G54)",
-            "P2  (G55)",
-            "P3  (G56)",
-            "P4  (G57)",
-            "P5  (G58)",
-            "P6  (G59)",
-            "P7  (G59.1)",
-            "P8  (G59.2)",
-            "P9  (G59.3)"});
             this.comboCoord.Location = new System.Drawing.Point(250, 115);
             this.comboCoord.Name = "comboCoord";
             this.comboCoord.Size = new System.Drawing.Size(140, 33);

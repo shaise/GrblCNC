@@ -212,6 +212,7 @@
     <Compile Include="GrblCommTelnet.cs" />
     <Compile Include="GrblConfig.cs" />
     <Compile Include="GrblStatus.cs" />
+    <Compile Include="GrblUtils.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -361,6 +362,7 @@
     <None Include="Resources\ConfSenderButt.png" />
     <None Include="Resources\AboutPicSmall.png" />
     <None Include="Resources\aboutButt.png" />
+    <None Include="Resources\GotoIcon.png" />
     <Content Include="Resources\GrblLogo_ngc.txt" />
     <None Include="Resources\JetBrainsMono-Medium.ttf" />
     <None Include="Resources\VertShader3DText.txt" />

@@ -58,8 +58,8 @@ namespace GrblCNC
                     g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
                     cury = curx = 10;
                     PrintLine(g, "WCO active: " + lastCoordCode + ", T" + lastTool.ToString());
-                    for (int i = 0; i < Global.numAxes; i++)
-                        PrintLine(g, "WCO " + Utils.GetAxisLetter(i) + ": " + lastCoords[i].ToString("0.000"));
+                    for (int i = 0; i < Global.NumAxes; i++)
+                        PrintLine(g, "WCO " + GrblUtils.GetAxisLetter(i) + ": " + lastCoords[i].ToString("0.000"));
                 }
                 viswin.UpdateOverlay();
             }

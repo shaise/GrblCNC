@@ -18,6 +18,8 @@ namespace GrblCNC.Controls
         public FormProbe()
         {
             InitializeComponent();
+            comboCoord.Items.AddRange(GrblUtils.GetCoordSystemRange());
+            comboCoord.SelectedIndex = 0;
             comboTool.Items.Add("No Tool");
             Global.NumAxesChanged += Global_NumAxesChanged;
         }
@@ -29,17 +31,7 @@ namespace GrblCNC.Controls
                 BeginInvoke(new MethodInvoker(() => { Global_NumAxesChanged(); }));
                 return;
             }
-            UpdateNumAxes();
-        }
-
-        public void UpdateNumAxes()
-        {
-            if (Global.numAxes > 4)
-                multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
-            else if (Global.numAxes > 3)
-                multiSelAxis.SelectionTexts = "X|Y|Z|A";
-            else
-                multiSelAxis.SelectionTexts = "X|Y|Z";
+            multiSelAxis.SelectionTexts = Global.GetAxesString();
         }
 
         public float Offset

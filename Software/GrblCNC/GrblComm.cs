@@ -544,7 +544,7 @@ namespace GrblCNC
             {
                 if (i >= Global.NumAxes)
                     break;
-                sb.Append(Utils.GetAxisLetter(i));
+                sb.Append(GrblUtils.GetAxisLetter(i));
                 if (tool != null)
                     sb.Append(Utils.F3(tool.offsets[i]));
                 else
@@ -817,6 +817,18 @@ namespace GrblCNC
             PostLine(cmd);
         }
 
+        public void GoTo(int axisMask, int coordSystemIx, double[] pos, float speed = 0)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(GrblUtils.GetCoordSystem(coordSystemIx));
+            if (speed == 0)
+                sb.Append("G0");
+            else
+                sb.Append(string.Format("G1F{0:0.0}", speed));
+            sb.Append(GrblUtils.GetGcodeLocation(axisMask, pos));
+            PostLine(sb.ToString());
+        }
+
         public string HomeAxis(int axis)
         {
             int ho = grblConfig.GetParam(GrblConfig.GrblParam.Code.HomingOption).intVal;
@@ -832,7 +844,7 @@ namespace GrblCNC
             if (!singleexis)
                 return "Single axis homing is not enabled. Check homing parameters";
 
-            string axisLetter = Utils.GetAxisLetter(axis);
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return "Invalid homing axis selected";
             string cmd = string.Format("$H{0}", axisLetter);
@@ -844,7 +856,7 @@ namespace GrblCNC
         {
             if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
-            string axisLetter = Utils.GetAxisLetter(axis);
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             string cmd = string.Format("G10 L20 P{0} {1}{2}", coordSystemIx + 1, axisLetter, offset);
@@ -856,7 +868,7 @@ namespace GrblCNC
             if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
             coordSystemIx++;
-            string axisLetter = Utils.GetAxisLetter(axis);
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             machineState = MachineState.ProbeAxis;
@@ -871,7 +883,7 @@ namespace GrblCNC
 
         public void ToolTouchOff(int axis, int toolno, float offset)
         {
-            string axisLetter = Utils.GetAxisLetter(axis);
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             CncTool tool = Global.toolTable.GetTool(toolno);
@@ -888,7 +900,7 @@ namespace GrblCNC
 
         public void ProbeTool(int axis, int tool, float offset, float dir)
         {
-            string axisLetter = Utils.GetAxisLetter(axis);
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             machineState = MachineState.ProbeTool;
@@ -914,7 +926,7 @@ namespace GrblCNC
                 if (Global.ginterp.currentTool != 0)
                     SetTLO(Global.ginterp.currentTool); // restore current TLO
             }
-            PostLine(string.Format("G0 {0}{1}", Utils.GetAxisLetter(probeToolAxis), Utils.F3(-5 * probeDir)), true);
+            PostLine(string.Format("G0 {0}{1}", GrblUtils.GetAxisLetter(probeToolAxis), Utils.F3(-5 * probeDir)), true);
             if (lastG90State)
                 PostLine("G90", true);
             SendCurrentGcodeLine();
@@ -922,7 +934,7 @@ namespace GrblCNC
 
         public void StepJog(int axis, float dist, float feedrate)
         {
-            string axisLetter = Utils.GetAxisLetter(axis);
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             string cmd = string.Format("$J=G91 {0}{1:0.000} F{2:0.0}", axisLetter, dist, feedrate);
@@ -946,7 +958,7 @@ namespace GrblCNC
 
             tmpCnt++;
             // start jogging
-            string axisLetter = Utils.GetAxisLetter(axis);
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
             PurgeMessages();

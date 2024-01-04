@@ -15,7 +15,6 @@ namespace GrblCNC.Glutils
 {
     class Utils
     {
-        static string[] axisLetter = new string[] { "X", "Y", "Z", "A", "B", "C" };
         public static void SetColor(string webColor, float [] buff, int offs = 0, bool isAlpha = true)
         {
             if (webColor == null || webColor.Length < 2)
@@ -63,13 +62,6 @@ namespace GrblCNC.Glutils
             float ascent = font.FontFamily.GetCellAscent(FontStyle.Regular);
             float ascentPixel = font.Height * ascent / font.FontFamily.GetEmHeight(FontStyle.Regular);
             return ascentPixel;
-        }
-
-        public static string GetAxisLetter(int axis)
-        {
-            if (axis < 0 || axis >= axisLetter.Length)
-                return null;
-            return axisLetter[axis];
         }
 
         public static Bitmap ColorizeBitmap(Bitmap srcbmp, Color col)

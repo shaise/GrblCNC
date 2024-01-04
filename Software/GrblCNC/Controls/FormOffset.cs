@@ -15,6 +15,7 @@ namespace GrblCNC.Controls
         public FormOffset()
         {
             InitializeComponent();
+            comboCoord.Items.AddRange(GrblUtils.GetCoordSystemRange());
             comboCoord.SelectedIndex = 0;
         }
 
