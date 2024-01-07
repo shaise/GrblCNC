@@ -294,7 +294,7 @@ namespace GrblCNC
             }
             Vector3 headpos = new Vector3(status.axisPos[0], status.axisPos[1], status.axisPos[2]);
             visualizerWinMain.SetMillheadPos(headpos);
-            if (status.lineNumber > 0)
+            if (status.lineNumber > 0 && status.state == GrblStatus.MachineState.Run)
                 gcodeMainViewer.SetSelectedLine(status.lineNumber - 1, true);
             toolStripEstop.Checked = status.state == GrblStatus.MachineState.Alarm;
             statusView.SetAxisValues(status.axisPos);

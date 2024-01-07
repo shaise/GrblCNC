@@ -87,6 +87,9 @@ namespace GrblCNC
         bool relativeMotion = false;
         bool relativeArcCent = true;
         bool useInches = false;
+        //bool clearGcode = false;
+        public int lastTool = -1;
+
         public NonGrblActions nonGrblActions;
 
         List<Wire3D.WireVertex> verts;
@@ -466,6 +469,7 @@ namespace GrblCNC
 
                         case 700: useInches = true; break;
                         case 701: useInches = false; break;
+                        case 800: lastTool = -1; break;
                     }
                 }
                 else if (token.code == 'M')

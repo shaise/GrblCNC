@@ -120,7 +120,6 @@ namespace GrblCNC
         string lastError;
         int showStatusMsg = 0;
         List<string> commandBatch;
-        int lastTool = -1;
         bool wasRunningWhenToolChanged = false;
         public bool debugSending = true;
         float [] tcpAxisPos;
@@ -556,7 +555,7 @@ namespace GrblCNC
         void SendProcessedGcodeLine(string line)
         {
             // check for actions external to grbl (such as tool changes)
-            if (Global.ginterp.nonGrblActions.M6 && Global.ginterp.currentTool != lastTool)
+            if (Global.ginterp.nonGrblActions.M6 && Global.ginterp.currentTool !=  Global.ginterp.lastTool)
             {
                 wasRunningWhenToolChanged = machineState == MachineState.Running;
                 machineState = MachineState.ToolChange;
@@ -579,13 +578,13 @@ namespace GrblCNC
         void ChangeTool()
         {
             machineState = MachineState.Idle;
-            lastTool = Global.ginterp.currentTool;
+            Global.ginterp.lastTool = Global.ginterp.currentTool;
             if (ChangeToolNotify != null)
             {
                 for (int i = 0; i < tcpAxisPos.Length; i++)
                     tcpAxisPos[i] = grblStatus.axisPos[i];
                 tcpZmax = MIN_LOCATION;
-                ChangeToolNotify(this, lastTool, wasRunningWhenToolChanged);
+                ChangeToolNotify(this, Global.ginterp.currentTool, wasRunningWhenToolChanged);
             }
         }
 
