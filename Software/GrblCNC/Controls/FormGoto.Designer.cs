@@ -182,8 +182,13 @@
             65536});
             this.numB.Location = new System.Drawing.Point(244, 128);
             this.numB.Margin = new System.Windows.Forms.Padding(6);
+            this.numB.Maximum = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
             this.numB.Minimum = new decimal(new int[] {
-            100,
+            3600,
             0,
             0,
             -2147483648});
@@ -211,8 +216,13 @@
             65536});
             this.numA.Location = new System.Drawing.Point(94, 128);
             this.numA.Margin = new System.Windows.Forms.Padding(6);
+            this.numA.Maximum = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
             this.numA.Minimum = new decimal(new int[] {
-            100,
+            3600,
             0,
             0,
             -2147483648});
