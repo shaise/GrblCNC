@@ -94,6 +94,7 @@ namespace GrblCNC
         string [] portNames;
         public GrblCommDevice activePort;
         public GrblCommDevice commDevice;
+        GrblCommTelnet telnetcomm;
         public string grblVersion = "Unknown";
         int scanDeviceIx;
         int scanPortIx;
@@ -163,7 +164,7 @@ namespace GrblCNC
             commDevices = new List<GrblCommDevice>();
             GrblCommSerial sercomm = new GrblCommSerial();
             sercomm.LineReceived += CommDevice_LineReceived;
-            GrblCommTelnet telnetcomm = new GrblCommTelnet();
+            telnetcomm = new GrblCommTelnet();
             telnetcomm.LineReceived += CommDevice_LineReceived;
             commDevices.Add(sercomm);
             commDevices.Add(telnetcomm);
@@ -784,6 +785,7 @@ namespace GrblCNC
         public void Close()
         {
             ClosePort();
+            telnetcomm.Shutdown();
         }
 
         #region Grbl control commands

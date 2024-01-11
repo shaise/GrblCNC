@@ -227,18 +227,20 @@ namespace GrblCNC.Controls
                     string[] lines = File.ReadAllLines(openFileDialog.FileName);
                     foreach (string line in lines)
                     {
-                        string[] vars = line.Split(new char[] { '$', '=', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] vars = line.Split(new char[] { '$', '=', '(' }, StringSplitOptions.RemoveEmptyEntries);
                         if (vars.Length < 2)
                             continue;
+                        string param = vars[0].Trim();
                         if (vars[0][0] == '#')
                             continue;
+                        string value = vars[1].Trim();
                         try
                         {
-                            int code = int.Parse(vars[0]);
+                            int code = int.Parse(param);
                             if (ParamsHaveCode(code)) // only read params that the machine accepts
                             {
                                 ParameterControl pc = parameterDict[code];
-                                pc.FromString(vars[1]);
+                                pc.FromString(value);
                             }
                         }
                         catch { }
