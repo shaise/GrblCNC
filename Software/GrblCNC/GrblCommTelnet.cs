@@ -12,14 +12,20 @@ namespace GrblCNC
     {
         TcpClient tcpClient;
         public bool portOpened = false;
-        public bool stopthread = false;
+        bool stopthread = false;
+        bool stopResolver = false;
         Thread recvThread;
+        Thread resolverThread;
         string portName;
+        object lockResolverObj = new object();
+        MDnsQueryResult[] resolvedNames = null; 
 
         public GrblCommTelnet()
         {
             tcpClient = new TcpClient();
             tcpClient.NoDelay = true;
+            resolverThread = new Thread(ResolverThread);
+            resolverThread.Start(this);
         }
 
         public override string CommType { get { return "Telnet"; } }
@@ -90,6 +96,28 @@ namespace GrblCNC
             commTelnet.DataReceive();
         }
 
+        void ResolveGrblControllers()
+        {
+            MDnsResolver resolver = new MDnsResolver();
+
+            while (!stopResolver)
+            {
+                MDnsQueryResult[] results = resolver.ResolveServiceName("_device-info._tcp.local");
+                lock (lockResolverObj)
+                {
+                    resolvedNames = results;
+                }
+                Thread.Sleep(1000);
+            }
+        }
+
+        static void ResolverThread(Object arg)
+        {
+            Thread.CurrentThread.Name = "Resolver";
+            GrblCommTelnet commTelnet = (GrblCommTelnet)arg;
+            commTelnet.ResolveGrblControllers();
+        }
+
         public override void Close()
         {
             if (!portOpened)
@@ -101,30 +129,38 @@ namespace GrblCNC
             portOpened = false;
         }
 
+        public void Shutdown()
+        { 
+            stopResolver = true;
+            resolverThread.Join();
+        }
+
         public override string[] GetPortNames()
         {
-            MDnsResolver resolver = new MDnsResolver();
             List<string> portNames = new List<string>();
-            MDnsQueryResult[] results = resolver.ResolveServiceName("_device-info._tcp.local");
-            if (results.Length == 0)
-                return portNames.ToArray();
-            foreach (MDnsQueryResult res in results)
-            {
-                bool isGrblSystem = false;
-                foreach (string txt in res.txts)
-                    if (txt == "model=grblHAL")
-                    {
-                        isGrblSystem = true;
-                        break;
-                    }
-                if (!isGrblSystem)
-                    continue;
 
-                string host = res.hostname;
-                if (res.endpoints.Length > 0)
-                    host = res.endpoints[0].ToString().Split(':')[0];
-                host += ":23";
-                portNames.Add(host);
+            lock (lockResolverObj)
+            {
+                if (resolvedNames == null || resolvedNames.Length == 0)
+                    return portNames.ToArray();
+                foreach (MDnsQueryResult res in resolvedNames)
+                {
+                    bool isGrblSystem = false;
+                    foreach (string txt in res.txts)
+                        if (txt == "model=grblHAL")
+                        {
+                            isGrblSystem = true;
+                            break;
+                        }
+                    if (!isGrblSystem)
+                        continue;
+
+                    string host = res.hostname;
+                    if (res.endpoints.Length > 0)
+                        host = res.endpoints[0].ToString().Split(':')[0];
+                    host += ":23";
+                    portNames.Add(host);
+                }
             }
             return portNames.ToArray();
         }
