@@ -74,7 +74,9 @@ namespace GrblCNC
         {
             if (!portOpened)
                 return;
-            try { port.Close(); }
+            try { 
+                port.Close(); 
+            }
             catch { } // sometimes when the usb disconnects, closing the port causes error
             portOpened = false;
         }

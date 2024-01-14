@@ -132,11 +132,10 @@ namespace GrblCNC
         float probeDir;
         bool lastG90State;
         bool requestFullStatus = false;
-        
+
+        int curFeedOverride = 100;
+
         int scanCount;
-        int tmpCnt=0; // Removeme
-        string tmpLongLine; // Removeme
-        int maxlinelen = 0;// Removeme
         // events
         public delegate void CommStatusChangedDelegate(object sender, CommStatus status);
         public event CommStatusChangedDelegate CommStatusChanged;
@@ -217,16 +216,11 @@ namespace GrblCNC
             }
         }
 
-        void HandleReceivedLine(string line)
+         void HandleReceivedLine(string line)
         {
             if (line.Length == 0)
                 return;
             bool isStatusLine = false;
-            if (line.Length > maxlinelen)
-            {
-                maxlinelen = line.Length;
-                tmpLongLine = line;
-            }
             if (line.StartsWith("Grbl"))
                 TestConnection();
             else if (line.StartsWith("<"))
@@ -270,6 +264,7 @@ namespace GrblCNC
         }
 
         #region Input line handling
+
         void HandleStatusLine(string line)
         {
             if (machineState == MachineState.waitStatus)
@@ -615,6 +610,49 @@ namespace GrblCNC
             SendByte(CMD_SOFT_RESET);
             ClearMachineState();
         }
+        public void SetFeedOverride(int overridePercent)
+        {
+            if (overridePercent == curFeedOverride)
+                return;
+
+            if (overridePercent == 100)
+            {
+                SendByte(CMD_FEED_SET_100);
+                curFeedOverride = 100;
+                return;
+            }
+            if ((overridePercent > 100 &&  curFeedOverride <= 100) || (overridePercent < 100 && curFeedOverride >= 100))
+            {
+                SendByte(CMD_FEED_SET_100);
+                curFeedOverride = 100;
+            }
+            if (overridePercent > curFeedOverride)
+            {
+                while (overridePercent >= (curFeedOverride + 10))
+                {
+                    SendByte(CMD_FEED_ADD_10);
+                    curFeedOverride += 10;
+                }
+                while (overridePercent > curFeedOverride)
+                {
+                    SendByte(CMD_FEED_ADD_1);
+                    curFeedOverride++;
+                }
+            }
+            else
+            {
+                while (overridePercent <= (curFeedOverride - 10))
+                {
+                    SendByte(CMD_FEED_DEC_10);
+                    curFeedOverride -= 10;
+                }
+                while (overridePercent < curFeedOverride)
+                {
+                    SendByte(CMD_FEED_DEC_1);
+                    curFeedOverride--;
+                }
+            }
+        }
 
         void TestConnection()
         {
@@ -629,6 +667,7 @@ namespace GrblCNC
                 Global.ginterp.ResetGcodeLine();
             machineState = MachineState.Idle;
         }
+
 
         // add line to send queue. Lines will be send through the poller
         public void PostLine(string line, bool isInsertQ = false)
@@ -957,7 +996,6 @@ namespace GrblCNC
             if (machineState != MachineState.Idle)
                 return; // busy or already jogging
 
-            tmpCnt++;
             // start jogging
             string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)

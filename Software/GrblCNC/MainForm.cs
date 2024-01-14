@@ -84,6 +84,7 @@ namespace GrblCNC
             manualControl.AxisContinuesJogPressed += manualControl_AxisContinuesJogPressed;
             manualControl.AxisActionPressed += manualControl_AxisActionPressed;
             manualControl.SpindleAction += manualControl_SpindleAction;
+            manualControl.FeedOverride += ManualControl_FeedOverride;
 
             grblParamEdit = new ParametersEdit();
             Global.grblParameterEditor = grblParamEdit;
@@ -103,6 +104,11 @@ namespace GrblCNC
             Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
+        }
+
+        private void ManualControl_FeedOverride(object sender, int feedPercent)
+        {
+            grblComm.SetFeedOverride(feedPercent);
         }
 
         void grblComm_GrblStatusChanged(object sender, GrblStatus.MachineState newState, GrblStatus.MachineState oldState)

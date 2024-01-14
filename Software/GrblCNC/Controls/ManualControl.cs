@@ -38,6 +38,8 @@ namespace GrblCNC.Controls
         public event AxisActionPressedDelegate AxisActionPressed;
         public delegate void SpindleActionDelegate(object sender, float speed, GrblComm.SpindleAction action);
         public event SpindleActionDelegate SpindleAction;
+        public delegate void FeedoverrideDelegate(object sender, int feedPercent);
+        public event FeedoverrideDelegate FeedOverride;
 
         float fastJog = 50;
         float slowJog = 50;
@@ -50,7 +52,14 @@ namespace GrblCNC.Controls
             Global.GrblConnectionChanged += Global_GrblConnectionChanged;
             valueSlideSpinSpeed.ValueChange += valueSlideSpinSpeed_ValueChange;
             valueSlideJogSpeedXYZ.ValueChange += valueSlideJogSpeedXYZ_ValueChange;
+            valueSlideFeedOver.ValueChange += ValueSlideFeedOver_ValueChange;
             Global.NumAxesChanged += Global_NumAxesChanged;
+        }
+
+        private void ValueSlideFeedOver_ValueChange(object sender, float value)
+        {
+            if (FeedOverride != null)
+                FeedOverride(this, (int)value);
         }
 
         private void Global_NumAxesChanged()

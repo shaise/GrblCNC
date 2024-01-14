@@ -322,17 +322,15 @@
             // valueSlideFeedOver
             // 
             this.valueSlideFeedOver.DataFormat = "{0:0} %";
-            this.valueSlideFeedOver.Enabled = false;
             this.valueSlideFeedOver.Location = new System.Drawing.Point(6, 294);
             this.valueSlideFeedOver.MaxValue = 120F;
-            this.valueSlideFeedOver.MinValue = 0F;
+            this.valueSlideFeedOver.MinValue = 10F;
             this.valueSlideFeedOver.Name = "valueSlideFeedOver";
             this.valueSlideFeedOver.Size = new System.Drawing.Size(271, 14);
             this.valueSlideFeedOver.TabIndex = 25;
             this.valueSlideFeedOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
             this.valueSlideFeedOver.TitleText = "Feed override:";
             this.valueSlideFeedOver.Value = 100F;
-            this.valueSlideFeedOver.Visible = false;
             // 
             // jogButtSpindleStop
             // 
