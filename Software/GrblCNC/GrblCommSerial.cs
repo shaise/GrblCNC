@@ -13,6 +13,7 @@ namespace GrblCNC
         public bool portOpened = false;
         StringBuilder readLine;
         string portName;
+        bool portClosing = false;
 
         public GrblCommSerial()
         {
@@ -25,7 +26,7 @@ namespace GrblCNC
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            while (port.BytesToRead != 0)
+            while (!portClosing && port.BytesToRead != 0)
             {
                 char ch = (char)port.ReadChar();
                 if (ch == '\r')
@@ -61,6 +62,7 @@ namespace GrblCNC
                 port.Handshake = Handshake.None;
                 port.WriteTimeout = 500;
                 port.Open();
+                portClosing = false;
                 portOpened = true;
             }
             catch
@@ -74,7 +76,9 @@ namespace GrblCNC
         {
             if (!portOpened)
                 return;
-            try { 
+            try {
+                portClosing = true;
+                System.Threading.Thread.Sleep(100);
                 port.Close(); 
             }
             catch { } // sometimes when the usb disconnects, closing the port causes error
@@ -89,14 +93,16 @@ namespace GrblCNC
         public override void WriteLine(string line)
         {
             line += "\n";
-            port.Write(line);
+            if (!portClosing)
+                port.Write(line);
         }
 
         public override void WriteByte(byte b)
         {
             byte[] msg = new byte[1];
             msg[0] = b;
-            port.Write(msg, 0, 1);
+            if (!portClosing)
+                port.Write(msg, 0, 1);
         }
     }
 }

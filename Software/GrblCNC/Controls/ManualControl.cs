@@ -53,13 +53,20 @@ namespace GrblCNC.Controls
             valueSlideSpinSpeed.ValueChange += valueSlideSpinSpeed_ValueChange;
             valueSlideJogSpeedXYZ.ValueChange += valueSlideJogSpeedXYZ_ValueChange;
             valueSlideFeedOver.ValueChange += ValueSlideFeedOver_ValueChange;
+            valueSlideSpinOver.ValueChange += ValueSlideSpinOver_ValueChange;
             Global.NumAxesChanged += Global_NumAxesChanged;
+        }
+
+        private void ValueSlideSpinOver_ValueChange(object sender, float value)
+        {
+            if (SpindleAction != null)
+                SpindleAction(this, value, GrblComm.SpindleAction.SpeedOverride);
         }
 
         private void ValueSlideFeedOver_ValueChange(object sender, float value)
         {
             if (FeedOverride != null)
-                FeedOverride(this, (int)value);
+                FeedOverride(this, (int)(value + 0.5));
         }
 
         private void Global_NumAxesChanged()
@@ -246,7 +253,7 @@ namespace GrblCNC.Controls
                 val = val * fastJog / 100;
             else
                 val = val * slowJog / 100;
-            valueSlideJogSpeedXYZ.Value = valueSlideJogSpeedXYZ.MinValue + val;    
+            valueSlideJogSpeedXYZ.DefaultValue = valueSlideJogSpeedXYZ.MinValue + val;    
         }
 
         public void SetSliderMinMax(Sliders sld, float min, float max)
@@ -261,7 +268,8 @@ namespace GrblCNC.Controls
 
                 case Sliders.SpindleSpeed: 
                     valueSlideSpinSpeed.MinValue = min; 
-                    valueSlideSpinSpeed.MaxValue = max; 
+                    valueSlideSpinSpeed.MaxValue = max;
+                    valueSlideSpinSpeed.DefaultValue = (min + max) / 2;
                     break;
             }
         }

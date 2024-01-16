@@ -32,14 +32,11 @@
             this.comboJogStep = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.jogButtSpindleCW = new GrblCNC.Controls.JogButton();
-            this.jogButtAllHome = new GrblCNC.Controls.JogButton();
-            this.jogButtToolTouchOff = new GrblCNC.Controls.JogButton();
-            this.jogButtTouchOff = new GrblCNC.Controls.JogButton();
-            this.axisHomeAll = new GrblCNC.Controls.JogButton();
-            this.jogButtGoto = new GrblCNC.Controls.JogButton();
             this.label2 = new System.Windows.Forms.Label();
+            this.jogButtGoto = new GrblCNC.Controls.JogButton();
+            this.axisHomeAll = new GrblCNC.Controls.JogButton();
             this.multiSelAxis = new GrblCNC.Controls.MultiSelect();
+            this.jogButtAllHome = new GrblCNC.Controls.JogButton();
             this.valueSlideJogSpeedXYZ = new GrblCNC.Controls.ValueSlider();
             this.valueSlideSpinSpeed = new GrblCNC.Controls.ValueSlider();
             this.valueSlideMaxVelocity = new GrblCNC.Controls.ValueSlider();
@@ -48,7 +45,10 @@
             this.valueSlideSpinOver = new GrblCNC.Controls.ValueSlider();
             this.valueSlideFeedOver = new GrblCNC.Controls.ValueSlider();
             this.jogButtSpindleStop = new GrblCNC.Controls.JogButton();
+            this.jogButtSpindleCW = new GrblCNC.Controls.JogButton();
             this.jogButtSpindleCCW = new GrblCNC.Controls.JogButton();
+            this.jogButtToolTouchOff = new GrblCNC.Controls.JogButton();
+            this.jogButtTouchOff = new GrblCNC.Controls.JogButton();
             this.jogButtBpos = new GrblCNC.Controls.JogButton();
             this.jogButtBneg = new GrblCNC.Controls.JogButton();
             this.jogButtApos = new GrblCNC.Controls.JogButton();
@@ -87,26 +87,67 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Jog:";
             // 
-            // jogButtSpindleCW
+            // label2
             // 
-            this.jogButtSpindleCW.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
-            this.jogButtSpindleCW.Caption = "";
-            this.jogButtSpindleCW.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.jogButtSpindleCW.FontScale = 0.6F;
-            this.jogButtSpindleCW.ForeColor = System.Drawing.Color.DarkSlateBlue;
-            this.jogButtSpindleCW.Id = 0;
-            this.jogButtSpindleCW.Image = global::GrblCNC.Properties.Resources.SpinRightIcon;
-            this.jogButtSpindleCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
-            this.jogButtSpindleCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
-            this.jogButtSpindleCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleCW.Location = new System.Drawing.Point(126, 199);
-            this.jogButtSpindleCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
-            this.jogButtSpindleCW.Name = "jogButtSpindleCW";
-            this.jogButtSpindleCW.Size = new System.Drawing.Size(32, 32);
-            this.jogButtSpindleCW.TabIndex = 21;
-            this.jogButtSpindleCW.TextOffset = new System.Drawing.Point(0, 0);
-            this.toolTip1.SetToolTip(this.jogButtSpindleCW, "Increase spindle RPM / Clockwise");
-            this.jogButtSpindleCW.Click += new System.EventHandler(this.jogButtSpindleCW_Click);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 208);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.TabIndex = 32;
+            this.label2.Text = "Spindle:";
+            // 
+            // jogButtGoto
+            // 
+            this.jogButtGoto.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.jogButtGoto.Caption = "";
+            this.jogButtGoto.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.jogButtGoto.FontScale = 0.5F;
+            this.jogButtGoto.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.jogButtGoto.Id = 0;
+            this.jogButtGoto.Image = global::GrblCNC.Properties.Resources.GotoIcon;
+            this.jogButtGoto.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
+            this.jogButtGoto.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
+            this.jogButtGoto.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
+            this.jogButtGoto.Location = new System.Drawing.Point(246, 126);
+            this.jogButtGoto.Margin = new System.Windows.Forms.Padding(18, 16, 18, 16);
+            this.jogButtGoto.Name = "jogButtGoto";
+            this.jogButtGoto.Size = new System.Drawing.Size(32, 32);
+            this.jogButtGoto.TabIndex = 36;
+            this.jogButtGoto.TextOffset = new System.Drawing.Point(0, 0);
+            this.toolTip1.SetToolTip(this.jogButtGoto, "Tool Touch Off");
+            this.jogButtGoto.Click += new System.EventHandler(this.jogButtGoto_Click);
+            // 
+            // axisHomeAll
+            // 
+            this.axisHomeAll.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.axisHomeAll.Caption = "A";
+            this.axisHomeAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.axisHomeAll.FontScale = 0.5F;
+            this.axisHomeAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(199)))), ((int)(((byte)(211)))));
+            this.axisHomeAll.Id = 10;
+            this.axisHomeAll.Image = global::GrblCNC.Properties.Resources.HomeIconFull;
+            this.axisHomeAll.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
+            this.axisHomeAll.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
+            this.axisHomeAll.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
+            this.axisHomeAll.Location = new System.Drawing.Point(9, 88);
+            this.axisHomeAll.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
+            this.axisHomeAll.Name = "axisHomeAll";
+            this.axisHomeAll.Size = new System.Drawing.Size(32, 32);
+            this.axisHomeAll.TabIndex = 35;
+            this.axisHomeAll.TextOffset = new System.Drawing.Point(0, 2);
+            this.toolTip1.SetToolTip(this.axisHomeAll, "Home all Axes");
+            this.axisHomeAll.Click += new System.EventHandler(this.axisHomeAll_Click);
+            // 
+            // multiSelAxis
+            // 
+            this.multiSelAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(241)))), ((int)(((byte)(245)))));
+            this.multiSelAxis.Location = new System.Drawing.Point(9, 129);
+            this.multiSelAxis.MultiSelectionMode = false;
+            this.multiSelAxis.Name = "multiSelAxis";
+            this.multiSelAxis.SelectedValue = 0;
+            this.multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
+            this.multiSelAxis.Size = new System.Drawing.Size(113, 27);
+            this.multiSelAxis.TabIndex = 34;
             // 
             // jogButtAllHome
             // 
@@ -128,6 +169,172 @@
             this.jogButtAllHome.TextOffset = new System.Drawing.Point(0, 2);
             this.toolTip1.SetToolTip(this.jogButtAllHome, "Home Selected Axis");
             this.jogButtAllHome.Click += new System.EventHandler(this.AxisHome_click);
+            // 
+            // valueSlideJogSpeedXYZ
+            // 
+            this.valueSlideJogSpeedXYZ.DataFormat = "{0:0} mm/min";
+            this.valueSlideJogSpeedXYZ.DefaultValue = 0F;
+            this.valueSlideJogSpeedXYZ.Location = new System.Drawing.Point(9, 172);
+            this.valueSlideJogSpeedXYZ.MaxValue = 100F;
+            this.valueSlideJogSpeedXYZ.MinValue = 0F;
+            this.valueSlideJogSpeedXYZ.Name = "valueSlideJogSpeedXYZ";
+            this.valueSlideJogSpeedXYZ.Size = new System.Drawing.Size(271, 14);
+            this.valueSlideJogSpeedXYZ.TabIndex = 31;
+            this.valueSlideJogSpeedXYZ.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
+            this.valueSlideJogSpeedXYZ.TitleText = "Jog Speed (XYZ):";
+            this.valueSlideJogSpeedXYZ.Value = 0F;
+            // 
+            // valueSlideSpinSpeed
+            // 
+            this.valueSlideSpinSpeed.DataFormat = "{0:0} RPM";
+            this.valueSlideSpinSpeed.DefaultValue = 0F;
+            this.valueSlideSpinSpeed.Location = new System.Drawing.Point(9, 245);
+            this.valueSlideSpinSpeed.MaxValue = 100F;
+            this.valueSlideSpinSpeed.MinValue = 0F;
+            this.valueSlideSpinSpeed.Name = "valueSlideSpinSpeed";
+            this.valueSlideSpinSpeed.Size = new System.Drawing.Size(271, 14);
+            this.valueSlideSpinSpeed.TabIndex = 30;
+            this.valueSlideSpinSpeed.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
+            this.valueSlideSpinSpeed.TitleText = "Spindle Speed:";
+            this.valueSlideSpinSpeed.Value = 0F;
+            // 
+            // valueSlideMaxVelocity
+            // 
+            this.valueSlideMaxVelocity.DataFormat = "{0:0} mm/min";
+            this.valueSlideMaxVelocity.DefaultValue = 0F;
+            this.valueSlideMaxVelocity.Enabled = false;
+            this.valueSlideMaxVelocity.Location = new System.Drawing.Point(6, 374);
+            this.valueSlideMaxVelocity.MaxValue = 100F;
+            this.valueSlideMaxVelocity.MinValue = 0F;
+            this.valueSlideMaxVelocity.Name = "valueSlideMaxVelocity";
+            this.valueSlideMaxVelocity.Size = new System.Drawing.Size(271, 14);
+            this.valueSlideMaxVelocity.TabIndex = 29;
+            this.valueSlideMaxVelocity.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
+            this.valueSlideMaxVelocity.TitleText = "Max velocity:";
+            this.valueSlideMaxVelocity.Value = 0F;
+            this.valueSlideMaxVelocity.Visible = false;
+            // 
+            // valueSlideJogSpeedAB
+            // 
+            this.valueSlideJogSpeedAB.DataFormat = "{0:0} deg/min";
+            this.valueSlideJogSpeedAB.DefaultValue = 0F;
+            this.valueSlideJogSpeedAB.Enabled = false;
+            this.valueSlideJogSpeedAB.Location = new System.Drawing.Point(6, 354);
+            this.valueSlideJogSpeedAB.MaxValue = 100F;
+            this.valueSlideJogSpeedAB.MinValue = 0F;
+            this.valueSlideJogSpeedAB.Name = "valueSlideJogSpeedAB";
+            this.valueSlideJogSpeedAB.Size = new System.Drawing.Size(271, 14);
+            this.valueSlideJogSpeedAB.TabIndex = 28;
+            this.valueSlideJogSpeedAB.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
+            this.valueSlideJogSpeedAB.TitleText = "Jog Speed (AB):";
+            this.valueSlideJogSpeedAB.Value = 0F;
+            this.valueSlideJogSpeedAB.Visible = false;
+            // 
+            // valueSlideRapidOver
+            // 
+            this.valueSlideRapidOver.DataFormat = "{0:0} %";
+            this.valueSlideRapidOver.DefaultValue = 100F;
+            this.valueSlideRapidOver.Enabled = false;
+            this.valueSlideRapidOver.Location = new System.Drawing.Point(6, 314);
+            this.valueSlideRapidOver.MaxValue = 100F;
+            this.valueSlideRapidOver.MinValue = 0F;
+            this.valueSlideRapidOver.Name = "valueSlideRapidOver";
+            this.valueSlideRapidOver.Size = new System.Drawing.Size(271, 14);
+            this.valueSlideRapidOver.TabIndex = 27;
+            this.valueSlideRapidOver.TabStop = false;
+            this.valueSlideRapidOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
+            this.valueSlideRapidOver.TitleText = "Rapid override:";
+            this.valueSlideRapidOver.Value = 100F;
+            this.valueSlideRapidOver.Visible = false;
+            // 
+            // valueSlideSpinOver
+            // 
+            this.valueSlideSpinOver.DataFormat = "{0:0} %";
+            this.valueSlideSpinOver.DefaultValue = 100F;
+            this.valueSlideSpinOver.Location = new System.Drawing.Point(9, 274);
+            this.valueSlideSpinOver.MaxValue = 120F;
+            this.valueSlideSpinOver.MinValue = 0F;
+            this.valueSlideSpinOver.Name = "valueSlideSpinOver";
+            this.valueSlideSpinOver.Size = new System.Drawing.Size(271, 14);
+            this.valueSlideSpinOver.TabIndex = 26;
+            this.valueSlideSpinOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
+            this.valueSlideSpinOver.TitleText = "Spindle override:";
+            this.valueSlideSpinOver.Value = 100F;
+            // 
+            // valueSlideFeedOver
+            // 
+            this.valueSlideFeedOver.DataFormat = "{0:0} %";
+            this.valueSlideFeedOver.DefaultValue = 100F;
+            this.valueSlideFeedOver.Location = new System.Drawing.Point(9, 294);
+            this.valueSlideFeedOver.MaxValue = 120F;
+            this.valueSlideFeedOver.MinValue = 10F;
+            this.valueSlideFeedOver.Name = "valueSlideFeedOver";
+            this.valueSlideFeedOver.Size = new System.Drawing.Size(271, 14);
+            this.valueSlideFeedOver.TabIndex = 25;
+            this.valueSlideFeedOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
+            this.valueSlideFeedOver.TitleText = "Feed override:";
+            this.valueSlideFeedOver.Value = 100F;
+            // 
+            // jogButtSpindleStop
+            // 
+            this.jogButtSpindleStop.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.jogButtSpindleStop.Caption = "S";
+            this.jogButtSpindleStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.jogButtSpindleStop.FontScale = 0.6F;
+            this.jogButtSpindleStop.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.jogButtSpindleStop.Id = 0;
+            this.jogButtSpindleStop.Image = global::GrblCNC.Properties.Resources.StopIcon;
+            this.jogButtSpindleStop.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
+            this.jogButtSpindleStop.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
+            this.jogButtSpindleStop.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
+            this.jogButtSpindleStop.Location = new System.Drawing.Point(95, 199);
+            this.jogButtSpindleStop.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
+            this.jogButtSpindleStop.Name = "jogButtSpindleStop";
+            this.jogButtSpindleStop.Size = new System.Drawing.Size(32, 32);
+            this.jogButtSpindleStop.TabIndex = 22;
+            this.jogButtSpindleStop.TextOffset = new System.Drawing.Point(0, 0);
+            this.jogButtSpindleStop.Click += new System.EventHandler(this.jogButtSpindleStop_Click);
+            // 
+            // jogButtSpindleCW
+            // 
+            this.jogButtSpindleCW.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.jogButtSpindleCW.Caption = "";
+            this.jogButtSpindleCW.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.jogButtSpindleCW.FontScale = 0.6F;
+            this.jogButtSpindleCW.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.jogButtSpindleCW.Id = 0;
+            this.jogButtSpindleCW.Image = global::GrblCNC.Properties.Resources.SpinRightIcon;
+            this.jogButtSpindleCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
+            this.jogButtSpindleCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
+            this.jogButtSpindleCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
+            this.jogButtSpindleCW.Location = new System.Drawing.Point(126, 199);
+            this.jogButtSpindleCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
+            this.jogButtSpindleCW.Name = "jogButtSpindleCW";
+            this.jogButtSpindleCW.Size = new System.Drawing.Size(32, 32);
+            this.jogButtSpindleCW.TabIndex = 21;
+            this.jogButtSpindleCW.TextOffset = new System.Drawing.Point(0, 0);
+            this.toolTip1.SetToolTip(this.jogButtSpindleCW, "Increase spindle RPM / Clockwise");
+            this.jogButtSpindleCW.Click += new System.EventHandler(this.jogButtSpindleCW_Click);
+            // 
+            // jogButtSpindleCCW
+            // 
+            this.jogButtSpindleCCW.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
+            this.jogButtSpindleCCW.Caption = "";
+            this.jogButtSpindleCCW.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.jogButtSpindleCCW.FontScale = 0.6F;
+            this.jogButtSpindleCCW.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.jogButtSpindleCCW.Id = 0;
+            this.jogButtSpindleCCW.Image = global::GrblCNC.Properties.Resources.SpinLeftIcon;
+            this.jogButtSpindleCCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
+            this.jogButtSpindleCCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
+            this.jogButtSpindleCCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
+            this.jogButtSpindleCCW.Location = new System.Drawing.Point(64, 199);
+            this.jogButtSpindleCCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
+            this.jogButtSpindleCCW.Name = "jogButtSpindleCCW";
+            this.jogButtSpindleCCW.Size = new System.Drawing.Size(32, 32);
+            this.jogButtSpindleCCW.TabIndex = 20;
+            this.jogButtSpindleCCW.TextOffset = new System.Drawing.Point(0, 0);
+            this.jogButtSpindleCCW.Click += new System.EventHandler(this.jogButtSpindleCCW_Click);
             // 
             // jogButtToolTouchOff
             // 
@@ -170,207 +377,6 @@
             this.jogButtTouchOff.TextOffset = new System.Drawing.Point(0, 0);
             this.toolTip1.SetToolTip(this.jogButtTouchOff, "WCO Touch off");
             this.jogButtTouchOff.Click += new System.EventHandler(this.jogButtTouchOff_Click);
-            // 
-            // axisHomeAll
-            // 
-            this.axisHomeAll.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
-            this.axisHomeAll.Caption = "A";
-            this.axisHomeAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.axisHomeAll.FontScale = 0.5F;
-            this.axisHomeAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(199)))), ((int)(((byte)(211)))));
-            this.axisHomeAll.Id = 10;
-            this.axisHomeAll.Image = global::GrblCNC.Properties.Resources.HomeIconFull;
-            this.axisHomeAll.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
-            this.axisHomeAll.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
-            this.axisHomeAll.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.axisHomeAll.Location = new System.Drawing.Point(9, 88);
-            this.axisHomeAll.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
-            this.axisHomeAll.Name = "axisHomeAll";
-            this.axisHomeAll.Size = new System.Drawing.Size(32, 32);
-            this.axisHomeAll.TabIndex = 35;
-            this.axisHomeAll.TextOffset = new System.Drawing.Point(0, 2);
-            this.toolTip1.SetToolTip(this.axisHomeAll, "Home all Axes");
-            this.axisHomeAll.Click += new System.EventHandler(this.axisHomeAll_Click);
-            // 
-            // jogButtGoto
-            // 
-            this.jogButtGoto.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
-            this.jogButtGoto.Caption = "";
-            this.jogButtGoto.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.jogButtGoto.FontScale = 0.5F;
-            this.jogButtGoto.ForeColor = System.Drawing.Color.DarkSlateBlue;
-            this.jogButtGoto.Id = 0;
-            this.jogButtGoto.Image = global::GrblCNC.Properties.Resources.GotoIcon;
-            this.jogButtGoto.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
-            this.jogButtGoto.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
-            this.jogButtGoto.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtGoto.Location = new System.Drawing.Point(246, 126);
-            this.jogButtGoto.Margin = new System.Windows.Forms.Padding(18, 16, 18, 16);
-            this.jogButtGoto.Name = "jogButtGoto";
-            this.jogButtGoto.Size = new System.Drawing.Size(32, 32);
-            this.jogButtGoto.TabIndex = 36;
-            this.jogButtGoto.TextOffset = new System.Drawing.Point(0, 0);
-            this.toolTip1.SetToolTip(this.jogButtGoto, "Tool Touch Off");
-            this.jogButtGoto.Click += new System.EventHandler(this.jogButtGoto_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 208);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 13);
-            this.label2.TabIndex = 32;
-            this.label2.Text = "Spindle:";
-            // 
-            // multiSelAxis
-            // 
-            this.multiSelAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(241)))), ((int)(((byte)(245)))));
-            this.multiSelAxis.Location = new System.Drawing.Point(9, 129);
-            this.multiSelAxis.MultiSelectionMode = false;
-            this.multiSelAxis.Name = "multiSelAxis";
-            this.multiSelAxis.SelectedValue = 0;
-            this.multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
-            this.multiSelAxis.Size = new System.Drawing.Size(113, 27);
-            this.multiSelAxis.TabIndex = 34;
-            // 
-            // valueSlideJogSpeedXYZ
-            // 
-            this.valueSlideJogSpeedXYZ.DataFormat = "{0:0} mm/min";
-            this.valueSlideJogSpeedXYZ.Location = new System.Drawing.Point(9, 172);
-            this.valueSlideJogSpeedXYZ.MaxValue = 100F;
-            this.valueSlideJogSpeedXYZ.MinValue = 0F;
-            this.valueSlideJogSpeedXYZ.Name = "valueSlideJogSpeedXYZ";
-            this.valueSlideJogSpeedXYZ.Size = new System.Drawing.Size(271, 14);
-            this.valueSlideJogSpeedXYZ.TabIndex = 31;
-            this.valueSlideJogSpeedXYZ.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
-            this.valueSlideJogSpeedXYZ.TitleText = "Jog Speed (XYZ):";
-            this.valueSlideJogSpeedXYZ.Value = 0F;
-            // 
-            // valueSlideSpinSpeed
-            // 
-            this.valueSlideSpinSpeed.DataFormat = "{0:0} RPM";
-            this.valueSlideSpinSpeed.Location = new System.Drawing.Point(9, 245);
-            this.valueSlideSpinSpeed.MaxValue = 100F;
-            this.valueSlideSpinSpeed.MinValue = 0F;
-            this.valueSlideSpinSpeed.Name = "valueSlideSpinSpeed";
-            this.valueSlideSpinSpeed.Size = new System.Drawing.Size(271, 14);
-            this.valueSlideSpinSpeed.TabIndex = 30;
-            this.valueSlideSpinSpeed.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
-            this.valueSlideSpinSpeed.TitleText = "Spindle Speed:";
-            this.valueSlideSpinSpeed.Value = 0F;
-            // 
-            // valueSlideMaxVelocity
-            // 
-            this.valueSlideMaxVelocity.DataFormat = "{0:0} mm/min";
-            this.valueSlideMaxVelocity.Enabled = false;
-            this.valueSlideMaxVelocity.Location = new System.Drawing.Point(6, 374);
-            this.valueSlideMaxVelocity.MaxValue = 100F;
-            this.valueSlideMaxVelocity.MinValue = 0F;
-            this.valueSlideMaxVelocity.Name = "valueSlideMaxVelocity";
-            this.valueSlideMaxVelocity.Size = new System.Drawing.Size(271, 14);
-            this.valueSlideMaxVelocity.TabIndex = 29;
-            this.valueSlideMaxVelocity.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
-            this.valueSlideMaxVelocity.TitleText = "Max velocity:";
-            this.valueSlideMaxVelocity.Value = 0F;
-            this.valueSlideMaxVelocity.Visible = false;
-            // 
-            // valueSlideJogSpeedAB
-            // 
-            this.valueSlideJogSpeedAB.DataFormat = "{0:0} deg/min";
-            this.valueSlideJogSpeedAB.Enabled = false;
-            this.valueSlideJogSpeedAB.Location = new System.Drawing.Point(6, 354);
-            this.valueSlideJogSpeedAB.MaxValue = 100F;
-            this.valueSlideJogSpeedAB.MinValue = 0F;
-            this.valueSlideJogSpeedAB.Name = "valueSlideJogSpeedAB";
-            this.valueSlideJogSpeedAB.Size = new System.Drawing.Size(271, 14);
-            this.valueSlideJogSpeedAB.TabIndex = 28;
-            this.valueSlideJogSpeedAB.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
-            this.valueSlideJogSpeedAB.TitleText = "Jog Speed (AB):";
-            this.valueSlideJogSpeedAB.Value = 0F;
-            this.valueSlideJogSpeedAB.Visible = false;
-            // 
-            // valueSlideRapidOver
-            // 
-            this.valueSlideRapidOver.DataFormat = "{0:0} %";
-            this.valueSlideRapidOver.Enabled = false;
-            this.valueSlideRapidOver.Location = new System.Drawing.Point(6, 314);
-            this.valueSlideRapidOver.MaxValue = 100F;
-            this.valueSlideRapidOver.MinValue = 0F;
-            this.valueSlideRapidOver.Name = "valueSlideRapidOver";
-            this.valueSlideRapidOver.Size = new System.Drawing.Size(271, 14);
-            this.valueSlideRapidOver.TabIndex = 27;
-            this.valueSlideRapidOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
-            this.valueSlideRapidOver.TitleText = "Rapid override:";
-            this.valueSlideRapidOver.Value = 100F;
-            this.valueSlideRapidOver.Visible = false;
-            // 
-            // valueSlideSpinOver
-            // 
-            this.valueSlideSpinOver.DataFormat = "{0:0} %";
-            this.valueSlideSpinOver.Enabled = false;
-            this.valueSlideSpinOver.Location = new System.Drawing.Point(6, 334);
-            this.valueSlideSpinOver.MaxValue = 120F;
-            this.valueSlideSpinOver.MinValue = 0F;
-            this.valueSlideSpinOver.Name = "valueSlideSpinOver";
-            this.valueSlideSpinOver.Size = new System.Drawing.Size(271, 14);
-            this.valueSlideSpinOver.TabIndex = 26;
-            this.valueSlideSpinOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
-            this.valueSlideSpinOver.TitleText = "Spindle override:";
-            this.valueSlideSpinOver.Value = 100F;
-            this.valueSlideSpinOver.Visible = false;
-            // 
-            // valueSlideFeedOver
-            // 
-            this.valueSlideFeedOver.DataFormat = "{0:0} %";
-            this.valueSlideFeedOver.Location = new System.Drawing.Point(6, 294);
-            this.valueSlideFeedOver.MaxValue = 120F;
-            this.valueSlideFeedOver.MinValue = 10F;
-            this.valueSlideFeedOver.Name = "valueSlideFeedOver";
-            this.valueSlideFeedOver.Size = new System.Drawing.Size(271, 14);
-            this.valueSlideFeedOver.TabIndex = 25;
-            this.valueSlideFeedOver.ThumbImage = global::GrblCNC.Properties.Resources.SliderThumb;
-            this.valueSlideFeedOver.TitleText = "Feed override:";
-            this.valueSlideFeedOver.Value = 100F;
-            // 
-            // jogButtSpindleStop
-            // 
-            this.jogButtSpindleStop.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
-            this.jogButtSpindleStop.Caption = "S";
-            this.jogButtSpindleStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.jogButtSpindleStop.FontScale = 0.6F;
-            this.jogButtSpindleStop.ForeColor = System.Drawing.Color.DarkSlateBlue;
-            this.jogButtSpindleStop.Id = 0;
-            this.jogButtSpindleStop.Image = global::GrblCNC.Properties.Resources.StopIcon;
-            this.jogButtSpindleStop.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
-            this.jogButtSpindleStop.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
-            this.jogButtSpindleStop.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleStop.Location = new System.Drawing.Point(95, 199);
-            this.jogButtSpindleStop.Margin = new System.Windows.Forms.Padding(18, 11, 18, 11);
-            this.jogButtSpindleStop.Name = "jogButtSpindleStop";
-            this.jogButtSpindleStop.Size = new System.Drawing.Size(32, 32);
-            this.jogButtSpindleStop.TabIndex = 22;
-            this.jogButtSpindleStop.TextOffset = new System.Drawing.Point(0, 0);
-            this.jogButtSpindleStop.Click += new System.EventHandler(this.jogButtSpindleStop_Click);
-            // 
-            // jogButtSpindleCCW
-            // 
-            this.jogButtSpindleCCW.ButtonType = GrblCNC.Controls.JogButton.ArrowDir.Center;
-            this.jogButtSpindleCCW.Caption = "";
-            this.jogButtSpindleCCW.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.jogButtSpindleCCW.FontScale = 0.6F;
-            this.jogButtSpindleCCW.ForeColor = System.Drawing.Color.DarkSlateBlue;
-            this.jogButtSpindleCCW.Id = 0;
-            this.jogButtSpindleCCW.Image = global::GrblCNC.Properties.Resources.SpinLeftIcon;
-            this.jogButtSpindleCCW.ImageHover = global::GrblCNC.Properties.Resources.JogButtHover;
-            this.jogButtSpindleCCW.ImageNormal = global::GrblCNC.Properties.Resources.JogButtNorm;
-            this.jogButtSpindleCCW.ImagePress = global::GrblCNC.Properties.Resources.JogButtPress;
-            this.jogButtSpindleCCW.Location = new System.Drawing.Point(64, 199);
-            this.jogButtSpindleCCW.Margin = new System.Windows.Forms.Padding(18, 17, 18, 17);
-            this.jogButtSpindleCCW.Name = "jogButtSpindleCCW";
-            this.jogButtSpindleCCW.Size = new System.Drawing.Size(32, 32);
-            this.jogButtSpindleCCW.TabIndex = 20;
-            this.jogButtSpindleCCW.TextOffset = new System.Drawing.Point(0, 0);
-            this.jogButtSpindleCCW.Click += new System.EventHandler(this.jogButtSpindleCCW_Click);
             // 
             // jogButtBpos
             // 

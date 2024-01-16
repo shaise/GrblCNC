@@ -11,14 +11,14 @@ using System.Reflection;
 using OpenTK;
 using GrblCNC.Controls;
 using GrblCNC.Glutils;
-
+using System.Threading;
 
 namespace GrblCNC
 {
     public partial class MainForm : Form
     {
-        Timer simTimer;
-        Timer grblScanTimer;
+        System.Windows.Forms.Timer simTimer;
+        System.Windows.Forms.Timer grblScanTimer;
         GcodeInterp ginterp;
         GrblComm grblComm;
         FormOffset frmOffset;
@@ -61,7 +61,7 @@ namespace GrblCNC
             visualizerWinMain.ginterp = ginterp;
             visualizerWinMain.NewGcodeLoaded += visualizerWinMain_NewGcodeLoaded;
             gcodeMainViewer.SelectedLineChanged += gcodeMainViewer_SelectedLineChanged;
-            simTimer = new Timer();
+            simTimer = new System.Windows.Forms.Timer();
             simTimer.Interval = 40;
             simTimer.Tick += simTimer_Tick;
             // grbl communication
@@ -74,7 +74,7 @@ namespace GrblCNC
             grblComm.ChangeToolNotify += grblComm_ChangeToolNotify;
             grblComm.GrblStatusChanged += grblComm_GrblStatusChanged;
             Global.grblComm = grblComm;
-            grblScanTimer = new Timer();
+            grblScanTimer = new System.Windows.Forms.Timer();
             grblScanTimer.Interval = 100;
             grblScanTimer.Tick += grblScanTimer_Tick;
             grblScanTimer.Start();
@@ -525,7 +525,9 @@ namespace GrblCNC
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            Global.AppClosing = true;
             grblComm.Close();
+            Thread.Sleep(200);
             base.OnClosing(e);
         }
 

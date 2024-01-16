@@ -33,6 +33,8 @@ namespace GrblCNC
         public delegate void NumAxesChangedDelegate();
         public static event NumAxesChangedDelegate NumAxesChanged;
 
+        public static bool AppClosing = false;
+
 
         public static int NumAxes
         {

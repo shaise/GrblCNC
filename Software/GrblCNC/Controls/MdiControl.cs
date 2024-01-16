@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq.Expressions;
 
 namespace GrblCNC.Controls
 {
@@ -104,7 +105,12 @@ namespace GrblCNC.Controls
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => { AddLine(line); }));
+                try
+                {
+                    if (!Global.AppClosing)
+                        Invoke(new MethodInvoker(() => { AddLine(line); }));
+                }
+                catch { }
                 return;
             }
             gcodeViewMDI.AddLine(line);

@@ -8,6 +8,8 @@ using System.IO.Ports;
 using System.Globalization;
 using GrblCNC.Properties;
 using GrblCNC.Glutils;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace GrblCNC
 {
@@ -89,6 +91,7 @@ namespace GrblCNC
             StartCW,
             StartCCW,
             Speed,
+            SpeedOverride,
         }
 
         string [] portNames;
@@ -134,6 +137,7 @@ namespace GrblCNC
         bool requestFullStatus = false;
 
         int curFeedOverride = 100;
+        int curSpindleOverride = 100;
 
         int scanCount;
         // events
@@ -590,7 +594,7 @@ namespace GrblCNC
         {
             if (!portOpened)
                 return;
-            if (ConnectionStatus == CommStatus.Connected && b != CMD_STATUS_REQUEST)
+            if (ConnectionStatus == CommStatus.Connected && b != CMD_STATUS_REQUEST && !Global.AppClosing)
                 Global.mdiControl.AddLine(string.Format("<0x{0:X}>", (int)b));
             lock (lockSerialSendObj)
             {
@@ -610,48 +614,56 @@ namespace GrblCNC
             SendByte(CMD_SOFT_RESET);
             ClearMachineState();
         }
-        public void SetFeedOverride(int overridePercent)
+        void SetOverrideSpeed(int overridePercent, ref int curOverride, byte set100cmd, byte add10cmd, byte dec10cmd, byte add1cmd, byte dec1cmd)
         {
-            if (overridePercent == curFeedOverride)
-                return;
-
             if (overridePercent == 100)
             {
-                SendByte(CMD_FEED_SET_100);
-                curFeedOverride = 100;
+                SendByte(set100cmd);
+                curOverride = 100;
                 return;
             }
-            if ((overridePercent > 100 &&  curFeedOverride <= 100) || (overridePercent < 100 && curFeedOverride >= 100))
+            if (overridePercent == curOverride)
+                return;
+            if ((overridePercent > 100 && curOverride <= 100) || (overridePercent < 100 && curOverride >= 100))
             {
-                SendByte(CMD_FEED_SET_100);
-                curFeedOverride = 100;
+                SendByte(set100cmd);
+                curOverride = 100;
             }
-            if (overridePercent > curFeedOverride)
+            if (overridePercent > curOverride)
             {
-                while (overridePercent >= (curFeedOverride + 10))
+                while (overridePercent >= (curOverride + 10))
                 {
-                    SendByte(CMD_FEED_ADD_10);
-                    curFeedOverride += 10;
+                    SendByte(add10cmd);
+                    curOverride += 10;
                 }
-                while (overridePercent > curFeedOverride)
+                while (overridePercent > curOverride)
                 {
-                    SendByte(CMD_FEED_ADD_1);
-                    curFeedOverride++;
+                    SendByte(add1cmd);
+                    curOverride++;
                 }
             }
             else
             {
-                while (overridePercent <= (curFeedOverride - 10))
+                while (overridePercent <= (curOverride - 10))
                 {
-                    SendByte(CMD_FEED_DEC_10);
-                    curFeedOverride -= 10;
+                    SendByte(dec10cmd);
+                    curOverride -= 10;
                 }
-                while (overridePercent < curFeedOverride)
+                while (overridePercent < curOverride)
                 {
-                    SendByte(CMD_FEED_DEC_1);
-                    curFeedOverride--;
+                    SendByte(dec1cmd);
+                    curOverride--;
                 }
             }
+        }
+        public void SetFeedOverride(int overridePercent)
+        {
+            SetOverrideSpeed(overridePercent, ref curFeedOverride, CMD_FEED_SET_100, CMD_FEED_ADD_10, CMD_FEED_DEC_10, CMD_FEED_ADD_1, CMD_FEED_DEC_1);
+        }
+
+        public void SetSpindleOverride(int overridePercent)
+        {
+            SetOverrideSpeed(overridePercent, ref curSpindleOverride, CMD_SPINDLE_SET_100, CMD_SPINDLE_ADD_10, CMD_SPINDLE_DEC_10, CMD_SPINDLE_ADD_1, CMD_SPINDLE_DEC_1);
         }
 
         void TestConnection()
@@ -823,8 +835,16 @@ namespace GrblCNC
 
         public void Close()
         {
-            ClosePort();
-            telnetcomm.Shutdown();
+            new Thread(new ThreadStart(delegate
+            {
+                if (machineState == MachineState.Running)
+                {
+                    SendStop();
+                    Thread.Sleep(100);
+                }
+                ClosePort();
+                telnetcomm.Shutdown();
+            })).Start();
         }
 
         #region Grbl control commands
@@ -1023,10 +1043,11 @@ namespace GrblCNC
         {
             switch (action)
             {
-                case SpindleAction.Stop: PostLine("M5"); break;
-                case SpindleAction.StartCW: PostLine(string.Format("M3 S{0:0.0}", speed)); break;
-                case SpindleAction.StartCCW: PostLine(string.Format("M4 S{0:0.0}", speed)); break;
-                case SpindleAction.Speed: PostLine(string.Format("S{0:0.0}", speed)); break;
+                case SpindleAction.Stop:          PostLine("M5"); break;
+                case SpindleAction.StartCW:       PostLine(string.Format("M3 S{0:0.0}", speed)); break;
+                case SpindleAction.StartCCW:      PostLine(string.Format("M4 S{0:0.0}", speed)); break;
+                case SpindleAction.Speed:         PostLine(string.Format("S{0:0.0}", speed)); break;
+                case SpindleAction.SpeedOverride: SetSpindleOverride((int)(speed + 0.5)); break;
             }
         }
 
@@ -1122,6 +1143,14 @@ namespace GrblCNC
             }
             if (Global.ginterp != null)
                 Global.ginterp.ResetGcodeLine();
+        }
+
+        public void WaitUntillIdle()
+        {
+            while (machineState != MachineState.Idle)
+            {
+                Thread.Sleep(100);
+            }
         }
 
         public void StepGcode()

@@ -18,7 +18,7 @@ namespace GrblCNC.Controls
         float value = 0;
         float minValue = 0;
         float maxValue = 100;
-        float resetValue;
+        float defaultValue;
         int sliderLen = 80;
         Bitmap thumbImage;
         int thumbMinPos = 0, thumbMaxPos, thumbCurPos;
@@ -74,6 +74,16 @@ namespace GrblCNC.Controls
         {
             get { return labelTitle.Text; }
             set { labelTitle.Text = value; }
+        }
+
+        public float DefaultValue
+        {
+            get { return defaultValue; }
+            set
+            {
+                defaultValue = value;
+                Value = value;
+            }
         }
 
         public float MinValue
@@ -205,7 +215,8 @@ namespace GrblCNC.Controls
             }
             else if (e.Button == MouseButtons.Right)
             {
-                Value = resetValue;
+                Value = defaultValue;
+                ReportChange();
             }
             base.OnMouseDown(e);
         }
@@ -249,7 +260,7 @@ namespace GrblCNC.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            resetValue = value;
+            defaultValue = value;
         }
     }
 }
