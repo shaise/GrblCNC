@@ -15,6 +15,14 @@ namespace GrblCNC.Controls
     {
         int tool;
         public bool IsProbe = false;
+        public enum Mode
+        {
+            Tool,
+            Axis
+        }
+
+        decimal [] offsPerAxis;
+        int lastAxisSel;
         public FormProbe()
         {
             InitializeComponent();
@@ -22,6 +30,12 @@ namespace GrblCNC.Controls
             comboCoord.SelectedIndex = 0;
             comboTool.Items.Add("No Tool");
             Global.NumAxesChanged += Global_NumAxesChanged;
+            offsPerAxis = new decimal[8];
+            for (int i = 0; i < 8; i++)
+            {
+                offsPerAxis[i] = numericOffset.Value;
+            }
+            lastAxisSel = multiSelAxis.SelectedValue;
         }
 
         private void Global_NumAxesChanged()
@@ -63,6 +77,13 @@ namespace GrblCNC.Controls
             }
             return 0;
         }
+
+        public void SetMode(Mode mode)
+        {
+            comboTool.Visible = (mode == Mode.Tool);
+            comboCoord.Visible = (mode == Mode.Axis);
+        }
+
         public int Tool
         {
             get { return tool; }
@@ -71,8 +92,6 @@ namespace GrblCNC.Controls
                 int toolix = FindTool(value);
                 comboTool.SelectedIndex = toolix;
                 labelCoord.Text = "Tool:";
-                comboCoord.Visible = false;
-                comboTool.Visible = true;
                 UpdateToolFromSelection();
             }
         }
@@ -96,8 +115,6 @@ namespace GrblCNC.Controls
                 else
                     comboCoord.Enabled = false;
                 labelCoord.Text = "Coordinates:";
-                comboTool.Visible = false;
-                comboCoord.Visible = true;
             }
         }
 
@@ -150,6 +167,14 @@ namespace GrblCNC.Controls
             IsProbe = true;
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
+        }
+
+        private void multiSelAxis_SelectionChanged(object obj, int newSelection)
+        {
+            if (lastAxisSel < offsPerAxis.Length)
+                offsPerAxis[lastAxisSel] = numericOffset.Value;
+            numericOffset.Value = offsPerAxis[newSelection];
+            lastAxisSel = newSelection;
         }
     }
 }

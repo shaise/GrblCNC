@@ -22,7 +22,8 @@ namespace GrblCNC
         GcodeInterp ginterp;
         GrblComm grblComm;
         FormOffset frmOffset;
-        FormProbe frmProbe;
+        FormProbe frmAxisProbe;
+        FormProbe frmToolProbe;
         FormGoto frmGoto;
         FormPopWindow frmPopup;
         FormChangeTool frmChangeTool;
@@ -94,7 +95,10 @@ namespace GrblCNC
 
 
             frmOffset = new FormOffset();
-            frmProbe = new FormProbe();
+            frmAxisProbe = new FormProbe();
+            frmAxisProbe.SetMode(FormProbe.Mode.Axis);
+            frmToolProbe = new FormProbe();
+            frmToolProbe.SetMode(FormProbe.Mode.Tool);
             frmGoto = new FormGoto();
             frmGoto.GotoActionPressed += FrmGoto_GotoActionPressed;
             frmPopup = new FormPopWindow();
@@ -173,28 +177,28 @@ namespace GrblCNC
 
         void PerformTouchOff(int axis)
         {
-            frmProbe.Axis = axis;
-            frmProbe.CoordSystem = Global.grblStatus.CurrentCoordystemIndex;
-            if (frmProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            frmAxisProbe.Axis = axis;
+            frmAxisProbe.CoordSystem = Global.grblStatus.CurrentCoordystemIndex;
+            if (frmAxisProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (frmProbe.IsProbe)
-                    grblComm.ProbeAxis(frmProbe.Axis, -frmOffset.CoordSystem, frmProbe.Offset, frmProbe.Direction);
+                if (frmAxisProbe.IsProbe)
+                    grblComm.ProbeAxis(frmAxisProbe.Axis, -frmOffset.CoordSystem, frmAxisProbe.Offset, frmAxisProbe.Direction);
                 else
-                    grblComm.CoordTouchAxis(frmProbe.Axis, frmOffset.CoordSystem, frmProbe.Offset);
+                    grblComm.CoordTouchAxis(frmAxisProbe.Axis, frmOffset.CoordSystem, frmAxisProbe.Offset);
             }
         }
 
         void PerformToolTouchOff(int axis)
         {
-            frmProbe.Axis = GrblComm.Z_AXIS; // we always default axis to Z as it is most common.
-            frmProbe.UpdateTools();
-            frmProbe.Tool = Global.ginterp.currentTool;
-            if (frmProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            frmToolProbe.Axis = GrblComm.Z_AXIS; // we always default axis to Z as it is most common.
+            frmToolProbe.UpdateTools();
+            frmToolProbe.Tool = Global.ginterp.currentTool;
+            if (frmToolProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (frmProbe.IsProbe)
-                    grblComm.ProbeTool(frmProbe.Axis, frmProbe.Tool, frmProbe.Offset, frmProbe.Direction);
+                if (frmToolProbe.IsProbe)
+                    grblComm.ProbeTool(frmToolProbe.Axis, frmToolProbe.Tool, frmToolProbe.Offset, frmToolProbe.Direction);
                 else
-                    grblComm.ToolTouchOff(frmProbe.Axis, frmProbe.Tool, frmProbe.Offset);
+                    grblComm.ToolTouchOff(frmToolProbe.Axis, frmToolProbe.Tool, frmToolProbe.Offset);
             }
         }
 

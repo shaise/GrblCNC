@@ -48,7 +48,13 @@ namespace GrblCNC.Controls
             get { return selectedValue; }
             set 
             {
+                bool ischange = (selectedValue != value);
                 selectedValue = value;
+                if (ischange)
+                {
+                    if (SelectionChanged != null)
+                        SelectionChanged(this, selectedValue);
+                }
                 Invalidate();
             }
         }
@@ -59,7 +65,7 @@ namespace GrblCNC.Controls
             set
             {
                 multiMode = value;
-                selectedValue = 0;
+                SelectedValue = 0;
             }
         }
 
@@ -147,10 +153,8 @@ namespace GrblCNC.Controls
                     newsel = selectedValue ^ (1 << newsel);
                 if (newsel != selectedValue)
                 {
-                    selectedValue = newsel;
+                    SelectedValue = newsel;
                     Invalidate();
-                    if (SelectionChanged != null)
-                        SelectionChanged(this, selectedValue);
                 }
             }
             base.OnMouseClick(e);

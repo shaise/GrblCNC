@@ -168,6 +168,7 @@
             this.multiSelAxis.SelectionTexts = "X|Y|Z|A|B";
             this.multiSelAxis.Size = new System.Drawing.Size(237, 34);
             this.multiSelAxis.TabIndex = 7;
+            this.multiSelAxis.SelectionChanged += new GrblCNC.Controls.MultiSelect.SelectionChangedDelegate(this.multiSelAxis_SelectionChanged);
             // 
             // multiSelDir
             // 
