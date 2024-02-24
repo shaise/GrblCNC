@@ -12,7 +12,7 @@
 13|Report in inches|bool|Bool|General Settings
 14|*Control invert|mask|Mask|Polarity/Direction inverts|reset,feed hold,cycle start,safety door,block delete,stop disable
 15|*Coolant invert|mask|Mask|Polarity/Direction inverts|flood,mist
-16|*Spindle invert|mask|Mask|Polarity/Direction inverts|spindle on,spindle ccw
+16|*Spindle invert|mask|Mask|Polarity/Direction inverts|spindle on,spindle ccw,PWM invert
 17|*Control PullUp disable|mask|Mask|Polarity/Direction inverts|reset,feed hold,cycle start,safety door,block delete,stop disable
 18|*Limit PullUp disable|mask|Mask|Polarity/Direction inverts|X,Y,Z,A,B,C
 19|*Probe PullUp disable|bool|Bool|Polarity/Direction inverts
