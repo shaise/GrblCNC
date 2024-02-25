@@ -21,6 +21,7 @@ namespace GrblCNC
         System.Windows.Forms.Timer grblScanTimer;
         GcodeInterp ginterp;
         GrblComm grblComm;
+        GrblProbber grblProbber;
         FormOffset frmOffset;
         FormProbe frmAxisProbe;
         FormProbe frmToolProbe;
@@ -79,6 +80,9 @@ namespace GrblCNC
             grblScanTimer.Interval = 100;
             grblScanTimer.Tick += grblScanTimer_Tick;
             grblScanTimer.Start();
+
+            // probe handler
+            grblProbber = new GrblProbber(grblComm);
 
             // grbl manual controll
             manualControl.AxisStepJogPressed += manualControl_AxisStepJogPressed;
@@ -182,7 +186,7 @@ namespace GrblCNC
             if (frmAxisProbe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 if (frmAxisProbe.IsProbe)
-                    grblComm.ProbeAxis(frmAxisProbe.Axis, -frmOffset.CoordSystem, frmAxisProbe.Offset, frmAxisProbe.Direction);
+                    grblProbber.ProbeSingle(frmAxisProbe.Axis, frmOffset.CoordSystem, frmAxisProbe.Offset, frmAxisProbe.Direction);
                 else
                     grblComm.CoordTouchAxis(frmAxisProbe.Axis, frmOffset.CoordSystem, frmAxisProbe.Offset);
             }

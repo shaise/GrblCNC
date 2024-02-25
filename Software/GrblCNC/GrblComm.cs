@@ -10,6 +10,7 @@ using GrblCNC.Properties;
 using GrblCNC.Glutils;
 using System.Threading;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace GrblCNC
 {
@@ -21,6 +22,7 @@ namespace GrblCNC
         public const int A_AXIS = 3;
         public const int B_AXIS = 4;
         public const int C_AXIS = 5;
+        public const int MAX_NUM_AXIS = 6;
 
         const byte CMD_SOFT_RESET = 0x18;
         const byte CMD_STOP = 0x19;
@@ -139,6 +141,8 @@ namespace GrblCNC
         int curFeedOverride = 100;
         int curSpindleOverride = 100;
 
+        float[] probeVals = new float[MAX_NUM_AXIS];
+
         int scanCount;
         // events
         public delegate void CommStatusChangedDelegate(object sender, CommStatus status);
@@ -155,7 +159,8 @@ namespace GrblCNC
         public event MessageReceivedDelegate MessageReceived;
         public delegate void ChangeToolNotifyDelegate(object sender, int newTool, bool isRunning);
         public event ChangeToolNotifyDelegate ChangeToolNotify;
-        
+        public delegate void ProbeCompletedDelegate(object sender, float[] prbVals);
+        public event ProbeCompletedDelegate ProbeCompleted;
 
         public GrblComm()
         {
@@ -448,6 +453,23 @@ namespace GrblCNC
             requestFullStatus = true;
         }
 
+        void HandleProbeResult(string prbResult)
+        {
+            try
+            {
+                string [] strvals = prbResult.Split(new char[] { ',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < strvals.Length; i++)
+                {
+                    if (i < probeVals.Length)
+                        probeVals[i] = float.Parse(strvals[i]);
+                }
+                if (ProbeCompleted != null)
+                    ProbeCompleted(this, probeVals);
+            }
+            catch { }
+
+        }
+
         void HandleMessageLine(string line)
         {
             //machineState = MachineState.ParamRead;
@@ -484,6 +506,11 @@ namespace GrblCNC
                 case "DRIVER VERSION":
                     HandleReconnection(vars[1]);
                     break;
+
+                case "PRB":
+                    HandleProbeResult(vars[1]);
+                    break;
+
             }
         }
 
@@ -833,6 +860,16 @@ namespace GrblCNC
 
         }
 
+        public float GetAxisPosition(int axis)
+        {
+            return grblStatus.axisPos[axis];
+        }
+
+        public float GetAbsAxisPosition(int axis)
+        {
+            return grblStatus.workingCoords[axis] + grblStatus.axisPos[axis];
+        }
+
         public void Close()
         {
             new Thread(new ThreadStart(delegate
@@ -912,18 +949,34 @@ namespace GrblCNC
             return "OK";
         }
 
-        public void CoordTouchAxis(int axis, int coordSystemIx, float offset)
+        public void CoordTouchAxis(int axis, int coordSystemIx, float offset, float retruct = 0)
         {
             if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
             string axisLetter = GrblUtils.GetAxisLetter(axis);
             if (axisLetter == null)
                 return;
-            string cmd = string.Format("G10 L20 P{0} {1}{2}", coordSystemIx + 1, axisLetter, offset);
-            PostLine(cmd);
+            PostLine(string.Format("G10 L20 P{0} {1}{2}", coordSystemIx + 1, axisLetter, offset), true);
+            if (retruct != 0)
+            {
+                PostLine(string.Format("G91G0 {0}{1}", axisLetter, Utils.F3(retruct)), true);
+                PostLine("G90", true);
+            }
+            SendCurrentGcodeLine(); //initiate command sending
         }
 
-        public void ProbeAxis(int axis, int coordSystemIx, float offset, float dir)
+        public void ProbeAxis(int axis, float relativeDist)
+        {
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
+            if (axisLetter == null)
+                return;
+            machineState = MachineState.ProbeAxis;
+            PostLine(string.Format("G91G38.2 {0}{1} F25", axisLetter, Utils.F3(relativeDist)), true);
+            PostLine("G90", true);
+            SendCurrentGcodeLine(); //initiate command sending
+        }
+
+        public void ProbeAxisAll(int axis, int coordSystemIx, float offset, float dir)
         {
             if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
@@ -935,7 +988,7 @@ namespace GrblCNC
             lastG90State = grblStatus.gState[(int)GrblStatus.GcodeParserStateNames.DistanceMode] == "G90";
             PostLine(string.Format("G91G38.2 {0}{1} F25", axisLetter, Utils.F3(10f * dir)), true);
             PostLine(string.Format("G10 L20 P{0} {1}{2}", coordSystemIx, axisLetter, Utils.F3(offset)), true);
-            PostLine(string.Format("G0 {0}{1}", axisLetter, Utils.F3(- 5 * dir)), true);
+            PostLine(string.Format("G0 {0}{1}", axisLetter, Utils.F3(-5 * dir)), true);
             if (lastG90State)
                 PostLine("G90", true);
             SendCurrentGcodeLine(); //initiate command sending
@@ -1085,7 +1138,7 @@ namespace GrblCNC
         void SendCurrentGcodeLine()
         {
             string curLine = null;
-            // send any inseted lines. non need to preprocess, as they are generated
+            // send any inserted lines. no need to preprocess, as they are generated
             lock (lockMsgBufferObj)
             {
                 if (insertMsgQueue.Count > 0)
