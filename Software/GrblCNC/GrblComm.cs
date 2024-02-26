@@ -949,7 +949,18 @@ namespace GrblCNC
             return "OK";
         }
 
-        public void CoordTouchAxis(int axis, int coordSystemIx, float offset, float retruct = 0)
+
+        public void MoveRelative(int axis, float distance)
+        {
+            string axisLetter = GrblUtils.GetAxisLetter(axis);
+            if (axisLetter == null)
+                return;
+            PostLine(string.Format("G91G0 {0}{1}", axisLetter, Utils.F3(distance)), true);
+            PostLine("G90", true);
+            SendCurrentGcodeLine();
+        }
+
+        public void CoordTouchAxis(int axis, int coordSystemIx, float offset, float retract = 0)
         {
             if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
@@ -957,12 +968,10 @@ namespace GrblCNC
             if (axisLetter == null)
                 return;
             PostLine(string.Format("G10 L20 P{0} {1}{2}", coordSystemIx + 1, axisLetter, offset), true);
-            if (retruct != 0)
-            {
-                PostLine(string.Format("G91G0 {0}{1}", axisLetter, Utils.F3(retruct)), true);
-                PostLine("G90", true);
-            }
-            SendCurrentGcodeLine(); //initiate command sending
+            if (retract != 0)
+                MoveRelative(axis, retract);
+            else
+                SendCurrentGcodeLine(); //initiate command sending
         }
 
         public void ProbeAxis(int axis, float relativeDist)

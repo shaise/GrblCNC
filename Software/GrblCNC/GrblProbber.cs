@@ -65,6 +65,31 @@ namespace GrblCNC
             grblComm.ProbeAxis(probeAxis, probeDir * 50);
         }
 
+        public void ProbeHoleProcess(float[] prbVals)
+        {
+            float retractDist;
+            if (probeDir > 0)
+            {
+                retractDist = probeAxisPos - prbVals[probeAxis];
+                grblComm.MoveRelative(probeAxis, retractDist);
+                probeDir = -1;
+                probeAxisPos = prbVals[probeAxis];
+                grblComm.ProbeAxis(probeAxis, probeDir * 50);
+            }
+            else
+            {
+                retractDist = (probeAxisPos - prbVals[probeAxis]) / 2;
+                grblComm.MoveRelative(probeAxis, retractDist);
+                if (probeAxis == GrblComm.X_AXIS)
+                {
+                    probeAxis = GrblComm.Y_AXIS;
+                    probeDir = 1;
+                    probeAxisPos = prbVals[probeAxis];
+                    grblComm.ProbeAxis(probeAxis, probeDir * 50);
+                }
+            }
+        }
+
         private void GrblComm_ProbeCompleted(object sender, float[] prbVals)
         {
             switch (probeType)
