@@ -461,7 +461,7 @@ namespace GrblCNC
                 for (int i = 0; i < strvals.Length; i++)
                 {
                     if (i < probeVals.Length)
-                        probeVals[i] = float.Parse(strvals[i]);
+                        probeVals[i] = float.Parse(strvals[i]) - grblStatus.workingCoords[i];
                 }
                 if (ProbeCompleted != null)
                     ProbeCompleted(this, probeVals);

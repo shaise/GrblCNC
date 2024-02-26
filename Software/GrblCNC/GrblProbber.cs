@@ -37,7 +37,7 @@ namespace GrblCNC
             if (coordSystemIx < -1 || coordSystemIx > 8)
                 return;
             probeType = ProbeType.SingleAxis;
-            probeAxisPos = grblComm.GetAbsAxisPosition(axis);
+            probeAxisPos = grblComm.GetAxisPosition(axis);
             probeAxis = axis;
             probeDir = dir;
             probeCoord = coordSystemIx;
@@ -54,6 +54,15 @@ namespace GrblCNC
             if (retractDist > 5)
                 retractDist = 5;
             grblComm.CoordTouchAxis(probeAxis, probeCoord, probeOffset, retractDist);
+        }
+
+        public void ProbeHoleCenter()
+        {
+            probeType = ProbeType.Hole;
+            probeAxis = GrblComm.X_AXIS;
+            probeDir = -1;
+            probeAxisPos = grblComm.GetAxisPosition(probeAxis);
+            grblComm.ProbeAxis(probeAxis, probeDir * 50);
         }
 
         private void GrblComm_ProbeCompleted(object sender, float[] prbVals)
