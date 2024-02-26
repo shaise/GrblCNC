@@ -534,6 +534,16 @@ namespace GrblCNC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ProbeHoleIcon {
+            get {
+                object obj = ResourceManager.GetObject("ProbeHoleIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ProbeIcon {
             get {
                 object obj = ResourceManager.GetObject("ProbeIcon", resourceCulture);
