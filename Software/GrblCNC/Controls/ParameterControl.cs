@@ -51,21 +51,37 @@ namespace GrblCNC.Controls
                 case GrblConfig.ParamType.Float:
                 case GrblConfig.ParamType.Int:
                     {
-                        Label l = new Label();
-                        l.AutoSize = true;
-                        l.Text = pardesc.description + " (" + pardesc.uints + "):";
-                        l.Name = "Label_" + pardesc.code.ToString();
-                        this.Controls.Add(l);
+                        Control ctl = null;
+                        if (pardesc.allowNull)
+                        {
+                            CheckBox cb = new CheckBox();
+                            cb.AutoSize = true;
+                            cb.Text = pardesc.description + " (" + pardesc.units + "):";
+                            cb.Name = "Bool_" + pardesc.code.ToString();
+                            cb.CheckedChanged += ValueChanged;
+                            ctl = cb;
+                        }
+                        else
+                        {
+                            Label l = new Label();
+                            l.AutoSize = true;
+                            l.Text = pardesc.description + " (" + pardesc.units + "):";
+                            l.Name = "Label_" + pardesc.code.ToString();
+                            ctl = l;
+                        }
+                        this.Controls.Add(ctl);
                         NumericUpDown nud = new NumericUpDown();
                         nud.Name = "Numeric_" + pardesc.code.ToString();
                         if (pardesc.type == GrblConfig.ParamType.Float)
-                            UpdateNumeric(nud, 3, -999999, 999999, pardesc.options);
+                            UpdateNumericMinMax(nud, 3, -999999, 999999);
                         else
-                            UpdateNumeric(nud, 0, 0, 999999, pardesc.options);
-                        l.Location = new Point(0, (nud.Height - l.Height) / 2);
-                        nud.Location = new Point(l.Width, 0);
+                            UpdateNumericMinMax(nud, 0, 0, 999999);
+                        ctl.Location = new Point(0, (nud.Height - ctl.Height) / 2);
+                        nud.Location = new Point(ctl.Width, 0);
                         nud.ValueChanged += ValueChanged;
                         activeControls.Add(nud);
+                        if (pardesc.allowNull)
+                            activeControls.Add(ctl);
                         this.Width = nud.Location.X + nud.Width;
                         this.Height = nud.Height;
                         this.Controls.Add(nud);
@@ -204,24 +220,17 @@ namespace GrblCNC.Controls
             return true;
         }
 
-        void UpdateNumeric(NumericUpDown nud, int defaultDecimals, int defaultMin, int defaultMax, string[] options)
+        void UpdateNumericMinMax(NumericUpDown nud, int defaultDecimals, int defaultMin, int defaultMax)
         {
             nud.DecimalPlaces = defaultDecimals;
             nud.Minimum = defaultMin;
             nud.Maximum = defaultMax;
-            if (options != null)
-            {
-                try
-                {
-                    if (options.Length > 0)
-                        nud.Minimum = (decimal)Utils.ParseFloatInvariant(options[0]);
-                    if (options.Length > 1)
-                        nud.Maximum = (decimal)Utils.ParseFloatInvariant(options[1]);
-                    if (options.Length > 1)
-                        nud.DecimalPlaces = int.Parse(options[2]);
-                }
-                catch { }
-            }
+            if (paramDesc.minValid)
+                nud.Minimum = paramDesc.min;
+            if (paramDesc.maxValid)
+                nud.Maximum = paramDesc.max;
+            if (paramDesc.type == GrblConfig.ParamType.Float)
+                nud.DecimalPlaces = paramDesc.decimalPaces;
         }
 
         void UpdateColors()
@@ -261,6 +270,47 @@ namespace GrblCNC.Controls
             updatingBgnd = false;
         }
 
+        Decimal GetNumeric()
+        {
+            NumericUpDown nud = (NumericUpDown)activeControls[0];
+            if (paramDesc.allowNull)
+            {
+                CheckBox cb = (CheckBox)activeControls[1];
+                nud.Enabled = cb.Checked;
+                if (!cb.Checked)
+                    return 0;
+            }
+            return nud.Value;
+        }
+
+
+
+        void SetNumeric(Decimal val)
+        {
+            NumericUpDown nud = (NumericUpDown)activeControls[0];
+            if (paramDesc.allowNull)
+            {
+                CheckBox cb = (CheckBox)activeControls[1];
+                if (val == 0)
+                {
+                    cb.Checked = false;
+                    nud.Enabled = false;
+                    return;
+                }
+                else
+                {
+                    cb.Checked = true;
+                    nud.Enabled = true;
+                }
+            }
+            if (val < nud.Minimum)
+                nud.Value = nud.Minimum;
+            else if (val > nud.Maximum)
+                nud.Value = nud.Maximum;
+            else
+                nud.Value = val;
+        }
+
         void UpdateFromGui()
         {
             switch (paramDesc.type)
@@ -275,16 +325,14 @@ namespace GrblCNC.Controls
 
                 case GrblConfig.ParamType.Float:
                     {
-                        NumericUpDown nud = (NumericUpDown)activeControls[0];
-                        floatValue = (float)nud.Value;
+                        floatValue = (float)GetNumeric();
                         isChanged = floatValue != lastFloatValue;
                     }
                     break;
 
                 case GrblConfig.ParamType.Int:
                     {
-                        NumericUpDown nud = (NumericUpDown)activeControls[0];
-                        intValue = (int)nud.Value;
+                        intValue = (int)GetNumeric();
                         isChanged = intValue != lastIntValue;
                     }
                     break;
@@ -329,6 +377,7 @@ namespace GrblCNC.Controls
             UpdateBackground();
         }
 
+
         public void UpdateFromParameter(GrblConfig.GrblParam par, bool overrideChanges)
         {
             updatingGui = true;
@@ -345,17 +394,15 @@ namespace GrblCNC.Controls
 
                 case GrblConfig.ParamType.Float:
                     {
-                        NumericUpDown nud = (NumericUpDown)activeControls[0];
-                        nud.Value = (decimal)par.floatVal;
+                        SetNumeric((decimal)par.floatVal);
                         if (overrideChanges)
-                            lastFloatValue = par.floatVal;
+                            lastFloatValue = (float)par.floatVal;
                     }
                     break;
 
                 case GrblConfig.ParamType.Int:
                     {
-                        NumericUpDown nud = (NumericUpDown)activeControls[0];
-                        nud.Value = (decimal)par.intVal;
+                        SetNumeric(par.intVal);
                         if (overrideChanges)
                             lastIntValue = par.intVal;
                     }
@@ -458,7 +505,7 @@ namespace GrblCNC.Controls
 
         public override string ToString()
         {
-            return string.Format("${0}={1}     ({2}, {3})", paramDesc.code, GetParamString(), paramDesc.description, paramDesc.uints);
+            return string.Format("${0}={1}     ({2}, {3})", paramDesc.code, GetParamString(), paramDesc.description, paramDesc.units);
         }
 
     }

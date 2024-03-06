@@ -25,7 +25,7 @@
 26|Homing switch debounce delay|ms|Int|Hardware Timings,Homing
 27|Homing switch pull-off dist|mm|Float|Homing
 28|*G73 Retract|mm|Float|GCode Settings
-29|*Pulse delay|us|Int|Hardware Timings
+29|*Pulse delay|us|Float|Hardware Timings
 30|Max spindle speed|RPM|Float|Spindle Settings
 31|Min spindle speed|RPM|Float|Spindle Settings
 32|Machine mode|int|Selection|Spindle Settings,General Settings|normal,Laser,Lathe

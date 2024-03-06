@@ -109,7 +109,7 @@ namespace GrblCNC
             frmConfirmation = new FormConfirmation();
             frmChangeTool = new FormChangeTool();
             frmAbout = new FormAbout();
-            Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
+            //Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
         }
@@ -287,6 +287,11 @@ namespace GrblCNC
                 return;
             }
             //paramView.FillParameters(grblConf);
+            if (Global.grblConfig.NewConfiguration)
+            {
+                Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
+                Global.grblConfig.NewConfiguration = false;
+            }
             gcodeParamView.FillParameters(gcodeConf);
             manualControl.SetSliderMinMax(ManualControl.Sliders.SpindleSpeed,
                 grblConf.GetParam(GrblConfig.GrblParam.Code.MinSpindleSpeedCode).floatVal,
@@ -453,6 +458,12 @@ namespace GrblCNC
 
         private void toolStripConfGrbl_Click(object sender, EventArgs e)
         {
+            //if (Global.grblConfig.NewConfiguration)
+            //{
+            //    Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
+            //    Global.grblConfig.NewConfiguration = false;
+            //}
+
             frmPopup.ShowControl(grblParamEdit, "Configure Grbl driver");
         }
 

@@ -36,9 +36,26 @@ namespace GrblCNC.Controls
             string line = textGcodeLine.Text;
             if (line.Length == 0)
                 return;
-            //gcodeViewMDI.AddLine(line);
-            Global.grblComm.PostLine(line);
-            mdiLines.Add(line);
+            if (line[0] == '`')
+            {
+                try
+                {
+                    byte code;
+                    if (line[1] == 'x')
+                        code = (byte)int.Parse(line.Substring(2), System.Globalization.NumberStyles.HexNumber);
+                    else
+                        code = (byte)int.Parse(line.Substring(1));
+                    Global.grblComm.SendByte(code);
+                    mdiLines.Add(string.Format("<0x{0:X}>", code));
+                }
+                catch { }
+            }
+            else
+            {
+                //gcodeViewMDI.AddLine(line);
+                Global.grblComm.PostLine(line);
+                mdiLines.Add(line);
+            }
             curMdiLine = mdiLines.Count;
             textGcodeLine.Text = "";
         }

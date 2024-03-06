@@ -511,6 +511,14 @@ namespace GrblCNC
                     HandleProbeResult(vars[1]);
                     break;
 
+                case "SETTINGGROUP":
+                    Global.grblConfig.ParseGroup(vars[1]);
+                    break;
+
+                case "SETTING":
+                    Global.grblConfig.ParrseParamDescription(vars[1]);
+                    break;
+
             }
         }
 
@@ -617,7 +625,7 @@ namespace GrblCNC
 
         #endregion
 
-        void SendByte(byte b)
+        public void SendByte(byte b)
         {
             if (!portOpened)
                 return;
@@ -887,7 +895,7 @@ namespace GrblCNC
         #region Grbl control commands
         public void GetAllGrblParameters()
         {
-            string[] lines = new string[] { "$$", "$#", "$G" };
+            string[] lines = new string[] { "$EG", "$ES", "$$", "$#", "$G" };
             PostLines(lines);
         }
 

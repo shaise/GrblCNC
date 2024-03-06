@@ -109,6 +109,11 @@ namespace GrblCNC.Controls
             numB.Value = 0;
             comboCoord.SelectedIndex = 0;
         }
+
+        private void numX_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
     }
     public class GoToAction
     {

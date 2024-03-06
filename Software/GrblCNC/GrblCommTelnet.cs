@@ -98,15 +98,21 @@ namespace GrblCNC
 
         void ResolveGrblControllers()
         {
-            MDnsResolver resolver = new MDnsResolver();
+            MDnsResolver resolver = null;
 
             while (!stopResolver)
             {
-                MDnsQueryResult[] results = resolver.ResolveServiceName("_device-info._tcp.local");
-                lock (lockResolverObj)
+                try
                 {
-                    resolvedNames = results;
+                    if (resolver == null)
+                        resolver = new MDnsResolver();
+                    MDnsQueryResult[] results = resolver.ResolveServiceName("_device-info._tcp.local");
+                    lock (lockResolverObj)
+                    {
+                        resolvedNames = results;
+                    }
                 }
+                catch { }
                 Thread.Sleep(1000);
             }
         }

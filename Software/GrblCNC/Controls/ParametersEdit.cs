@@ -152,7 +152,7 @@ namespace GrblCNC.Controls
 
         public void UpdateGuiParams()
         {
-            if (gParams == null)
+            if (gParams == null || parameterDict == null)
                 return;
             foreach (ParameterControl pc in parameterDict.Values)
             {

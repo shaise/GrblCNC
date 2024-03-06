@@ -21,7 +21,7 @@ namespace GrblCNC.Controls
         float defaultValue;
         int sliderLen = 80;
         Bitmap thumbImage;
-        int thumbMinPos = 0, thumbMaxPos, thumbCurPos;
+        int thumbMinPos = 0, thumbMaxPos, thumbCurPos = 0;
         Color slideBackColor, slideHighlightColor, slideShadowColor;
         bool thumbPressed = false;
         int thumbPressLoc = 0;
@@ -129,7 +129,10 @@ namespace GrblCNC.Controls
                 return;
             thumbMinPos = Width - sliderLen + 1;
             thumbMaxPos = Width - thumbImage.Width - 1;
-            thumbCurPos = (int)((value - minValue) * (thumbMaxPos - thumbMinPos) / (maxValue - minValue) + thumbMinPos);
+            if (maxValue == minValue)
+                thumbCurPos = (thumbMaxPos - thumbMinPos) / 2;
+            else
+                thumbCurPos = (int)((value - minValue) * (thumbMaxPos - thumbMinPos) / (maxValue - minValue) + thumbMinPos);
             Height = thumbImage.Height / 2 + 2;
             UpdateTextLocation();
             Invalidate();
