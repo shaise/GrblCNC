@@ -257,10 +257,11 @@ namespace GrblCNC
                 return;
             switch (action)
             {
-                case ManualControl.AxisAction.Home: PerformHoming(axis); break;
+                case ManualControl.AxisAction.Home:          PerformHoming(axis); break;
                 case ManualControl.AxisAction.CoordTouchOff: PerformTouchOff(axis); break;
-                case ManualControl.AxisAction.ToolTouchOff: PerformToolTouchOff(axis); break;
-                case ManualControl.AxisAction.GoTo: PerformGoto(axis); break;
+                case ManualControl.AxisAction.ToolTouchOff:  PerformToolTouchOff(axis); break;
+                case ManualControl.AxisAction.GoTo:          PerformGoto(axis); break;
+                case ManualControl.AxisAction.ProbeHole:     grblProbber.ProbeHoleCenter(); break;
             }
 
         }

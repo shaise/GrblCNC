@@ -349,6 +349,7 @@
     <None Include="Resources\FragShaderText.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ProbeHoleIcon.png" />
     <None Include="Resources\WifiButt.png" />
     <None Include="Resources\ToolTableButt.png" />
     <None Include="Resources\TouchTIcon.png" />

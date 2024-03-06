@@ -20,6 +20,7 @@ namespace GrblCNC.Controls
             CoordTouchOff,
             ToolTouchOff,
             GoTo,
+            ProbeHole,
         }
 
         public enum Sliders
@@ -191,6 +192,12 @@ namespace GrblCNC.Controls
             if (AxisActionPressed == null)
                 return;
             AxisActionPressed(this, multiSelAxis.SelectedValue, AxisAction.GoTo);
+        }
+        private void jogButtProbeHole_Click(object sender, EventArgs e)
+        {
+            if (AxisActionPressed == null)
+                return;
+            AxisActionPressed(this, 0, AxisAction.ProbeHole);
         }
 
         private void jogButtSpindleStop_Click(object sender, EventArgs e)
