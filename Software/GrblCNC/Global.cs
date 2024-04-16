@@ -23,6 +23,7 @@ namespace GrblCNC
         public static ParametersEdit grblParameterEditor;
         public static ToolTableEdit toolTableEdit;
         public static ToolTable toolTable;
+        public static ErrorDisplayHandler errHandler;
 
         public static string SettingsPath;
         public static string ToolTableFile;

@@ -256,7 +256,7 @@ namespace GrblCNC.Properties {
         ///    float mipmapLevel = textureQueryLOD(texture0, texCoord).x; // NOTE CAPITALIZATION
         ///    outputColor = tintColor * textureLod(texture0, texCoord, mipmapLevel * 0.7);
         ///#else
-        ///    outputColor = tintColor * textu [rest of string was truncated]&quot;;.
+        ///    outputColor = tintColor * texture(texture0, tex [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FragShaderText {
             get {
@@ -279,7 +279,7 @@ namespace GrblCNC.Properties {
         ///    float g = 0.0039215 * float((wc &gt;&gt; 8) &amp; 0xFFu);
         ///    float r = 0.0039215 * float((wc &gt;&gt; 16) &amp; 0xFFu);
         ///    float a = 1.0;
-        ///	if (hltIndex == texCoord[0]) // &amp;&amp; hltIndex &lt; [rest of string was truncated]&quot;;.
+        ///	if (hltIndex == texCoord[0]) // &amp;&amp; hltIndex &lt;= (texCoord[0] [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FragShaderWire {
             get {
@@ -487,6 +487,106 @@ namespace GrblCNC.Properties {
         internal static System.Drawing.Bitmap JogButtPress {
             get {
                 object obj = ResourceManager.GetObject("JogButtPress", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroAddButt {
+            get {
+                object obj = ResourceManager.GetObject("MacroAddButt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF1Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF1Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF2Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF2Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF3Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF3Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF4Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF4Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF5Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF5Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF6Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF6Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF7Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF7Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF8Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF8Buttt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MacroF9Buttt {
+            get {
+                object obj = ResourceManager.GetObject("MacroF9Buttt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

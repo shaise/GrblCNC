@@ -32,9 +32,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusMode = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBuff = new GrblCNC.Controls.DualProgressTool();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripMain = new System.Windows.Forms.ToolStrip();
             this.toolStripEstop = new System.Windows.Forms.ToolStripButton();
             this.toolStripPower = new System.Windows.Forms.ToolStripButton();
             this.toolStripGrbl = new System.Windows.Forms.ToolStripLabel();
@@ -50,23 +49,26 @@
             this.toolStripStop = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripAbout = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripAddMacro = new System.Windows.Forms.ToolStripButton();
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.splitTop = new System.Windows.Forms.SplitContainer();
             this.tabControlSystem = new System.Windows.Forms.TabControl();
             this.tabControlPanel = new System.Windows.Forms.TabPage();
-            this.manualControl = new GrblCNC.Controls.ManualControl();
             this.tabMdi = new System.Windows.Forms.TabPage();
-            this.mdiCtrl = new GrblCNC.Controls.MdiControl();
             this.tabGcodeConf = new System.Windows.Forms.TabPage();
-            this.gcodeParamView = new GrblCNC.GcodeParamViewer();
             this.splitTopRight = new System.Windows.Forms.SplitContainer();
             this.splitBottom = new System.Windows.Forms.SplitContainer();
-            this.gcodeMainViewer = new GrblCNC.GcodeViewer();
-            this.statusView = new GrblCNC.StatusViewer();
             this.openGcodeFile = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.manualControl = new GrblCNC.Controls.ManualControl();
+            this.mdiCtrl = new GrblCNC.Controls.MdiControl();
+            this.gcodeParamView = new GrblCNC.GcodeParamViewer();
+            this.gcodeMainViewer = new GrblCNC.GcodeViewer();
+            this.statusView = new GrblCNC.StatusViewer();
+            this.toolStripProgressBuff = new GrblCNC.Controls.DualProgressTool();
             this.statusStrip1.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
+            this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
@@ -115,27 +117,15 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(32, 17);
             this.toolStripStatusLabel1.Text = "Buff:";
             // 
-            // toolStripProgressBuff
-            // 
-            this.toolStripProgressBuff.AutoSize = false;
-            this.toolStripProgressBuff.Color1 = System.Drawing.Color.Blue;
-            this.toolStripProgressBuff.Color2 = System.Drawing.Color.Blue;
-            this.toolStripProgressBuff.Maximum1 = 100;
-            this.toolStripProgressBuff.Maximum2 = 100;
-            this.toolStripProgressBuff.Name = "toolStripProgressBuff";
-            this.toolStripProgressBuff.Size = new System.Drawing.Size(60, 20);
-            this.toolStripProgressBuff.Value1 = 0;
-            this.toolStripProgressBuff.Value2 = 0;
-            // 
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
             this.toolStripStatus.Size = new System.Drawing.Size(39, 17);
             this.toolStripStatus.Text = "Status";
             // 
-            // toolStrip1
+            // toolStripMain
             // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripEstop,
             this.toolStripPower,
             this.toolStripGrbl,
@@ -150,12 +140,14 @@
             this.toolStripPause,
             this.toolStripStop,
             this.toolStripSeparator3,
-            this.toolStripAbout});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1008, 47);
-            this.toolStrip1.TabIndex = 3;
-            this.toolStrip1.Text = "toolStrip1";
+            this.toolStripAbout,
+            this.toolStripSeparator4,
+            this.toolStripAddMacro});
+            this.toolStripMain.Location = new System.Drawing.Point(0, 0);
+            this.toolStripMain.Name = "toolStripMain";
+            this.toolStripMain.Size = new System.Drawing.Size(1008, 47);
+            this.toolStripMain.TabIndex = 3;
+            this.toolStripMain.Text = "toolStrip1";
             // 
             // toolStripEstop
             // 
@@ -315,6 +307,23 @@
             this.toolStripAbout.ToolTipText = "About GrblCNC";
             this.toolStripAbout.Click += new System.EventHandler(this.toolStripAbout_Click);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 47);
+            // 
+            // toolStripAddMacro
+            // 
+            this.toolStripAddMacro.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripAddMacro.Image = global::GrblCNC.Properties.Resources.MacroAddButt;
+            this.toolStripAddMacro.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripAddMacro.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripAddMacro.Name = "toolStripAddMacro";
+            this.toolStripAddMacro.Size = new System.Drawing.Size(44, 44);
+            this.toolStripAddMacro.Text = "About";
+            this.toolStripAddMacro.ToolTipText = "Add / Edit GCode macros";
+            this.toolStripAddMacro.Click += new System.EventHandler(this.toolStripAddMacro_Click);
+            // 
             // splitMain
             // 
             this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -378,17 +387,6 @@
             this.tabControlPanel.Text = "Manual Control (F3)";
             this.tabControlPanel.UseVisualStyleBackColor = true;
             // 
-            // manualControl
-            // 
-            this.manualControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(220)))), ((int)(((byte)(232)))));
-            this.manualControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.manualControl.Enabled = false;
-            this.manualControl.ForeColor = System.Drawing.Color.DarkSlateBlue;
-            this.manualControl.Location = new System.Drawing.Point(3, 3);
-            this.manualControl.Name = "manualControl";
-            this.manualControl.Size = new System.Drawing.Size(293, 441);
-            this.manualControl.TabIndex = 0;
-            // 
             // tabMdi
             // 
             this.tabMdi.Controls.Add(this.mdiCtrl);
@@ -401,14 +399,6 @@
             this.tabMdi.UseVisualStyleBackColor = true;
             this.tabMdi.Enter += new System.EventHandler(this.tabMdi_Enter);
             // 
-            // mdiCtrl
-            // 
-            this.mdiCtrl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mdiCtrl.Location = new System.Drawing.Point(3, 3);
-            this.mdiCtrl.Name = "mdiCtrl";
-            this.mdiCtrl.Size = new System.Drawing.Size(293, 441);
-            this.mdiCtrl.TabIndex = 0;
-            // 
             // tabGcodeConf
             // 
             this.tabGcodeConf.Controls.Add(this.gcodeParamView);
@@ -419,14 +409,6 @@
             this.tabGcodeConf.TabIndex = 3;
             this.tabGcodeConf.Text = "Coordinates";
             this.tabGcodeConf.UseVisualStyleBackColor = true;
-            // 
-            // gcodeParamView
-            // 
-            this.gcodeParamView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gcodeParamView.Location = new System.Drawing.Point(3, 3);
-            this.gcodeParamView.Name = "gcodeParamView";
-            this.gcodeParamView.Size = new System.Drawing.Size(293, 441);
-            this.gcodeParamView.TabIndex = 0;
             // 
             // splitTopRight
             // 
@@ -461,6 +443,37 @@
             this.splitBottom.SplitterDistance = 442;
             this.splitBottom.TabIndex = 0;
             // 
+            // openGcodeFile
+            // 
+            this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
+            // 
+            // manualControl
+            // 
+            this.manualControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(220)))), ((int)(((byte)(232)))));
+            this.manualControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.manualControl.Enabled = false;
+            this.manualControl.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.manualControl.Location = new System.Drawing.Point(3, 3);
+            this.manualControl.Name = "manualControl";
+            this.manualControl.Size = new System.Drawing.Size(293, 441);
+            this.manualControl.TabIndex = 0;
+            // 
+            // mdiCtrl
+            // 
+            this.mdiCtrl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mdiCtrl.Location = new System.Drawing.Point(3, 3);
+            this.mdiCtrl.Name = "mdiCtrl";
+            this.mdiCtrl.Size = new System.Drawing.Size(293, 441);
+            this.mdiCtrl.TabIndex = 0;
+            // 
+            // gcodeParamView
+            // 
+            this.gcodeParamView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gcodeParamView.Location = new System.Drawing.Point(3, 3);
+            this.gcodeParamView.Name = "gcodeParamView";
+            this.gcodeParamView.Size = new System.Drawing.Size(293, 441);
+            this.gcodeParamView.TabIndex = 0;
+            // 
             // gcodeMainViewer
             // 
             this.gcodeMainViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -481,9 +494,17 @@
             this.statusView.Size = new System.Drawing.Size(562, 135);
             this.statusView.TabIndex = 0;
             // 
-            // openGcodeFile
+            // toolStripProgressBuff
             // 
-            this.openGcodeFile.Filter = "GCode Files|*.nc;*.ngc|All Files|*.*";
+            this.toolStripProgressBuff.AutoSize = false;
+            this.toolStripProgressBuff.Color1 = System.Drawing.Color.Blue;
+            this.toolStripProgressBuff.Color2 = System.Drawing.Color.Blue;
+            this.toolStripProgressBuff.Maximum1 = 100;
+            this.toolStripProgressBuff.Maximum2 = 100;
+            this.toolStripProgressBuff.Name = "toolStripProgressBuff";
+            this.toolStripProgressBuff.Size = new System.Drawing.Size(60, 20);
+            this.toolStripProgressBuff.Value1 = 0;
+            this.toolStripProgressBuff.Value2 = 0;
             // 
             // MainForm
             // 
@@ -491,14 +512,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 681);
             this.Controls.Add(this.splitMain);
-            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.toolStripMain);
             this.Controls.Add(this.statusStrip1);
             this.Name = "MainForm";
             this.Text = "GrblCNC";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.toolStripMain.ResumeLayout(false);
+            this.toolStripMain.PerformLayout();
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
@@ -525,7 +546,7 @@
         #endregion
 
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStrip toolStripMain;
         private System.Windows.Forms.SplitContainer splitMain;
         private System.Windows.Forms.SplitContainer splitTop;
         private System.Windows.Forms.TabControl tabControlSystem;
@@ -560,6 +581,8 @@
         private System.Windows.Forms.ToolStripButton toolStripReload;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton toolStripAbout;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton toolStripAddMacro;
     }
 }
 

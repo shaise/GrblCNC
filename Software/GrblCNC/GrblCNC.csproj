@@ -83,6 +83,12 @@
     <Compile Include="Controls\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FormAddMacro.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FormAddMacro.Designer.cs">
+      <DependentUpon>FormAddMacro.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FormConfirmation.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -269,6 +275,9 @@
     <EmbeddedResource Include="Controls\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FormAddMacro.resx">
+      <DependentUpon>FormAddMacro.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\FormConfirmation.resx">
       <DependentUpon>FormConfirmation.cs</DependentUpon>
     </EmbeddedResource>
@@ -349,6 +358,16 @@
     <None Include="Resources\FragShaderText.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\MacroF9Buttt.png" />
+    <None Include="Resources\MacroF8Buttt.png" />
+    <None Include="Resources\MacroF7Buttt.png" />
+    <None Include="Resources\MacroF6Buttt.png" />
+    <None Include="Resources\MacroF5Buttt.png" />
+    <None Include="Resources\MacroF4Buttt.png" />
+    <None Include="Resources\MacroF3Buttt.png" />
+    <None Include="Resources\MacroF2Buttt.png" />
+    <None Include="Resources\MacroF1Buttt.png" />
+    <None Include="Resources\MacroAddButt.png" />
     <None Include="Resources\ProbeHoleIcon.png" />
     <None Include="Resources\WifiButt.png" />
     <None Include="Resources\ToolTableButt.png" />

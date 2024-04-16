@@ -9,7 +9,7 @@ using GrblCNC.Controls;
 
 namespace GrblCNC
 {
-    class ErrorDisplayHandler
+    public class ErrorDisplayHandler
     {
         Form mForm;
         List<ErrorView> displayedViews;

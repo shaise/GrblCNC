@@ -125,7 +125,7 @@ namespace GrblCNC.Glutils
 
         public static string SettingPath(string fileName)
         {
-            return Global.SettingsPath + Path.PathSeparator + fileName;
+            return Global.SettingsPath + Path.DirectorySeparatorChar + fileName;
         }
     }
 }

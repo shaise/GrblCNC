@@ -12,6 +12,7 @@ using OpenTK;
 using GrblCNC.Controls;
 using GrblCNC.Glutils;
 using System.Threading;
+using System.IO;
 
 namespace GrblCNC
 {
@@ -30,6 +31,7 @@ namespace GrblCNC
         FormChangeTool frmChangeTool;
         FormConfirmation frmConfirmation;
         FormAbout frmAbout;
+        FormAddMacro frmAddMacro; 
         ParametersEdit grblParamEdit;
         ToolTableEdit toolTableEdit;
         ToolTable toolTable;
@@ -49,7 +51,7 @@ namespace GrblCNC
 
             InitializeComponent();
             InitializeGlControl();
-            Global.SettingsPath = Assembly.GetEntryAssembly().Location;
+            Global.SettingsPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             Global.ToolTableFile = Utils.SettingPath("ToolTable.gtt");
             
             toolTable = new ToolTable();
@@ -57,7 +59,7 @@ namespace GrblCNC
             toolTable.Load(Global.ToolTableFile);
 
             Global.mdiControl = mdiCtrl;
-            toolStrip1.Renderer = new ToolButton();
+            toolStripMain.Renderer = new ToolButton();
             ginterp = new GcodeInterp();
             Global.ginterp = ginterp;
             visualizerWinMain.ginterp = ginterp;
@@ -109,9 +111,12 @@ namespace GrblCNC
             frmConfirmation = new FormConfirmation();
             frmChangeTool = new FormChangeTool();
             frmAbout = new FormAbout();
+            frmAddMacro = new FormAddMacro();
+            frmAddMacro.SetToolStrip(toolStripMain);
             //Global.grblParameterEditor.SetPatrameterTemplate(Global.grblConfig.GetParamDescription());
 
             errDisplayHandler = new ErrorDisplayHandler(this);
+            Global.errHandler = errDisplayHandler;
         }
 
         private void ManualControl_FeedOverride(object sender, int feedPercent)
@@ -131,6 +136,7 @@ namespace GrblCNC
             toolStripStart.Checked = newState == GrblStatus.MachineState.Run;
             toolStripPause.Enabled = newState == GrblStatus.MachineState.Run;
             toolStripPause.Checked = newState == GrblStatus.MachineState.Hold;
+            frmAddMacro.EnableFuncs(newState == GrblStatus.MachineState.Idle);
         }
 
         void grblComm_ChangeToolNotify(object sender, int newTool, bool isRunning)
@@ -498,6 +504,11 @@ namespace GrblCNC
         }
         #endregion
 
+        private void toolStripAddMacro_Click(object sender, EventArgs e)
+        {
+            frmAddMacro.ShowDialog();
+        }
+
         void StepJog(int axis, float dir = 1)
         {
             float dist = manualControl.GetSelectedJogStep();
@@ -570,9 +581,6 @@ namespace GrblCNC
         {
             mdiCtrl.Select(); ;
         }
-
-
-
 
     }
 
