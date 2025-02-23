@@ -1150,6 +1150,8 @@ namespace GrblCNC
         void StopSendingGcode()
         {
             machineState = MachineState.Idle;
+            if (Global.ginterp != null)
+                Global.ginterp.ResetGcodeLine();
         }
 
         void SendCurrentGcodeLine()

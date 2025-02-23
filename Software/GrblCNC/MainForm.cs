@@ -540,6 +540,13 @@ namespace GrblCNC
                 if (keyHandled)
                     return true;
             }
+            if (Global.grblStatus.state == GrblStatus.MachineState.Idle)
+            {
+                if (keyData >= Keys.F1 && keyData <= Keys.F9) 
+                {
+                    frmAddMacro.ActivateFunction((int)keyData - (int)Keys.F1);
+                }
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
