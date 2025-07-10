@@ -101,7 +101,10 @@ namespace GrblCNC.Glutils
             if (is3D)
                 shader.SetMatrix4("model", objPos);
             if (usetexture)
+            {
+                shader.SetInt("texture0", 0);
                 texture.Use();
+            }
             GL.BindVertexArray(vertexArrayObject);
             if (useIndices)
                 GL.DrawElements(PrimitiveType.Triangles, nTriangles, DrawElementsType.UnsignedInt, 0);
