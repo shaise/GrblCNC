@@ -50,7 +50,7 @@ namespace GrblCNC
             for (int i = 0; i < Global.NumAxes; i++)
             {
                 if ((axisMask & axis) != 0)
-                    sb.Append(string.Format("{0}{1:0.0}", axisLetter[i], pos[i]));
+                    sb.Append(string.Format("{0}{1:0.000}", axisLetter[i], pos[i]));
                 axis <<= 1;
             }
             return sb.ToString();

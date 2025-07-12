@@ -761,7 +761,14 @@ namespace GrblCNC
             {
                 portOpened = true;
                 //SendSoftReset();
-                TestConnection();
+                try
+                {
+                    TestConnection();
+                }
+                catch
+                {
+                    return false;
+                }
                 ClearMachineState();
                 return true;
             }
