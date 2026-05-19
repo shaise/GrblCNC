@@ -348,6 +348,8 @@ namespace GrblCNC
                 arcAng += 2.0 * Math.PI;
 
             int nsegments = (int)(arcAng / (resDegree - 0.001));
+            if (nsegments ==0)
+                nsegments = 1;
             double segAng = arcAng / nsegments;
             if (isCW)
                 segAng = -segAng;
